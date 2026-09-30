@@ -1,0 +1,250 @@
+<section
+  class="yd-seo-section yd-seo-banner"
+  aria-labelledby="yd-seo-banner-title-{{ section.id }}"
+  style="
+    --yd-seo-banner-min-h:{{ section.settings.min_height }}vh;
+    --yd-seo-header-h:{{ section.settings.header_offset }}px;
+    --yd-seo-img-height:clamp(280px,{{ section.settings.image_scale }}vw,{{ section.settings.image_max }}px);
+    --yd-seo-img-shift:{{ section.settings.image_shift }};
+  "
+>
+  <div class="yd-seo-container">
+    <div class="yd-seo-row">
+      <!-- Copy ------------------------------------------------------- -->
+      <div class="yd-seo-content">
+        {%- if section.settings.badge != blank -%}
+          <span class="yd-seo-badge">{{ section.settings.badge }}</span>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h1 class="yd-seo-title" id="yd-seo-banner-title-{{ section.id }}">
+            {{ section.settings.heading }}
+          </h1>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <p class="yd-seo-text">{{ section.settings.text }}</p>
+        {%- endif -%}
+
+        <div class="yd-seo-btn-group yd-seo-btn-mob">
+          {%- if section.settings.button_1_label != blank -%}
+            <button
+              type="button"
+              class="yd-seo-btn yd-seo-btn-primary"
+              id="yd-seo-modal-open-{{ section.id }}"
+              aria-haspopup="dialog"
+              aria-controls="yd-enquiry-modal"
+              data-yd-enquiry-open
+            >
+              {{ section.settings.button_1_label }}
+
+              <svg
+                class="yd-seo-icon"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"/>
+              </svg>
+            </button>
+          {%- endif -%}
+          {%- if section.settings.button_2_label != blank -%}
+            <a
+              class="yd-seo-btn yd-seo-btn-outline"
+              href="tel:{{ section.settings.button_2_url | remove: ' ' | remove: '-' }}"
+            >
+              {{ section.settings.button_2_label }}
+              <svg
+                class="yd-seo-icon"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"/>
+              </svg>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Photo ------------------------------------------------------ -->
+      <div class="yd-seo-media">
+        {%- if section.settings.image != blank -%}
+          <img
+            class="yd-seo-img"
+            src="{{ section.settings.image | image_url: width: 1200 }}"
+            srcset="
+              {{ section.settings.image | image_url: width: 400 }} 400w,
+              {{ section.settings.image | image_url: width: 700 }} 700w,
+              {{ section.settings.image | image_url: width: 1200 }} 1200w
+            "
+            sizes="(max-width: 991px) 90vw, 45vw"
+            alt="{{ section.settings.image_alt | escape }}"
+            width="{{ section.settings.image.width }}"
+            height="{{ section.settings.image.height }}"
+            fetchpriority="high"
+            decoding="async"
+            title="{{ section.settings.front_image_title | escape }}"
+          >
+        {%- endif -%}
+      </div>
+
+      <!-- Stats ------------------------------------------------------ -->
+      {%- if section.blocks.size > 0 -%}
+        <ul class="yd-seo-stats" aria-label="{{ section.settings.stats_label | escape }}">
+          {%- for block in section.blocks -%}
+            <li class="yd-seo-stat" {{ block.shopify_attributes }}>
+              <p class="yd-seo-stat-value{% if block.settings.accent %} yd-seo-text-accent{% endif %}">
+                {{ block.settings.value }}
+              </p>
+              <p class="yd-seo-stat-label">{{ block.settings.label }}</p>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "YD SEO Hero Banner",
+  "tag": "section",
+  "class": "yd-seo-shopify-section",
+  "settings": [
+    { "type": "header", "content": "Copy" },
+    { "type": "text", "id": "badge", "label": "Badge", "default": "Custom jerseys · Made at our own Tiruppur unit" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Kit Your Team In Jerseys Built Exactly The Way You Want Them."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Description",
+      "default": "Full-sublimation jerseys carrying your names, numbers, team colours and sponsor logos. Design with us in person at a Yoode Experience Centre or send your idea on WhatsApp — we make it in-house and deliver anywhere in India."
+    },
+
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "button_1_label", "label": "Primary button text", "default": "Get a Free Mockup" },
+    { "type": "url", "id": "button_1_url", "label": "Primary button link" },
+    { "type": "text", "id": "button_2_label", "label": "Secondary button text", "default": "Shop 38 Jersey Styles" },
+    { "type": "url", "id": "button_2_url", "label": "Secondary button link" },
+
+    { "type": "header", "content": "Section height" },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Section height",
+      "default": 100,
+      "info": "100 fills the screen. Content always grows past it rather than clipping."
+    },
+    {
+      "type": "range",
+      "id": "header_offset",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Subtract header height",
+      "default": 0,
+      "info": "Set this to your theme header's height so the banner fills exactly the space below it. Leave at 0 if the header overlaps the banner."
+    },
+
+    { "type": "header", "content": "Image" },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Banner image",
+      "info": "A cut-out with a transparent background works best."
+    },
+    {
+      "type": "text",
+      "id": "front_image_title",
+      "label": "Front Image Title",
+      "default": "Front View"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "Two footballers wearing custom full-sublimation team jerseys"
+    },
+    {
+      "type": "range",
+      "id": "image_scale",
+      "min": 20,
+      "max": 60,
+      "step": 1,
+      "unit": "vw",
+      "label": "Image size",
+      "default": 40,
+      "info": "Scales with the viewport width, so it never grows as the text wraps."
+    },
+    {
+      "type": "range",
+      "id": "image_max",
+      "min": 300,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "label": "Maximum image height",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "image_shift",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Gap from right edge",
+      "default": 0.4,
+      "info": "As a fraction of the image height."
+    },
+
+    { "type": "header", "content": "Stats" },
+    {
+      "type": "text",
+      "id": "stats_label",
+      "label": "Stats list label (screen readers)",
+      "default": "Yoode at a glance"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "limit": 6,
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "1,000+" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Units A Day" },
+        { "type": "checkbox", "id": "accent", "label": "Highlight in accent colour", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD SEO Hero Banner",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "From Rs.460", "label": "Per Jersey", "accent": true } },
+        { "type": "stat", "settings": { "value": "1,000+", "label": "Units A Day", "accent": false } },
+        { "type": "stat", "settings": { "value": "4", "label": "Experience Centres", "accent": false } },
+        { "type": "stat", "settings": { "value": "99%", "label": "Quality Checks", "accent": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}

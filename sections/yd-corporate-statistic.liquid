@@ -1,0 +1,637 @@
+{{ 'section-image-with-text.css' | asset_url | stylesheet_tag }}
+{%- style -%}
+  {% render 'section-padding' %}
+  {% render 'section-margin' %}
+{%- endstyle -%}
+
+<div class="image-with-text yd-corporate-statistic color-{{ section.settings.color_scheme }} background section-{{ section.id }}-padding section-padding">
+  <div class="container">
+    {% render 'heading-group', section: section, class: 'image-with-text', text_align: section.settings.text_align %}
+
+    <div
+      class="content image-with-text-main image-with-text-main--align-image-{{ section.settings.img_position }} image-with-text-main--gap-{{ section.settings.section_gap }}"
+    >
+      <div
+        class="image-with-text-img-wrapper"
+        {% if section.settings.aspect_ratio != 'adapt' %}
+          style="aspect-ratio: {{ section.settings.aspect_ratio }}"
+        {% endif %}
+      >
+        {%- if section.settings.image != blank -%}
+          {%- liquid
+            assign object_fit = 'object-fit: ' | append: section.settings.object_fit
+
+            assign settings_aspect_ratio = 1
+
+            if section.settings.aspect_ratio != 'adapt'
+              assign settings_aspect_ratio_numbers = section.settings.aspect_ratio | split: '/'
+              assign settings_aspect_ratio = settings_aspect_ratio_numbers[0] | append: '.0' | divided_by: settings_aspect_ratio_numbers[1]
+            endif
+
+            assign calc_ratio = 1
+
+            if section.settings.image.aspect_ratio > settings_aspect_ratio
+              assign calc_ratio = section.settings.image.aspect_ratio | divided_by: settings_aspect_ratio | round: 2
+            endif
+
+            assign img_loading = 'lazy'
+
+            if section.index == 1
+              assign img_loading = 'eager'
+            endif
+          -%}
+          {%- capture section_gap -%}
+            {%- if section.settings.section_gap == 'small' -%}
+              16px
+            {%- elsif section.settings.section_gap == 'medium' -%}
+              24px
+            {%- elsif section.settings.section_gap == 'large' -%}
+              32px
+            {%- endif -%}
+          {%- endcapture -%}
+          {%- capture sizes -%}
+            {%- if section.settings.img_position == 'top' or section.settings.img_position == 'bottom' -%}
+              (min-width: 1440px) calc(1280px * {{ calc_ratio }}), (min-width: 1200px) calc(89vw * {{ calc_ratio }}), (min-width: 550px) calc(98vw * {{ calc_ratio }}), calc(92vw * {{ calc_ratio }})
+            {%- else -%}
+              (min-width: 1440px) calc((1280px - {{ section_gap }}) / 2 * {{ calc_ratio }}), (min-width: 1200px) calc(44vw * {{ calc_ratio }}), (min-width: 750px) calc(48vw * {{ calc_ratio }}), (min-width: 550px) calc(98vw * {{ calc_ratio }}), calc(92vw * {{ calc_ratio }})
+            {%- endif -%}
+          {%- endcapture -%}
+          {{
+            section.settings.image
+            | image_url: width: 3840
+            | image_tag:
+              width: section.settings.image.width,
+              height: section.settings.image.height,
+              sizes: sizes,
+              widths: '375, 550, 750, 1000, 1280, 1500, 1780, 2560, 3000, 3840',
+              style: object_fit,
+              loading: img_loading
+          }}
+        {%- else -%}
+          {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </div>
+      <div
+        class="image-with-text-content_1 color-{{ section.settings.color_scheme_content }} image-with-text-content--align-{{ section.settings.inner_content_align }} image-with-text-content--vertical-align-{{ section.settings.vertical_inner_content_align }}"
+      >
+        {%- if section.settings.inner_text_1 != blank -%}
+          <div class="image-with-text-content__text_1 body-normal richtext-content">
+            {{ section.settings.inner_text_1 }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.icon_with_text != blank -%}
+          <div class="icon_with_text d-flex flex-wrap justify-content-between align-items-center">
+            <div class="w-30 number">
+              <h3>{{ section.settings.count }}</h3>
+              <p class="content">{{ section.settings.content }}</p>
+            </div>
+            <div class="image-with-text-content__text_2 body-normal w-70 d-flex justify-content-between align-items-center">
+              {{ section.settings.icon_with_text }}
+            </div>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.text_1 != blank -%}
+          <div class="image-with-text-content__text_1 body-normal richtext-content">
+            <div class="d-flex">
+              <div class="svg-wrapper">
+                <img src="{{ "arrow-with-bg-black.svg" | asset_url }}" alt="" width="24" height="24" loading="lazy">
+              </div>
+              <div class="short-desc">{{ section.settings.text_1 }}</div>
+            </div>
+            <div class="d-flex">
+              <div class="svg-wrapper">
+                <img src="{{ "arrow-with-bg-black.svg" | asset_url }}" alt="" width="24" height="24" loading="lazy">
+              </div>
+              <div class="short-desc">{{ section.settings.text_2 }}</div>
+            </div>
+            <div class="d-flex">
+              <div class="svg-wrapper">
+                <img src="{{ "arrow-with-bg-black.svg" | asset_url }}" alt="" width="24" height="24" loading="lazy">
+              </div>
+              <div class="short-desc">{{ section.settings.text_3 }}</div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_button != blank or section.settings.show_button_2 != blank -%}
+          {% liquid
+            assign hasTertiaryButton = false
+
+            if section.settings.show_button and section.settings.button_style == 'tertiary'
+              assign hasTertiaryButton = true
+            endif
+
+            if section.settings.show_button_2 and section.settings.button_style_2 == 'tertiary'
+              assign hasTertiaryButton = true
+            endif
+          %}
+          <div class="image-with-text-content__buttons-container {% if hasTertiaryButton == true %} image-with-text-content__buttons-container--with-tertiary{% endif %}">
+            {%- if section.settings.show_button != blank -%}
+              {% render 'button',
+                layout: section,
+                class: 'image-with-text-content__button image-with-text-content__button--primary'
+              %}
+            {% endif %}
+            {% if section.settings.show_button_2 != blank %}
+              {% render 'button',
+                btn_link: section.settings.button_link_2,
+                btn_label: section.settings.button_label_2,
+                btn_style: section.settings.button_style_2,
+                btn_arrow: section.settings.button_arrow_2,
+                class: 'image-with-text-content__button image-with-text-content__button--secondary'
+              %}
+            {% endif %}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YD Corporate Statistic",
+  "class": "image-with-text-section spaced-section",
+  "enabled_on": {
+    "templates": ["*"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.image-with-text.settings.header__1.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "t:sections.all.color_scheme.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme_content",
+      "default": "background-2",
+      "label": "t:sections.image-with-text.settings.color_scheme_content.label"
+    },
+    {
+      "type": "select",
+      "id": "section_gap",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.image-with-text.settings.section_gap.options__1.label"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.image-with-text.settings.section_gap.options__2.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.image-with-text.settings.section_gap.options__3.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.image-with-text.settings.section_gap.options__4.label"
+        }
+      ],
+      "default": "small",
+      "label": "t:sections.image-with-text.settings.section_gap.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image-with-text.settings.header__2.content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:sections.all.subheading.label"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.all.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h3",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__2.label"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "description",
+      "label": "t:sections.all.text.label"
+    },
+    {
+      "type": "text_alignment",
+      "id": "text_align",
+      "label": "t:sections.all.text_align.label",
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image-with-text.settings.header__3.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.image-with-text.settings.image.label"
+    },
+    {
+      "type": "select",
+      "id": "img_position",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.image-with-text.settings.img_position.options__1.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.image-with-text.settings.img_position.options__2.label"
+        },
+        {
+          "value": "top",
+          "label": "t:sections.image-with-text.settings.img_position.options__3.label"
+        },
+        {
+          "value": "bottom",
+          "label": "t:sections.image-with-text.settings.img_position.options__4.label"
+        }
+      ],
+      "default": "left",
+      "label": "t:sections.image-with-text.settings.img_position.label"
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "options": [
+        {
+          "value": "1/1",
+          "label": "t:sections.all.aspect_ratio.options__1.label"
+        },
+        {
+          "value": "3/2",
+          "label": "t:sections.all.aspect_ratio.options__2.label"
+        },
+        {
+          "value": "4/3",
+          "label": "t:sections.all.aspect_ratio.options__3.label"
+        },
+        {
+          "value": "16/9",
+          "label": "t:sections.all.aspect_ratio.options__4.label"
+        },
+        {
+          "value": "21/9",
+          "label": "t:sections.all.aspect_ratio.options__5.label"
+        },
+        {
+          "value": "4/5",
+          "label": "t:sections.all.aspect_ratio.options__7.label"
+        },
+        {
+          "value": "3/4",
+          "label": "t:sections.all.aspect_ratio.options__8.label"
+        },
+        {
+          "value": "adapt",
+          "label": "t:sections.all.aspect_ratio.options__6.label"
+        }
+      ],
+      "default": "16/9",
+      "label": "t:sections.all.aspect_ratio.label"
+    },
+    {
+      "type": "select",
+      "id": "object_fit",
+      "options": [
+        {
+          "value": "contain",
+          "label": "t:sections.all.card.image_fit.options__1.label"
+        },
+        {
+          "value": "cover",
+          "label": "t:sections.all.card.image_fit.options__2.label"
+        }
+      ],
+      "default": "cover",
+      "label": "t:sections.all.card.image_fit.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image-with-text.settings.header__4.content"
+    },
+     {
+      "type": "richtext",
+      "id": "inner_text_1",
+      "default": "<p>Text somthing...</p>",
+      "label": "t:sections.image-with-text.settings.inner_text.label"
+    },
+     {
+      "type": "text",
+      "id": "count",
+      "label": "Count"
+    },
+    {
+      "type": "text",
+      "id": "content",
+      "label": "Content"
+    },
+     {
+      "type": "richtext",
+      "id": "icon_with_text",
+      "default": "<p>Text somthing...</p>",
+      "label": "Text"
+    },
+     {
+      "type": "richtext",
+      "id": "text_1",
+      "default": "<p>Text somthing...</p>",
+      "label": "Text"
+    },
+    {
+      "type": "richtext",
+      "id": "text_2",
+      "default": "<p>Text somthing...</p>",
+      "label": "Text"
+    },
+    {
+      "type": "richtext",
+      "id": "text_3",
+      "default": "<p>Text somthing...</p>",
+      "label": "Text"
+    },
+    {
+      "type": "text_alignment",
+      "id": "inner_content_align",
+      "label": "t:sections.image-with-text.settings.inner_content_align.label",
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "vertical_inner_content_align",
+      "label": "t:sections.image-with-text.settings.vertical_inner_content_align.label",
+      "options": [
+        {
+          "value": "top",
+          "label": "t:sections.image-with-text.settings.vertical_inner_content_align.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.image-with-text.settings.vertical_inner_content_align.options__2.label"
+        },
+        {
+          "value": "bottom",
+          "label": "t:sections.image-with-text.settings.vertical_inner_content_align.options__3.label"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image-with-text.settings.header__5.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "default": true,
+      "label": "t:sections.all.button.button_show.label"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Button label",
+      "label": "t:sections.all.button.button_label.label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.all.button.button_link.label"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.all.button.button_style.options__1.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.all.button.button_style.options__2.label"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:sections.all.button.button_style.options__3.label"
+        }
+      ],
+      "default": "primary",
+      "label": "t:sections.all.button.button_style.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow",
+      "default": true,
+      "label": "t:sections.all.button.button_arrow.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image-with-text.settings.header__6.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button_2",
+      "default": false,
+      "label": "t:sections.all.button.button_show.label"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "default": "Button label",
+      "label": "t:sections.all.button.button_label.label"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "t:sections.all.button.button_link.label"
+    },
+    {
+      "type": "select",
+      "id": "button_style_2",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.all.button.button_style.options__1.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.all.button.button_style.options__2.label"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:sections.all.button.button_style.options__3.label"
+        }
+      ],
+      "default": "secondary",
+      "label": "t:sections.all.button.button_style.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow_2",
+      "default": true,
+      "label": "t:sections.all.button.button_arrow.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Corporate Statistic"
+    }
+  ]
+}
+{% endschema %}

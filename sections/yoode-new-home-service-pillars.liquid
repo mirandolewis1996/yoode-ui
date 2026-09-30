@@ -1,0 +1,384 @@
+{%- liquid
+  assign arrow_icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>'
+-%}
+
+<div
+  class="yn-section yn-source yn-source--service-pillars yn-service-pillars color-{{ section.settings.color_scheme }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-source-background: {{ section.settings.source_background | default: '#f6f5f2' }}; --yn-pt: {{ section.settings.padding_top | divided_by: 10.0 }}rem; --yn-pb: {{ section.settings.padding_bottom | divided_by: 10.0 }}rem;"
+>
+  {%- if section.settings.show_glow -%}
+    <div class="yn-service-pillars__glow" aria-hidden="true"></div>
+  {%- endif -%}
+
+  <div class="yn-container yn-service-pillars__container">
+    <div class="yn-service-pillars__header">
+      {% render 'yoode-new-home-heading',
+        subtitle: section.settings.subtitle,
+        title: section.settings.title,
+        description: section.settings.description,
+        align: 'left'
+      %}
+
+      {%- if section.settings.button_label != blank -%}
+        <div class="yn-service-pillars__cta">
+          <a
+            class="yn-service-pillars__button"
+            {% if section.settings.button_link != blank %}
+              href="{{ section.settings.button_link }}"
+            {% else %}
+              role="link" aria-disabled="true"
+            {% endif %}
+          >
+            {{- section.settings.button_label | escape -}}
+            <span class="yn-service-pillars__button-icon">{{ arrow_icon }}</span>
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <yoode-new-home-service-pillars class="yn-service-pillars__accordion">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            case block.settings.object_position
+              when 'object-[50%_90%]'
+                assign object_position = '50% 90%'
+              when 'object-[50%_70%]'
+                assign object_position = '50% 70%'
+              else
+                assign object_position = '50% 50%'
+            endcase
+
+            assign fallback = block.settings.fallback_image | strip
+            if fallback != blank
+              assign fallback_prefix = fallback | slice: 0, 15
+              if fallback_prefix != 'yoode-new-home-'
+                assign fallback = 'yoode-new-home-' | append: fallback
+              endif
+            endif
+          -%}
+          <div
+            class="yn-service-pillars__card{% if forloop.first %} is-active{% endif %}"
+            role="button"
+            tabindex="0"
+            aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+            style="--yn-object-position: {{ object_position }};"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.image != blank -%}
+              {{
+                block.settings.image
+                | image_url: width: 1400
+                | image_tag:
+                  class: 'yn-service-pillars__image',
+                  loading: 'lazy',
+                  widths: '400, 600, 800, 1000, 1200, 1400',
+                  sizes: '(min-width: 990px) 60vw, 100vw',
+                  alt: block.settings.title
+                }}
+            {%- elsif fallback != blank -%}
+              <img
+                class="yn-service-pillars__image"
+                src="{{ fallback | asset_url }}"
+                alt="{{ block.settings.title | escape }}"
+                loading="lazy"
+                width="800"
+                height="800"
+              >
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'yn-service-pillars__image yn-service-pillars__image--placeholder' }}
+            {%- endif -%}
+
+            <span class="yn-service-pillars__shade" aria-hidden="true"></span>
+            <span class="yn-service-pillars__dim" aria-hidden="true"></span>
+
+            <div class="yn-service-pillars__content">
+              <span class="yn-service-pillars__icon" aria-hidden="true">{{ arrow_icon }}</span>
+              {%- if block.settings.title != blank -%}
+                <h3 class="yn-service-pillars__title">{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+            </div>
+
+            {%- if block.settings.title != blank -%}
+              <div class="yn-service-pillars__label" aria-hidden="true">
+                <span class="yn-service-pillars__label-text">{{ block.settings.title | escape }}</span>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </yoode-new-home-service-pillars>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YN Service Pillars",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_glow",
+      "label": "Show soft background glow",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Our Services"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Yoode's Promise: Printing at its Best. Period."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Every print, every order over the past 18 years, Yoode has poured heart and soul into each one...</p>"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "info": "Leave empty to hide the button.",
+      "default": "Continue exploring"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "color",
+      "id": "source_background",
+      "label": "Section background",
+      "default": "#f6f5f2"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Service"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "fallback_image",
+          "label": "Demo image file (used when no image is uploaded)",
+          "info": "File name in the theme assets, e.g. yoode-new-home-img-dtg.webp"
+        },
+        {
+          "type": "select",
+          "id": "object_position",
+          "label": "Image focus",
+          "options": [
+            {
+              "value": "object-center",
+              "label": "Center"
+            },
+            {
+              "value": "object-[50%_90%]",
+              "label": "Bottom (90%)"
+            },
+            {
+              "value": "object-[50%_70%]",
+              "label": "Bottom center (70%)"
+            }
+          ],
+          "default": "object-center"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Service Pillars",
+      "blocks": [
+        {
+          "type": "service",
+          "settings": {
+            "title": "DTG Printing",
+            "fallback_image": "yoode-new-home-img-dtg.webp"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "DTF Printing",
+            "fallback_image": "yoode-new-home-img-dtf.webp"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Embroidery",
+            "object_position": "object-[50%_90%]",
+            "fallback_image": "yoode-new-home-img-embroidery.webp"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Coloreel",
+            "fallback_image": "yoode-new-home-img-coloreel.webp"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Screen Printing",
+            "fallback_image": "yoode-new-home-img-screen-printing.webp"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "UV Printing",
+            "object_position": "object-[50%_70%]",
+            "fallback_image": "yoode-new-home-img-uv-printing.webp"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Engraving",
+            "fallback_image": "yoode-new-home-img-engraving.webp"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

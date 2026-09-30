@@ -1,0 +1,783 @@
+{% doc %}
+  @prompt
+    Built for Brands. Powered by Manufacturing. Designed for Impact.
+     
+    Yoode is an Indian fashion and custom merchandise brand redefining how organisations experience apparel. From fashion-forward athleisure to fully customised corporate merchandise, we bring together creativity, advanced technology, and strong manufacturing expertise under one roof.
+     
+    With experience stores in Bangalore, Trivandrum, Chennai, and Marthandam, we enable brands to get closer to their products — exploring fabrics, finishes, fits, and final detailing in person. This hands-on approach helps teams make confident, informed decisions without guesswork.
+     
+    At the core of Yoode is our manufacturing headquarters in Tirupur, India’s leading textile hub. This production backbone ensures precision, consistency, and complete quality control at every stage. With a capacity to produce 1,000 units per day, Yoode is built to scale efficiently while maintaining high standards in every piece we deliver.|
+    
+    need a creative section to display above contnet
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-brand-story-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-brand-story-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .ai-brand-story-header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text_alignment }};
+    margin-bottom: {{ block.settings.header_spacing }}px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .ai-brand-story-tagline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.tagline_size }}px;
+    color: {{ block.settings.tagline_color }};
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 {{ block.settings.tagline_spacing }}px;
+    letter-spacing: -0.02em;
+  }
+
+  .ai-brand-story-tagline-{{ ai_gen_id }} span {
+    display: block;
+  }
+
+  .ai-brand-story-tagline-{{ ai_gen_id }} .ai-highlight-{{ ai_gen_id }} {
+    color: {{ block.settings.highlight_color }};
+    position: relative;
+    display: inline-block;
+  }
+
+  .ai-brand-story-intro-{{ ai_gen_id }} {
+    font-size: {{ block.settings.intro_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto {{ block.settings.intro_spacing }}px;
+  }
+
+  .ai-brand-story-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: {{ block.settings.grid_gap }}px;
+    margin-bottom: {{ block.settings.content_spacing }}px;
+  }
+
+  .ai-brand-story-card-{{ ai_gen_id }} {
+    background: {{ block.settings.card_background }};
+    padding: {{ block.settings.card_padding }}px;
+    border-radius: {{ block.settings.card_radius }}px;
+    border: 1px solid {{ block.settings.card_border_color }};
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ai-brand-story-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .ai-brand-story-card-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    background: {{ block.settings.icon_background }};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .ai-brand-story-card-icon-{{ ai_gen_id }} svg {
+    width: calc({{ block.settings.icon_size }}px * 0.5);
+    height: calc({{ block.settings.icon_size }}px * 0.5);
+    fill: {{ block.settings.icon_color }};
+  }
+
+  .ai-brand-story-card-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.card_title_size }}px;
+    color: {{ block.settings.text_color }};
+    font-weight: 600;
+    margin: 0 0 12px;
+    line-height: 1.3;
+  }
+
+  .ai-brand-story-card-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.card_text_size }}px;
+    color: {{ block.settings.secondary_text_color }};
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .ai-brand-story-locations-{{ ai_gen_id }} {
+    background: {{ block.settings.locations_background }};
+    padding: {{ block.settings.locations_padding }}px;
+    border-radius: {{ block.settings.card_radius }}px;
+    margin-bottom: {{ block.settings.content_spacing }}px;
+    text-align: center;
+  }
+
+  .ai-brand-story-locations-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.locations_title_size }}px;
+    color: {{ block.settings.text_color }};
+    font-weight: 600;
+    margin: 0 0 20px;
+  }
+
+  .ai-brand-story-locations-list-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-brand-story-location-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: {{ block.settings.location_item_background }};
+    border-radius: 20px;
+    font-size: {{ block.settings.location_text_size }}px;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-brand-story-location-item-{{ ai_gen_id }} svg {
+    width: 16px;
+    height: 16px;
+    fill: {{ block.settings.highlight_color }};
+  }
+
+  .ai-brand-story-stats-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: {{ block.settings.grid_gap }}px;
+    text-align: center;
+  }
+
+  .ai-brand-story-stat-{{ ai_gen_id }} {
+    padding: {{ block.settings.stat_padding }}px;
+  }
+
+  .ai-brand-story-stat-number-{{ ai_gen_id }} {
+    font-size: {{ block.settings.stat_number_size }}px;
+    color: {{ block.settings.highlight_color }};
+    font-weight: 700;
+    line-height: 1;
+    margin: 0 0 8px;
+  }
+
+  .ai-brand-story-stat-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.stat_label_size }}px;
+    color: {{ block.settings.secondary_text_color }};
+    margin: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-brand-story-tagline-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.tagline_size }}px * 0.7);
+    }
+
+    .ai-brand-story-intro-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.intro_size }}px * 0.9);
+    }
+
+    .ai-brand-story-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-brand-story-stat-number-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.stat_number_size }}px * 0.8);
+    }
+  }
+{% endstyle %}
+
+<div class="ai-brand-story-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-brand-story-container-{{ ai_gen_id }}">
+    <div class="ai-brand-story-header-{{ ai_gen_id }}">
+      <h2 class="ai-brand-story-tagline-{{ ai_gen_id }}">
+        <span>{{ block.settings.tagline_line_1 }}</span>
+        <span class="ai-highlight-{{ ai_gen_id }}">{{ block.settings.tagline_line_2 }}</span>
+        <span>{{ block.settings.tagline_line_3 }}</span>
+      </h2>
+      
+      {% if block.settings.intro_text != blank %}
+        <div class="ai-brand-story-intro-{{ ai_gen_id }}">
+          {{ block.settings.intro_text }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-brand-story-grid-{{ ai_gen_id }}">
+      <div class="ai-brand-story-card-{{ ai_gen_id }}">
+        <div class="ai-brand-story-card-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v2h-2v-2zm0 4h2v2h-2v-2z"/>
+          </svg>
+        </div>
+        <h3 class="ai-brand-story-card-title-{{ ai_gen_id }}">{{ block.settings.card_1_title }}</h3>
+        <p class="ai-brand-story-card-text-{{ ai_gen_id }}">{{ block.settings.card_1_text }}</p>
+      </div>
+
+      <div class="ai-brand-story-card-{{ ai_gen_id }}">
+        <div class="ai-brand-story-card-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+          </svg>
+        </div>
+        <h3 class="ai-brand-story-card-title-{{ ai_gen_id }}">{{ block.settings.card_2_title }}</h3>
+        <p class="ai-brand-story-card-text-{{ ai_gen_id }}">{{ block.settings.card_2_text }}</p>
+      </div>
+
+      <div class="ai-brand-story-card-{{ ai_gen_id }}">
+        <div class="ai-brand-story-card-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        </div>
+        <h3 class="ai-brand-story-card-title-{{ ai_gen_id }}">{{ block.settings.card_3_title }}</h3>
+        <p class="ai-brand-story-card-text-{{ ai_gen_id }}">{{ block.settings.card_3_text }}</p>
+      </div>
+    </div>
+
+    {% if block.settings.show_locations %}
+      <div class="ai-brand-story-locations-{{ ai_gen_id }}">
+        <h3 class="ai-brand-story-locations-title-{{ ai_gen_id }}">{{ block.settings.locations_title }}</h3>
+        <ul class="ai-brand-story-locations-list-{{ ai_gen_id }}">
+          {% if block.settings.location_1 != blank %}
+            <li class="ai-brand-story-location-item-{{ ai_gen_id }}">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              {{ block.settings.location_1 }}
+            </li>
+          {% endif %}
+          {% if block.settings.location_2 != blank %}
+            <li class="ai-brand-story-location-item-{{ ai_gen_id }}">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              {{ block.settings.location_2 }}
+            </li>
+          {% endif %}
+          {% if block.settings.location_3 != blank %}
+            <li class="ai-brand-story-location-item-{{ ai_gen_id }}">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              {{ block.settings.location_3 }}
+            </li>
+          {% endif %}
+          {% if block.settings.location_4 != blank %}
+            <li class="ai-brand-story-location-item-{{ ai_gen_id }}">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              {{ block.settings.location_4 }}
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_stats %}
+      <div class="ai-brand-story-stats-{{ ai_gen_id }}">
+        {% if block.settings.stat_1_number != blank %}
+          <div class="ai-brand-story-stat-{{ ai_gen_id }}">
+            <div class="ai-brand-story-stat-number-{{ ai_gen_id }}">{{ block.settings.stat_1_number }}</div>
+            <p class="ai-brand-story-stat-label-{{ ai_gen_id }}">{{ block.settings.stat_1_label }}</p>
+          </div>
+        {% endif %}
+        {% if block.settings.stat_2_number != blank %}
+          <div class="ai-brand-story-stat-{{ ai_gen_id }}">
+            <div class="ai-brand-story-stat-number-{{ ai_gen_id }}">{{ block.settings.stat_2_number }}</div>
+            <p class="ai-brand-story-stat-label-{{ ai_gen_id }}">{{ block.settings.stat_2_label }}</p>
+          </div>
+        {% endif %}
+        {% if block.settings.stat_3_number != blank %}
+          <div class="ai-brand-story-stat-{{ ai_gen_id }}">
+            <div class="ai-brand-story-stat-number-{{ ai_gen_id }}">{{ block.settings.stat_3_number }}</div>
+            <p class="ai-brand-story-stat-label-{{ ai_gen_id }}">{{ block.settings.stat_3_label }}</p>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand story",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Tagline"
+    },
+    {
+      "type": "text",
+      "id": "tagline_line_1",
+      "label": "Tagline line 1",
+      "default": "Built for Brands."
+    },
+    {
+      "type": "text",
+      "id": "tagline_line_2",
+      "label": "Tagline line 2 (highlighted)",
+      "default": "Powered by Manufacturing."
+    },
+    {
+      "type": "text",
+      "id": "tagline_line_3",
+      "label": "Tagline line 3",
+      "default": "Designed for Impact."
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "label": "Introduction text",
+      "default": "<p>Yoode is an Indian fashion and custom merchandise brand redefining how organisations experience apparel. From fashion-forward athleisure to fully customised corporate merchandise, we bring together creativity, advanced technology, and strong manufacturing expertise under one roof.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Feature cards"
+    },
+    {
+      "type": "text",
+      "id": "card_1_title",
+      "label": "Card 1 title",
+      "default": "Experience Stores"
+    },
+    {
+      "type": "textarea",
+      "id": "card_1_text",
+      "label": "Card 1 text",
+      "default": "Get closer to your products with hands-on exploration of fabrics, finishes, fits, and final detailing. Make confident, informed decisions without guesswork."
+    },
+    {
+      "type": "text",
+      "id": "card_2_title",
+      "label": "Card 2 title",
+      "default": "Manufacturing Excellence"
+    },
+    {
+      "type": "textarea",
+      "id": "card_2_text",
+      "label": "Card 2 text",
+      "default": "Our headquarters in Tirupur ensures precision, consistency, and complete quality control at every stage. Built to scale efficiently while maintaining high standards."
+    },
+    {
+      "type": "text",
+      "id": "card_3_title",
+      "label": "Card 3 title",
+      "default": "Production Capacity"
+    },
+    {
+      "type": "textarea",
+      "id": "card_3_text",
+      "label": "Card 3 text",
+      "default": "With capacity to produce 1,000 units per day, Yoode delivers at scale without compromising on quality in every piece we create."
+    },
+    {
+      "type": "header",
+      "content": "Locations"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_locations",
+      "label": "Show locations",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "locations_title",
+      "label": "Locations title",
+      "default": "Experience Stores"
+    },
+    {
+      "type": "text",
+      "id": "location_1",
+      "label": "Location 1",
+      "default": "Bangalore"
+    },
+    {
+      "type": "text",
+      "id": "location_2",
+      "label": "Location 2",
+      "default": "Trivandrum"
+    },
+    {
+      "type": "text",
+      "id": "location_3",
+      "label": "Location 3",
+      "default": "Chennai"
+    },
+    {
+      "type": "text",
+      "id": "location_4",
+      "label": "Location 4",
+      "default": "Marthandam"
+    },
+    {
+      "type": "header",
+      "content": "Statistics"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show statistics",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "stat_1_number",
+      "label": "Stat 1 number",
+      "default": "1,000"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_label",
+      "label": "Stat 1 label",
+      "default": "Units per day"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_number",
+      "label": "Stat 2 number",
+      "default": "4"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_label",
+      "label": "Stat 2 label",
+      "default": "Experience stores"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_number",
+      "label": "Stat 3 number",
+      "default": "100%"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_label",
+      "label": "Stat 3 label",
+      "default": "Quality control"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Header spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "content_spacing",
+      "label": "Content spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "tagline_size",
+      "label": "Tagline size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "tagline_spacing",
+      "label": "Tagline spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "intro_size",
+      "label": "Intro text size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "intro_spacing",
+      "label": "Intro spacing",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Card title size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_text_size",
+      "label": "Card text size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "locations_title_size",
+      "label": "Locations title size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "location_text_size",
+      "label": "Location text size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "stat_number_size",
+      "label": "Stat number size",
+      "min": 32,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "stat_label_size",
+      "label": "Stat label size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 40,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "locations_padding",
+      "label": "Locations padding",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "stat_padding",
+      "label": "Stat padding",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#262d33"
+    },
+    {
+      "type": "color",
+      "id": "secondary_text_color",
+      "label": "Secondary text",
+      "default": "#676c70"
+    },
+    {
+      "type": "color",
+      "id": "tagline_color",
+      "label": "Tagline",
+      "default": "#262d33"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight",
+      "default": "#000f9f"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border",
+      "default": "#dee0e0"
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Icon background",
+      "default": "#f2f1ef"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#262d33"
+    },
+    {
+      "type": "color",
+      "id": "locations_background",
+      "label": "Locations background",
+      "default": "#f2f1ef"
+    },
+    {
+      "type": "color",
+      "id": "location_item_background",
+      "label": "Location item background",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand story"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,425 @@
+<div
+  class="choose-tee color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding section-padding"
+  id="choose-tee"
+>
+  <div class="container">
+    {% if section.settings.heading != blank %}
+      <div class="section-heading">
+        <h2>{{ section.settings.heading }}</h2>
+      </div>
+    {% endif %}
+
+    <div class="choose-tee__grid">
+      {% for block in section.blocks %}
+        <a href="{{ block.settings.link }}" class="product-card">
+          <div class="product-card__image">
+            {% if block.settings.image != blank %}
+              {{
+                block.settings.image
+                | image_url: width: 500
+                | image_tag: loading: 'lazy', alt: block.settings.title, widths: '300,400,500', class: 'product-image'
+              }}
+            {% endif %}
+          </div>
+
+          <div class="product-card__content">
+            {% if block.settings.title != blank %}
+              <h3 class="product-card__title">
+                {{ block.settings.title }}
+              </h3>
+            {% endif %}
+
+            <div class="product-card__colors">
+              {% if block.settings.color_1 != blank %}
+                <span
+                  class="color-dot"
+                  style="background-color: {{ block.settings.color_1 }};"
+                ></span>
+              {% endif %}
+
+              {% if block.settings.color_2 != blank %}
+                <span
+                  class="color-dot"
+                  style="background-color: {{ block.settings.color_2 }};"
+                ></span>
+              {% endif %}
+
+              {% if block.settings.color_3 != blank %}
+                <span
+                  class="color-dot"
+                  style="background-color: {{ block.settings.color_3 }};"
+                ></span>
+              {% endif %}
+
+              {% if block.settings.color_4 != blank %}
+                <span
+                  class="color-dot"
+                  style="background-color: {{ block.settings.color_4 }};"
+                ></span>
+              {% endif %}
+
+              {% if block.settings.color_5 != blank %}
+                <span
+                  class="color-dot"
+                  style="background-color: {{ block.settings.color_5 }};"
+                ></span>
+              {% endif %}
+
+              {% if block.settings.color_6 != blank %}
+                <span
+                  class="color-dot"
+                  style="background-color: {{ block.settings.color_6 }};"
+                ></span>
+              {% endif %}
+
+              {% if block.settings.color_7 != blank %}
+                <span
+                  class="color-dot"
+                  style="background-color: {{ block.settings.color_7 }};"
+                ></span>
+              {% endif %}
+
+              {% if block.settings.color_8 != blank %}
+                <span
+                  class="color-dot"
+                  style="background-color: {{ block.settings.color_8 }};"
+                ></span>
+              {% endif %}
+            </div>
+
+            <div class="product-card__price">
+              <span class="price-label">Rs.</span>
+              <span>{{ block.settings.price }}</span>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+
+{% if section.settings.button_text != blank and section.settings.button_link != blank %}
+  <div class="choose-tee__button">
+    <a
+      href="{{ section.settings.button_link }}"
+      class="button--{{ section.settings.button_style }} button focus-inset"
+    >
+      <div class="button__content">
+        <span class="button__label">
+          {{ section.settings.button_text }}
+        </span>
+      </div>
+
+      {% if section.settings.button_arrow %}
+        <span
+          class="yd-custom-banner__arrow"
+          style="transform: rotate({{ section.settings.arrow_rotate | default: 0 }}deg);"
+        >
+          {% render 'icon-arrow' %}
+        </span>
+      {% endif %}
+    </a>
+  </div>
+{% endif %}
+  </div>
+</div>
+
+<style>
+      .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+  .choose-tee .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .section-heading {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .section-heading h2 {
+    font-size: 38px;
+    font-weight: 700;
+    color: #363535;
+    margin: 0;
+    {% comment %} text-transform: uppercase; {% endcomment %}
+  }
+
+  .choose-tee__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .product-card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: 0.3s ease;
+    display: block;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .product-card__image {
+    background: #efefef;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .product-card__image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .product-card__content {
+    padding: 14px 5px 5px;
+  }
+
+  .product-card__title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #363535;
+    margin: 0 0 10px;
+  }
+
+  .product-card__colors {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .product-card__price {
+    font-size: 25px;
+    font-weight: 400;
+    color: #4C4C4C;
+  }
+
+  .price-label {
+    font-size: 20px;
+    font-weight: 400;
+  }
+
+  .choose-tee__button {
+    text-align: center;
+    margin-top: 35px;
+  }
+
+  {% comment %} .btn-view {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 26px;
+    background: #ff6b1a;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.3s ease;
+  }
+
+  .btn-view:hover {
+    background: #e95a0d;
+  } {% endcomment %}
+
+  @media screen and (max-width: 991px) {
+    .choose-tee__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 575px) {
+    .choose-tee__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .section-heading h2 {
+      font-size: 28px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "YD Choose Your Tee",
+
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 40
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "CHOOSE YOUR TEE"
+    },
+
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "View all Tee "
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button Style",
+      "default": "primary",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "tertiary", "label": "Tertiary" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow",
+      "label": "Show Arrow",
+      "default": true
+    },
+    {
+  "type": "range",
+  "id": "arrow_rotate",
+  "label": "Arrow Rotation",
+  "min": 0,
+  "max": 360,
+  "step": 5,
+  "unit": "deg",
+  "default": 0
+}
+  ],
+
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Product Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Product Title",
+          "default": "Women's Crew Neck"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "799"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Product Link"
+        },
+        {
+          "type": "color",
+          "id": "color_1",
+          "label": "Color 1"
+        },
+        {
+          "type": "color",
+          "id": "color_2",
+          "label": "Color 2"
+        },
+        {
+          "type": "color",
+          "id": "color_3",
+          "label": "Color 3"
+        },
+        {
+          "type": "color",
+          "id": "color_4",
+          "label": "Color 4"
+        },
+        {
+          "type": "color",
+          "id": "color_5",
+          "label": "Color 5"
+        },
+        {
+          "type": "color",
+          "id": "color_6",
+          "label": "Color 6"
+        },
+        {
+          "type": "color",
+          "id": "color_7",
+          "label": "Color 7"
+        },
+        {
+          "type": "color",
+          "id": "color_8",
+          "label": "Color 8"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Choose Your Tee",
+      "blocks": [
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

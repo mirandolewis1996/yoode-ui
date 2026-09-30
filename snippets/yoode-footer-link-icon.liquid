@@ -1,0 +1,62 @@
+{%- comment -%}
+  Renders an icon for a footer menu link, chosen from the link URL.
+
+  Accepts:
+  - url: {String} the link URL (required)
+
+  Usage:
+  {% render 'yoode-footer-link-icon', url: link.url %}
+{%- endcomment -%}
+
+{%- liquid
+  assign target = url | downcase
+  assign icon = 'globe'
+
+  if target contains 'wa.me' or target contains 'whatsapp'
+    assign icon = 'whatsapp'
+  elsif target contains 'tel:' or target contains 'callto:'
+    assign icon = 'phone'
+  elsif target contains 'mailto:'
+    assign icon = 'mail'
+  elsif target contains 'google.com/maps' or target contains 'maps.app.goo.gl' or target contains 'goo.gl/maps'
+    assign icon = 'location'
+  elsif target contains 'facebook.com' or target contains 'fb.com'
+    assign icon = 'facebook'
+  elsif target contains 'instagram.com'
+    assign icon = 'instagram'
+  elsif target contains 'linkedin.com'
+    assign icon = 'linkedin'
+  elsif target contains 'youtube.com' or target contains 'youtu.be'
+    assign icon = 'youtube'
+  elsif target contains 'twitter.com' or target contains 'x.com'
+    assign icon = 'twitter'
+  elsif target contains 'pinterest.'
+    assign icon = 'pinterest'
+  elsif target contains 'tiktok.com'
+    assign icon = 'tiktok'
+  elsif target contains 'snapchat.com'
+    assign icon = 'snapchat'
+  elsif target contains 'vimeo.com'
+    assign icon = 'vimeo'
+  elsif target contains 'tumblr.com'
+    assign icon = 'tumblr'
+  endif
+-%}
+
+{%- case icon -%}
+  {%- when 'whatsapp' -%}{%- render 'icon-whatsapp' -%}
+  {%- when 'phone' -%}{%- render 'icon-phone' -%}
+  {%- when 'mail' -%}{%- render 'icon-mail' -%}
+  {%- when 'location' -%}{%- render 'icon-location' -%}
+  {%- when 'facebook' -%}{%- render 'icon-facebook' -%}
+  {%- when 'instagram' -%}{%- render 'icon-instagram' -%}
+  {%- when 'linkedin' -%}{%- render 'icon-linkedin' -%}
+  {%- when 'youtube' -%}{%- render 'icon-youtube' -%}
+  {%- when 'twitter' -%}{%- render 'icon-twitter' -%}
+  {%- when 'pinterest' -%}{%- render 'icon-pinterest' -%}
+  {%- when 'tiktok' -%}{%- render 'icon-tiktok' -%}
+  {%- when 'snapchat' -%}{%- render 'icon-snapchat' -%}
+  {%- when 'vimeo' -%}{%- render 'icon-vimeo' -%}
+  {%- when 'tumblr' -%}{%- render 'icon-tumblr' -%}
+  {%- else -%}{%- render 'icon-globe' -%}
+{%- endcase -%}

@@ -1,0 +1,128 @@
+<section class="yd-seo-section yd-seo-why" aria-labelledby="yd-seo-why-title-{{ section.id }}"
+         style="--yd-seo-why-cols:{{ section.settings.columns }};
+                --yd-seo-surface:{{ section.settings.card_colour }};
+                --yd-seo-dark:{{ section.settings.panel_colour }};
+                --yd-seo-why-panel-w:clamp(192px,20vw,{{ section.settings.panel_width }}px);">
+  <div class="yd-seo-container">
+
+    <div class="yd-seo-head yd-seo-reveal">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="yd-seo-title" id="yd-seo-why-title-{{ section.id }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="yd-seo-subtitle">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="yd-seo-why-stage">
+
+      <ul class="yd-seo-why-grid">
+        {%- for block in section.blocks -%}
+          <li class="yd-seo-why-card yd-seo-reveal" style="--yd-seo-i:{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}>
+            <span class="yd-seo-why-icon">
+              {%- if block.settings.icon != blank -%}
+                <img class="yd-seo-why-icon-art"
+                     src="{{ block.settings.icon | image_url: width: 64 }}"
+                     alt="" width="32" height="32" loading="lazy" decoding="async">
+              {%- endif -%}
+            </span>
+            {%- if block.settings.title != blank -%}
+              <h3 class="yd-seo-why-title">{{ block.settings.title | newline_to_br }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="yd-seo-why-text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if section.settings.panel_title != blank or section.settings.panel_image != blank -%}
+        <article class="yd-seo-why-panel yd-seo-reveal" style="--yd-seo-i:2">
+          {%- if section.settings.panel_image != blank -%}
+            <img class="yd-seo-why-photo"
+                 src="{{ section.settings.panel_image | image_url: width: 800 }}"
+                 srcset="{{ section.settings.panel_image | image_url: width: 400 }} 400w,
+                         {{ section.settings.panel_image | image_url: width: 800 }} 800w"
+                 sizes="(max-width: 991px) 45vw, 20vw"
+                 alt="{{ section.settings.panel_image_alt | escape }}"
+                 width="{{ section.settings.panel_image.width }}"
+                 height="{{ section.settings.panel_image.height }}"
+                 style="--yd-seo-why-photo-ratio:{{ section.settings.panel_image.width }} / {{ section.settings.panel_image.height }};"
+                 loading="lazy" decoding="async"
+                title="{{ section.settings.front_image_title | escape }}"
+              >
+          {%- endif -%}
+          <div class="yd-seo-why-panel-body">
+            {%- if section.settings.panel_title != blank -%}
+              <h3 class="yd-seo-why-panel-title">{{ section.settings.panel_title | newline_to_br }}</h3>
+            {%- endif -%}
+            {%- if section.settings.panel_text != blank -%}
+              <p class="yd-seo-why-panel-text">{{ section.settings.panel_text }}</p>
+            {%- endif -%}
+          </div>
+        </article>
+      {%- endif -%}
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YD SEO Why Yoode",
+  "tag": "section",
+  "class": "yd-seo-shopify-section",
+  "settings": [
+    { "type": "header", "content": "Heading" },
+    { "type": "text",     "id": "heading",    "label": "Heading", "default": "Why Teams Order Their Kit From Yoode" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading" },
+
+    { "type": "header", "content": "Cards" },
+    { "type": "range", "id": "columns", "min": 1, "max": 4, "step": 1,
+      "label": "Columns (desktop)", "default": 3 },
+    { "type": "color", "id": "card_colour", "label": "Card background", "default": "#f4f5f7" },
+
+    { "type": "header", "content": "Side panel" },
+    { "type": "color", "id": "panel_colour", "label": "Panel background", "default": "#1e1e1e" },
+    { "type": "range", "id": "panel_width", "min": 200, "max": 420, "step": 10, "unit": "px",
+      "label": "Panel width", "default": 300 },
+    { "type": "image_picker", "id": "panel_image", "label": "Panel image" },
+    { "type": "text", "id": "front_image_title", "label": "Front Image Title", "default": "Front View" },
+    { "type": "text", "id": "panel_image_alt", "label": "Panel image alt text",
+      "default": "The Yoode design team reviewing kit layouts and fabric swatches together" },
+    { "type": "textarea", "id": "panel_title", "label": "Panel title", "default": "No Design Yet?\nThat's Fine.",
+      "info": "Press Enter to split across two lines." },
+    { "type": "textarea", "id": "panel_text", "label": "Panel text",
+      "default": "Tell our design team what the club stands for, share a colour or a rough sketch, and they'll build the kit around it — colour combinations, graphic layout, logo placement and numbering. You'll see a full mockup before anything is printed, and revisions don't cost extra." }
+  ],
+  "blocks": [
+    {
+      "type": "reason",
+      "name": "Reason",
+      "limit": 9,
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon",
+          "info": "Small line icon, around 32x32. Upload a PNG; the image picker does not accept SVG." },
+        { "type": "textarea", "id": "title", "label": "Title", "default": "Fully\nCustomisable Designs",
+          "info": "Press Enter to split the title across two lines, as in the original design." },
+        { "type": "textarea", "id": "text",  "label": "Description",
+          "default": "Start from a blank jersey or bring a reference. Nothing about the design is locked to a template." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD SEO Why Yoode",
+      "blocks": [
+        { "type": "reason", "settings": { "title": "Fully\nCustomisable Designs", "text": "Start from a blank jersey or bring a reference. Nothing about the design is locked to a template." } },
+        { "type": "reason", "settings": { "title": "Made In\nOur Own Factory",    "text": "Cut, print and stitch all happen at our Tirupur unit, with 99% of output passing quality checks." } },
+        { "type": "reason", "settings": { "title": "Name &\nNumber Printing",     "text": "Individual names and numbers across the squad, printed into the fabric rather than heat-pressed on top." } },
+        { "type": "reason", "settings": { "title": "Multiple\nFabric Options",    "text": "Interlock, micro-polyester and dry-fit knits in sizes 22 to 52, for juniors and adults." } },
+        { "type": "reason", "settings": { "title": "Bulk\nTeam Orders",           "text": "Capacity for 1,000+ units a day, so a school tournament or a full corporate league is no problem." } },
+        { "type": "reason", "settings": { "title": "Delivered\nAcross India",     "text": "Shipped to one address or several, or collected from your nearest Experience Centre." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

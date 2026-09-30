@@ -1,0 +1,261 @@
+{% schema %}
+{
+  "name": "YD CTA Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "READY TO CREATE YOUR CUSTOM POLO?",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "default": "Bring your ideas to life with premium-quality custom polos...",
+      "label": "Text"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_show",
+      "label": "Show Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "View More"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "tertiary", "label": "Tertiary" }
+      ],
+      "default": "primary",
+      "label": "Style"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow",
+      "label": "Show Arrow",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "arrow_rotate",
+      "label": "Arrow Rotation",
+      "min": 0,
+      "max": 360,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "image_picker",
+      "id": "image1",
+      "label": "Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image2",
+      "label": "Image 2"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image Fit",
+      "options": [
+        { "value": "cover", "label": "Cover" },
+        { "value": "contain", "label": "Contain" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "img_position",
+      "label": "Image Position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD CTA Section"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="yd-iwt color-{{ section.settings.color_scheme }} section-padding">
+  <div class="yd-container">
+    <div class="yd-iwt-wrapper {% if section.settings.img_position == 'left' %}yd-iwt-left{% endif %}">
+      <!-- TEXT -->
+      <div class="yd-iwt-content" style="text-align: {{ section.settings.text_align }};">
+        {% if section.settings.heading != blank %}
+          <h2 class="yd-heading-1">{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        {% if section.settings.text != blank %}
+          <p class="yd-text">{{ section.settings.text }}</p>
+        {% endif %}
+
+        {% if section.settings.button_show and section.settings.button_label != blank %}
+          <a
+            href="{{ section.settings.button_link }}"
+            class="button--{{ section.settings.button_style }} button focus-inset"
+          >
+            <div class="button__content">
+              <span class="button__label"data-label="{{ section.settings.button_label }}">
+                {{ section.settings.button_label }}
+              </span>
+            </div>
+
+            {% if section.settings.button_arrow %}
+              <span
+                class="yd-custom-banner__arrow"
+                style="transform: rotate({{ section.settings.arrow_rotate }}deg);"
+              >
+                {% render 'icon-arrow' %}
+              </span>
+            {% endif %}
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- IMAGES -->
+      <div class="yd-iwt-images">
+        {% if section.settings.image1 != blank %}
+          <div class="yd-img-card">
+      <img
+        src="{{ section.settings.image1 | image_url: width: 600 }}"
+        loading="lazy"
+        style="object-fit: {{ section.settings.image_fit }};"
+        alt=""
+   
+      >
+          </div>
+        {% endif %}
+
+        {% if section.settings.image2 != blank %}
+          <div class="yd-img-card">
+                <img
+        src="{{ section.settings.image2 | image_url: width: 600 }}"
+        loading="lazy"
+        style="object-fit: {{ section.settings.image_fit }};"
+        alt=""
+      >
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .yd-iwt {
+    padding: 70px 20px;
+  }
+  
+
+  .yd-container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .yd-iwt-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+  }
+
+  /* reverse layout */
+  .yd-iwt-left {
+    flex-direction: row-reverse;
+  }
+
+  .yd-text {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .yd-btn {
+    display: inline-block;
+    background: #f05a28;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: 0.3s ease;
+  }
+
+  .yd-btn:hover {
+    opacity: 0.85;
+  }
+
+
+  .yd-iwt-images {
+    display: flex;
+    gap: 20px;
+  }
+
+  .yd-img-card {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  }
+
+  .yd-img-card img{
+    width: 100%;
+    height: 100%;
+  }
+
+  .yd-iwt-content{
+  width:60%
+}
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .yd-iwt-wrapper {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .yd-iwt-images {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .yd-img-card {
+      width: 45%;
+      height: 220px;
+    }
+  }
+</style>

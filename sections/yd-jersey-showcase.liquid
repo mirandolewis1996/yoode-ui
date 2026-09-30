@@ -1,0 +1,296 @@
+{% style %}
+  {% render 'section-padding' %}
+{% endstyle %}
+
+<div class="yd-jersey-showcase-section section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} section-padding">
+  <div class="yd-container">
+    <!-- HEADING -->
+    <div class="yd-header">
+      <h2 class="yd-title">{{ section.settings.title }}</h2>
+      <p class="yd-subtitle">{{ section.settings.subtitle }}</p>
+    </div>
+
+    {% if section.settings.image != blank %}
+      <div class="yd-jersey-showcase desktop-yd-jersey-showcase">
+        <img
+          src="{{ section.settings.image | image_url }}"
+          alt="{{ section.settings.title | escape }}"
+          width="auto"
+          height="auto"
+        >
+      </div>
+    {% endif %}
+    {% if section.settings.mobile_image != blank %}
+      <div class="yd-jersey-showcase mobile-yd-jersey-showcase">
+        <img
+          src="{{ section.settings.mobile_image | image_url }}"
+          alt="{{ section.settings.mobile_title | escape }}"
+          width="auto"
+          height="auto"
+        >
+      </div>
+    {% endif %}
+
+    {% if section.settings.button_label_1 != blank or section.settings.button2_text != blank %}
+      <div class="yd-buttons">
+        {% if section.settings.button_show_1 %}
+          <a
+            href="{{ section.settings.button_link_1 }}"
+            class="button button--{{ section.settings.button_style_1 }} focus-inset"
+            {{ section.shopify_attributes }}
+          >
+            <div class="button__content">
+              <span
+                class="button__label"
+                data-label="{{ section.settings.button_label_1 }}"
+              >
+                {{ section.settings.button_label_1 }}
+              </span>
+            </div>
+
+            {% if section.settings.button_arrow_1 %}
+              <span
+                class="yd-custom-banner__arrow"
+                style="transform: rotate({{ section.settings.arrow_rotate_1 }}deg);"
+              >
+                {% render 'icon-arrow' %}
+              </span>
+            {% endif %}
+          </a>
+        {% endif %}
+        {% if section.settings.button_show_2 %}
+          <a
+            href="{{ section.settings.button_link_2 }}"
+            class="button button--{{ section.settings.button_style_2 }} focus-inset"
+            {{ section.shopify_attributes }}
+                style="
+      border: 2px solid {{ section.settings.button_border_color_2 }};"
+          >
+            <div class="button__content">
+              <span
+                class="button__label"
+                data-label="{{ section.settings.button_label_2 }}"
+              >
+                {{ section.settings.button_label_2 }}
+              </span>
+            </div>
+
+            {% if section.settings.button_arrow_2 %}
+              <span
+                class="yd-custom-banner__arrow"
+                style="transform: rotate({{ section.settings.arrow_rotate_2 }}deg);"
+              >
+                {% render 'icon-arrow' %}
+              </span>
+            {% endif %}
+          </a>
+        {% endif %}
+
+    
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YD Jersey Showcase",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F3F3F3"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "FROM CONCEPT TO COURT"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtext",
+      "default": "Custom Jerseys for Everyone"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Jersey Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile Jersey Image"
+    },
+       {
+      "type": "header",
+      "content": "Button_1"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_show_1",
+      "label": "Show Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "label": "Button Label",
+      "default": "View More"
+    },
+    {
+      "type": "select",
+      "id": "button_style_1",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "tertiary", "label": "Tertiary" }
+      ],
+      "default": "primary",
+      "label": "Style"
+    },
+    {
+      "type": "url",
+      "id": "button_link_1",
+      "label": "Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow_1",
+      "label": "Show Arrow",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "arrow_rotate_1",
+      "label": "Arrow Rotation",
+      "min": 0,
+      "max": 360,
+      "step": 5,
+      "default": 0
+    },
+  
+      {
+      "type": "header",
+      "content": "Button_2"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_show_2",
+      "label": "Show Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "label": "Button Label",
+      "default": "View More"
+    },
+    {
+      "type": "select",
+      "id": "button_style_2",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "tertiary", "label": "Tertiary" }
+      ],
+      "default": "primary",
+      "label": "Style"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow_2",
+      "label": "Show Arrow",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "arrow_rotate_2",
+      "label": "Arrow Rotation",
+      "min": 0,
+      "max": 360,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "button_border_color_2",
+      "label": "Border Color",
+      "default": "transparent"
+    },
+
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Jersey Showcase"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+    .desktop-yd-jersey-showcase{
+    display:block !important;
+  }
+
+  .mobile-yd-jersey-showcase{
+    display:none !important;
+  }
+
+  @media screen and (max-width: 767px){
+
+    .desktop-yd-jersey-showcase{
+      display:none !important;
+    }
+
+    .mobile-yd-jersey-showcase{
+      display:block !important;
+    }
+
+  }
+</style>

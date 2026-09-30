@@ -1,0 +1,2530 @@
+/* ==========================================================================
+   YD SEO - common stylesheet for every yd-seo-* Shopify section
+   --------------------------------------------------------------------------
+   Load once, ideally from theme.liquid:
+     {{ 'yd-seo-custom.css' | asset_url | stylesheet_tag }}
+   Each section also links it so it works when dropped in on its own.
+
+   Three custom properties hold image URLs and are set by their section from
+   an image_picker setting, because a .css asset cannot resolve asset_url:
+     --yd-seo-num-art        YD SEO Feature Strip  (per block)
+     --yd-seo-quote-art      YD SEO Reviews
+     --yd-seo-faq-icon-art   YD SEO Faq
+   ========================================================================== */
+
+/* ==========================================================================
+   1. DESIGN TOKENS - every reusable value lives here
+   ========================================================================== */
+:root{
+  /* --- Brand colours --- */
+  --yd-seo-primary:#f05a22;            /* orange CTA + highlight stats */
+  --yd-seo-primary-dark:#d84a15;
+  --yd-seo-accent:#1a5fe0;             /* blue badge */
+  --yd-seo-ink:#10131a;                /* headings */
+  --yd-seo-body:#5b6474;               /* paragraph */
+  --yd-seo-muted:#8b93a3;              /* small labels */
+  --yd-seo-white:#ffffff;
+  --yd-seo-surface:#f4f5f7;            /* section background */
+  --yd-seo-surface-2:#eceef2;
+  --yd-seo-border:#12151c;             /* outline button border */
+  --yd-seo-line:#e4e7ec;               /* dividers */
+  --yd-seo-formreq : tomato;
+  /* --- Typography --- */
+  --yd-seo-font:"Inter","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+  --yd-seo-fs-badge:13px;
+  --yd-seo-fs-title:clamp(30.4px,16.8px + 3.1vw,56px);
+  --yd-seo-fs-text:clamp(15px,14.08px + .2vw,17px);
+  --yd-seo-fs-btn:15px;
+  --yd-seo-fs-stat:clamp(18px,15.2px + .6vw,24px);
+  --yd-seo-fs-label:10px;
+  --yd-seo-lh-title:1.16;
+  --yd-seo-lh-text:1.72;
+  --yd-seo-ls-title:-.02em;
+  --yd-seo-ls-label:.1em;
+  --yd-seo-fw-title:800;
+  --yd-seo-fw-bold:700;
+  --yd-seo-fw-semi:600;
+  --yd-seo-fw-medium:500;
+
+  /* --- Spacing scale --- */
+  --yd-seo-gap-xs:8px;
+  --yd-seo-gap-sm:14px;
+  --yd-seo-gap-md:20px;
+  --yd-seo-gap-lg:32px;
+
+  /* --- Radius --- */
+  --yd-seo-radius-pill:999px;
+  --yd-seo-radius-card:24px;
+
+  /* --- Layout --- */
+  --yd-seo-container:1400px;
+  --yd-seo-gutter:clamp(16px,8.8px + 2vw,40px);
+  /* ONE pair of values for the vertical rhythm of every section. No section
+     sets its own top/bottom padding any more - change these two (and the two
+     overrides in the media queries below) and the whole page follows. */
+  --yd-seo-section-pt:70px;                /* section padding top */
+  --yd-seo-section-pb:70px;                /* section padding bottom */
+  --yd-seo-row-min-h:clamp(420px,46vw,620px);
+  --yd-seo-content-max:544px;
+  --yd-seo-text-max:464px;
+  --yd-seo-stats-reserve:152px;       /* room kept for the floating stats */
+
+  /* --- Banner image --- */
+  --yd-seo-banner-min-h:93vh;         /* banner fills the screen */
+  --yd-seo-header-h:0px;               /* subtract a sticky theme header */
+  --yd-seo-media-start:44%;            /* where the photo column begins */
+  --yd-seo-img-height:clamp(280px,40vw,700px);  /* scales with the viewport,
+                                          never with the text column height */
+  --yd-seo-img-shift:.4;              /* gap from the right edge, as a
+                                          fraction of the photo height. The
+                                          artwork is a tight cut-out, so a
+                                          negative value clips the models */
+
+  /* --- Features strip (dark) --- */
+  --yd-seo-dark:#1e1e1e;               /* dark section background */
+  --yd-seo-dark-ghost:#3a3a3a;         /* big watermark numbers */
+  --yd-seo-on-dark:#ffffff;            /* headings on dark */
+  --yd-seo-on-dark-muted:#8e8e8e;      /* body on dark */
+  --yd-seo-features-cols:4;
+  --yd-seo-features-gap:clamp(24px,16px + 3vw,64px);
+  --yd-seo-features-row-gap:36px;
+  --yd-seo-fs-feature-title:13px;
+  --yd-seo-fs-feature-text:12px;
+  --yd-seo-num-size:clamp(72px,32px + 10.5vw,128px);
+  --yd-seo-lh-feature-text:1.7;
+  --yd-seo-ls-feature-title:.06em;
+  --yd-seo-align-feature-text:justify;
+  --yd-seo-num-left:-13.6px;
+  --yd-seo-num-art:none;               /* set per block from its image setting */
+
+  /* --- Sports slider --- */
+  --yd-seo-sports-min-h:100vh;        /* section fills the screen */
+  --yd-seo-head-gap:clamp(28px,16px + 2.2vw,9.6px);
+  --yd-seo-fs-section-title:clamp(22px,14.4px + 2.1vw,40px);
+  --yd-seo-fs-subtitle:clamp(13px,12.48px + .2vw,15px);
+  --yd-seo-fs-sport-name:12px;
+  --yd-seo-sport-name-w:72px;
+  --yd-seo-subtitle-max:544px;
+  --yd-seo-head-title:var(--yd-seo-ink);
+  --yd-seo-head-text:var(--yd-seo-body);
+  --yd-seo-btn-shadow:var(--yd-seo-shadow-btn);
+  --yd-seo-btn-sm-py:8px;
+  --yd-seo-btn-sm-px:10px;
+  --yd-seo-fs-btn-sm:11px;
+  --yd-seo-whatsapp:#25d366;
+  --yd-seo-whatsapp-dark:#1da851;
+  --yd-seo-btn-outline-fg:var(--yd-seo-ink);
+  --yd-seo-btn-outline-bd:var(--yd-seo-border);
+  --yd-seo-btn-outline-hover-bg:var(--yd-seo-ink);
+  --yd-seo-btn-outline-hover-fg:var(--yd-seo-white);
+  --yd-seo-stage-gap:clamp(8px,3.2px + 1.4vw,24px);
+  --yd-seo-arc-w:clamp(80px,40px + 7vw,144px);
+  --yd-seo-arc-gap:clamp(24px,11.2px + 2.4vw,52px);
+  --yd-seo-arc-bulge:20px;
+  --yd-seo-sport-size:40px;
+  --yd-seo-sport-art-size:18px;
+  --yd-seo-rail-gap:clamp(6px,1.6px + 1vw,20px);  /* stacked chip rail */
+  --yd-seo-rail-label-h:28px;           /* room under the active label */
+  --yd-seo-nav-size:36px;
+  --yd-seo-jersey-h:clamp(150px, 95vw, 555px);
+  --yd-seo-jersey-gap:clamp(8px,3.2px + 2vw,40px);
+
+  /* --- Steps ("how to create") --- */
+  --yd-seo-on-dark-line:rgba(255,255,255,.14);   /* row dividers */
+  --yd-seo-on-dark-dim:#5f5f5f;                  /* idle step numbers */
+  --yd-seo-step-py:clamp(14.4px,8px + .9vw,20.8px);
+  --yd-seo-step-pl:clamp(20px,8px + 3vw,72px);
+  --yd-seo-step-gap:clamp(16px,6.4px + 2vw,48px);
+  --yd-seo-step-num-w:clamp(32px,22.4px + 1.6vw,52px);
+  --yd-seo-step-title-w:clamp(128px,80px + 9vw,224px);
+  --yd-seo-step-text-w:clamp(192px, 200px + 12vw, 407px);;
+  --yd-seo-step-bar-w:3px;
+  --yd-seo-fs-step-num:clamp(12px,11.2px + .2vw,14px);
+  --yd-seo-fs-step-title:clamp(13px,12px + .25vw,16px);
+  --yd-seo-fs-step-text:clamp(11px,10.4px + .2vw,13px);
+  --yd-seo-steps-media-w:clamp(192px,144px + 10vw,288px);
+  --yd-seo-shot-ratio:427 / 479;   /* the storefront shot's own ratio */
+  --yd-seo-scribble-w:3;     /* viewBox units; ~2px once scaled */
+
+  /* --- Pricing --- */
+  --yd-seo-pricing-gap:clamp(28px,16px + 2.4vw,48px);  /* intro -> cards */
+  --yd-seo-pricing-split:clamp(24px,8px + 5vw,96px);  /* the two columns */
+  --yd-seo-pricing-lead-max:432px;
+  --yd-seo-pricing-aside-max:480px;
+  --yd-seo-fs-pricing-title:clamp(20px,13.6px + 1.8vw,36px);
+  --yd-seo-price-cols:5;
+  --yd-seo-price-gap:clamp(10px,5.6px + .9vw,16px);
+  --yd-seo-price-pad:8px;
+  --yd-seo-price-radius:16px;
+  --yd-seo-price-img-radius:12px;
+  --yd-seo-price-img-ratio:300 / 205;      /* the artwork's own ratio */
+  --yd-seo-price-lift:-6px;            /* hover travel */
+  --yd-seo-price-zoom:1.06;                /* hover image scale */
+  --yd-seo-fs-price-title:clamp(11px,10.24px + .2vw,13px);
+  --yd-seo-fs-price-note:clamp(10px,9.44px + .2vw,12px);
+
+  /* --- Print options ("what you can put on the jersey") --- */
+  --yd-seo-cream:#fdf0e4;                  /* warm section background */
+  --yd-seo-print-min-h:100vh;              /* section fills the screen */
+  --yd-seo-print-stage-gap:clamp(16px,3.2px + 3vw,56px);
+  --yd-seo-print-cols:1;                   /* cards per list column */
+  --yd-seo-print-gap:clamp(14px,6.4px + 1.6vw,36px);
+  --yd-seo-print-radius:14px;
+  --yd-seo-print-fig-w:44%;                /* image share of the card */
+  --yd-seo-print-card-min-h:88px;
+  --yd-seo-print-model-h:clamp(260px,34vw,530px);
+  --yd-seo-print-model-gap:clamp(12px,3.2px + 2vw,44px);
+  --yd-seo-fs-print-title:clamp(11px,10.24px + .2vw,13px);
+  --yd-seo-fs-print-text:clamp(10px,9.44px + .2vw,12px);
+
+  /* --- Why Yoode --- */
+  --yd-seo-why-stage-gap:clamp(12px,4.8px + 1.4vw,24px);
+  --yd-seo-why-panel-w:clamp(192px,20vw,304px);
+  --yd-seo-why-cols:3;
+  --yd-seo-why-gap:clamp(10px,4.8px + 1vw,16px);
+  --yd-seo-why-card-radius:14px;
+  --yd-seo-why-card-pad:clamp(14px,8px + 1vw,22px);
+  --yd-seo-why-icon-size:44px;
+  --yd-seo-why-icon-art:20px;
+  --yd-seo-why-icon-radius:12px;
+  --yd-seo-why-icon-gap:clamp(16px,8px + 1.4vw,32px);
+  --yd-seo-fs-why-title:clamp(12px,11.2px + .25vw,15px);
+  --yd-seo-fs-why-text:clamp(10px,9.44px + .2vw,12px);
+  --yd-seo-why-panel-radius:16px;
+  --yd-seo-why-panel-pad:8px;
+  --yd-seo-why-photo-ratio:387 / 374;     /* the photo's own ratio */
+  --yd-seo-fs-why-panel-title:clamp(13px,11.84px + .3vw,17px);
+
+  /* --- Bulk & team orders --- */
+  --yd-seo-bulk-stage-gap:clamp(12px,4.8px + 1.4vw,28px);
+  --yd-seo-bulk-side-w:clamp(144px,20vw,240px);
+  --yd-seo-bulk-cols:1;                    /* cards per side column */
+  --yd-seo-bulk-gap:clamp(10px,4.8px + 1vw,18px);
+  --yd-seo-bulk-card-pad:clamp(12px,7.2px + .7vw,15px);
+  --yd-seo-bulk-card-radius:12px;
+  --yd-seo-bulk-card-bd:rgba(255,255,255,.18);
+  --yd-seo-bulk-card-bd-hover:rgba(255,255,255,.45);
+  --yd-seo-bulk-photo-radius:16px;
+  --yd-seo-bulk-photo-ratio:850 / 485;     /* the artwork's own ratio */
+  --yd-seo-fs-bulk-title:clamp(11px,10.24px + .25vw,15px);
+  --yd-seo-fs-bulk-text:clamp(10px,9.44px + .2vw,12px);
+
+  /* --- Reviews --- */
+  --yd-seo-reviews-cols:4;
+  --yd-seo-reviews-gap:clamp(10px,4.8px + 1vw,16px);
+  --yd-seo-review-pad:clamp(16px,9.6px + 1.4vw,28px);
+  --yd-seo-review-radius:16px;
+  --yd-seo-review-bg:#f2f2f2;
+  --yd-seo-quote-w:clamp(28px,19.2px + 1.6vw,44px);
+  --yd-seo-quote-ratio:78 / 49;            /* the glyph's own ratio */
+  --yd-seo-quote-colour:#d5d5d5;
+  --yd-seo-quote-art:none;             /* set per section from its image setting */
+  --yd-seo-fs-score:clamp(48px,32px + 4.5vw,96px);
+  --yd-seo-fs-score-label:clamp(11px,10.4px + .2vw,13px);
+  --yd-seo-fs-review:clamp(12px,11.2px + .25vw,14px);
+  --yd-seo-fs-review-name:clamp(12px,11.2px + .2vw,13px);
+  --yd-seo-fs-review-role:clamp(10px,9.6px + .15vw,11px);
+
+  /* --- Star rating (shared component) --- */
+  --yd-seo-star-size:13px;
+  --yd-seo-star-on:#f7b500;
+  --yd-seo-star-off:#dcdcdc;
+  --yd-seo-star-art:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Cpath fill='%23000' d='M8 1 9.9 5.4 14.7 5.8 11 8.9 12.2 13.6 8 11.1 3.8 13.6 5 8.9 1.3 5.8 6.1 5.4Z'/%3E%3C/svg%3E");
+
+  /* --- Experience centres --- */
+  --yd-seo-stores-cols:4;
+  --yd-seo-stores-gap:clamp(12px,5.6px + 1.1vw,20px);
+  --yd-seo-store-pad:10px;
+  --yd-seo-store-radius:16px;
+  --yd-seo-store-photo-ratio:403 / 318;    /* the photos' own ratio */
+  --yd-seo-store-photo-radius:10px;
+  --yd-seo-fs-store-name:clamp(13px,12px + .3vw,16px);
+  --yd-seo-fs-store-address:clamp(10px,9.6px + .15vw,11px);
+  --yd-seo-fs-store-hours:clamp(10px,9.6px + .2vw,12px);
+
+  /* --- Closing call to action --- */
+  --yd-seo-cta-min-h:clamp(240px,20vw,320px);
+  --yd-seo-orb-lg:clamp(44px,24px + 4vw,96px);
+  --yd-seo-orb-md:clamp(36px,19.2px + 2.9vw,72px);
+  --yd-seo-orb-float:8px;                /* how far the circles drift */
+  --yd-seo-orb-cycle:6s;
+
+  /* --- SEO copy + FAQ --- */
+  --yd-seo-faq-split:clamp(28px,8px + 4.5vw,72px);
+  --yd-seo-faq-copy-w:clamp(256px,26vw,352px);
+  --yd-seo-faq-gap:8px;
+  --yd-seo-faq-pad:clamp(14px,9.6px + .9vw,20px);
+  --yd-seo-faq-radius:10px;
+  --yd-seo-faq-bg:#f2f2f2;
+  --yd-seo-faq-bg-open:#ededed;
+  --yd-seo-faq-icon-size:24px;
+  --yd-seo-faq-icon-colour:#363535;
+  --yd-seo-faq-icon-art:none;          /* set per section from its image setting */
+  --yd-seo-fs-faq-lead:clamp(12px,11.52px + .2vw,13px);
+  --yd-seo-fs-faq-sub:clamp(13px,12px + .3vw,16px);
+  --yd-seo-fs-faq-q:clamp(12px,11.36px + .2vw,13px);
+  --yd-seo-fs-faq-a:clamp(11px,10.56px + .2vw,12px);
+
+  /* --- Outro banner --- */
+  --yd-seo-outro-min-h:clamp(192px,17vw,288px);
+  --yd-seo-outro-gap:clamp(20px,6.4px + 2.5vw,48px);
+  --yd-seo-outro-card-w:clamp(128px,20vw,288px);
+  --yd-seo-outro-card-radius:16px;
+  --yd-seo-outro-card-ratio:388 / 345;     /* the display shot's own ratio */
+  /* the cut-out fills the whole band, so its height is the band height and
+     the column is exactly as wide as the image will then be */
+  --yd-seo-outro-player-h:calc(var(--yd-seo-outro-min-h) +
+                               var(--yd-seo-section-pt) + var(--yd-seo-section-pb));
+  --yd-seo-outro-player-w:calc(var(--yd-seo-outro-player-h) * 371 / 400);
+  --yd-seo-fs-outro-title:clamp(18px,9.6px + 1.4vw,28px);
+
+  /* --- Motion --- */
+  --yd-seo-ease-out:cubic-bezier(.22,1,.36,1);
+  --yd-seo-dur-draw:1.5s;
+  --yd-seo-dur-fast:.25s;
+  --yd-seo-dur-slow:.6s;
+  --yd-seo-stagger:80ms;
+
+  /* --- Effects --- */
+  --yd-seo-shadow-chip:0 4px 12px rgba(16,19,26,.12);
+  --yd-seo-shadow-card:0 20px 52px rgba(16,19,26,.09);
+  --yd-seo-shadow-btn:0 10px 24px rgba(240,90,34,.32);
+  --yd-seo-transition:.28s cubic-bezier(.4,0,.2,1);
+}
+
+/* ==========================================================================
+   2. BASE / RESET
+   ========================================================================== */
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  font-family:var(--yd-seo-font);
+  color:var(--yd-seo-ink);
+  background:var(--yd-seo-white);
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block;}
+a{text-decoration:none;color:inherit;}
+
+/* ==========================================================================
+   3. GLOBAL LAYOUT SHELL - shared by every section
+   ========================================================================== */
+.yd-seo-section{
+  position:relative;
+  /* pin the inherited size: anything without its own font-size (and the line
+     box around inline-block children like the star rating) would otherwise
+     follow the theme's root size, e.g. html{font-size:62.5%} */
+  font-size:16px;
+  /* the common vertical rhythm - every yd-seo section gets it from here */
+  padding-top:var(--yd-seo-section-pt);
+  padding-bottom:var(--yd-seo-section-pb);
+}
+
+.yd-seo-section .yd-seo-container{
+  width:100%;
+  max-width:var(--yd-seo-container);
+  margin-inline:auto;
+  padding-inline:var(--yd-seo-gutter);
+}
+
+.yd-seo-section .yd-seo-row{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  align-items:center;
+  gap:var(--yd-seo-gap-lg);
+  min-height:var(--yd-seo-row-min-h);
+}
+
+/* .yd-seo-section > .yd-seo-btn-group > .yd-seo-btn - shared by sections - */
+.yd-seo-section .yd-seo-btn-group{
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--yd-seo-gap-sm);
+}
+
+.yd-seo-section .yd-seo-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:15px 24px;
+  border:1px solid transparent;
+  border-radius:var(--yd-seo-radius-pill);
+  font-family:inherit;
+  font-size:var(--yd-seo-fs-btn);
+  font-weight:var(--yd-seo-fw-semi);
+  line-height:1;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background var(--yd-seo-transition),
+             color var(--yd-seo-transition),
+             border-color var(--yd-seo-transition),
+             transform var(--yd-seo-transition),
+             box-shadow var(--yd-seo-transition);
+}
+.yd-seo-section .yd-seo-btn:hover{transform:translateY(-2px);}
+.yd-seo-section .yd-seo-btn:focus-visible{outline:2px solid var(--yd-seo-accent);outline-offset:3px;}
+
+.yd-seo-section .yd-seo-btn-primary{
+  background:var(--yd-seo-primary);
+  color:var(--yd-seo-white);
+  box-shadow:var(--yd-seo-btn-shadow);
+}
+.yd-seo-section .yd-seo-btn-primary:hover{background:var(--yd-seo-primary-dark);}
+
+.yd-seo-section .yd-seo-btn-outline{
+  background:transparent;
+  color:var(--yd-seo-btn-outline-fg);
+  border-color:var(--yd-seo-btn-outline-bd);
+}
+.yd-seo-section .yd-seo-btn-outline:hover{
+  background:var(--yd-seo-btn-outline-hover-bg);
+  color:var(--yd-seo-btn-outline-hover-fg);
+}
+
+/* compact variant - no glow, the big button's shadow is too heavy here */
+.yd-seo-section .yd-seo-btn-sm{
+  --yd-seo-btn-shadow:none;
+  gap:6px;
+  padding:var(--yd-seo-btn-sm-py) var(--yd-seo-btn-sm-px);
+  font-size:var(--yd-seo-fs-btn-sm);
+}
+
+.yd-seo-section .yd-seo-btn-whatsapp{
+  background:var(--yd-seo-whatsapp);
+  color:var(--yd-seo-white);
+}
+.yd-seo-section .yd-seo-btn-whatsapp:hover{background:var(--yd-seo-whatsapp-dark);}
+
+.yd-seo-section .yd-seo-icon{width:16px;height:16px;flex:0 0 auto;}
+.yd-seo-section .yd-seo-icon-sm{width:14px;height:14px;flex:0 0 auto;}
+
+/* .yd-seo-section > .yd-seo-stars - shared rating ----------------------- */
+/* one repeating star mask over a grey bar, with a gold overlay clipped to
+   --yd-seo-rating, so any value from 0-5 (fractions included) just works */
+.yd-seo-section .yd-seo-stars{
+  position:relative;
+  display:inline-block;
+  width:calc(var(--yd-seo-star-size) * 1.25 * 5);
+  height:var(--yd-seo-star-size);
+  background:var(--yd-seo-star-off);
+  -webkit-mask:var(--yd-seo-star-art) left center /
+               calc(var(--yd-seo-star-size) * 1.25) 100% repeat-x;
+          mask:var(--yd-seo-star-art) left center /
+               calc(var(--yd-seo-star-size) * 1.25) 100% repeat-x;
+}
+.yd-seo-section .yd-seo-stars::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:calc(var(--yd-seo-rating,5) / 5 * 100%);
+  background:var(--yd-seo-star-on);
+}
+
+/* .yd-seo-section > .yd-seo-head - shared centred heading --------------- */
+/* scoped to .yd-seo-head so the banner's own .yd-seo-title is untouched */
+.yd-seo-section .yd-seo-head{
+  margin-bottom:var(--yd-seo-head-gap);
+  text-align:center;
+}
+
+.yd-seo-section .yd-seo-head .yd-seo-title{
+  margin:0;
+  color:var(--yd-seo-head-title);
+  font-size:var(--yd-seo-fs-section-title);
+  font-weight:var(--yd-seo-fw-title);
+  line-height:1.2;
+  letter-spacing:var(--yd-seo-ls-title);
+  text-transform:uppercase;
+}
+
+.yd-seo-section .yd-seo-head .yd-seo-subtitle{
+  margin:var(--yd-seo-gap-sm) auto 0;
+  max-width:var(--yd-seo-subtitle-max);
+  color:var(--yd-seo-head-text);
+  font-size:var(--yd-seo-fs-subtitle);
+  line-height:1.6;
+}
+
+/* .yd-seo-section > .yd-seo-badge - shared pill label ------------------ */
+.yd-seo-section .yd-seo-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:var(--yd-seo-gap-xs);
+  padding:8px 16px;
+  border-radius:var(--yd-seo-radius-pill);
+  background:var(--yd-seo-accent);
+  color:var(--yd-seo-white);
+  font-size:var(--yd-seo-fs-badge);
+  font-weight:var(--yd-seo-fw-medium);
+  line-height:1;
+  letter-spacing:.01em;
+  margin-bottom: 10px;
+}
+
+/* .yd-seo-section > .yd-seo-editor-hint - shown only in the Theme Editor,
+   when a block-driven section has no blocks yet -------------------------- */
+.yd-seo-section .yd-seo-editor-hint{
+  grid-column:1 / -1;
+  margin:0;
+  padding:16px 20px;
+  border:1px dashed currentColor;
+  border-radius:10px;
+  opacity:.65;
+  font-size:13px;
+  line-height:1.5;
+  text-align:center;
+}
+
+/* ==========================================================================
+   4. BANNER  ->  .yd-seo-banner { ... everything nested inside ... }
+   ========================================================================== */
+.yd-seo-banner{
+  padding-top: 0px;
+  display:grid;
+  align-content:center;                 /* centres the row in the viewport */
+  min-height:calc(var(--yd-seo-banner-min-h) - var(--yd-seo-header-h));
+  --yd-seo-row-min-h:auto;              /* the section owns the height now,
+                                           so the row must not add its own */
+  overflow:hidden;
+  background:linear-gradient(100deg,
+             var(--yd-seo-surface) 0%,
+             var(--yd-seo-surface-2) 45%,
+             var(--yd-seo-surface) 100%);
+}
+
+/* .yd-seo-banner > .yd-seo-content ------------------------------------- */
+.yd-seo-banner .yd-seo-content{
+  position:relative;
+  z-index:1;
+  max-width:var(--yd-seo-content-max);
+  padding-bottom:var(--yd-seo-stats-reserve);   /* room for the floating stats */
+}
+
+/* .yd-seo-banner > .yd-seo-title --------------------------------------- */
+.yd-seo-banner .yd-seo-title{
+  margin:var(--yd-seo-gap-md) 0 0;
+  font-size:var(--yd-seo-fs-title);
+  font-weight:var(--yd-seo-fw-title);
+  line-height:var(--yd-seo-lh-title);
+  letter-spacing:var(--yd-seo-ls-title);
+}
+
+/* .yd-seo-banner > .yd-seo-text ---------------------------------------- */
+.yd-seo-banner .yd-seo-text{
+  margin:var(--yd-seo-gap-md) 0 var(--yd-seo-gap-lg);
+  max-width:var(--yd-seo-text-max);
+  color:var(--yd-seo-body);
+  font-size:var(--yd-seo-fs-text);
+  line-height:var(--yd-seo-lh-text);
+}
+
+/* .yd-seo-banner > .yd-seo-media > .yd-seo-img ------------------------- */
+.yd-seo-banner .yd-seo-media{
+  position:absolute;
+  left:var(--yd-seo-media-start);
+  right:calc(50% - 50vw);                       /* bleed to the viewport edge */
+  top:calc(-1 * var(--yd-seo-section-pt));      /* bleed over the section padding */
+  bottom:calc(-1 * var(--yd-seo-section-pb));
+  overflow:hidden;
+}
+
+.yd-seo-banner .yd-seo-img{
+  position:absolute;
+  /* offset scales with the photo, so the models keep the same gap from the
+     edge at every width instead of drifting as the image resizes */
+  right:calc(var(--yd-seo-img-height) * var(--yd-seo-img-shift));
+  bottom:var(--yd-seo-section-pb);              /* sits on the section baseline */
+  height:var(--yd-seo-img-height);
+  /* never taller than the band itself, or the heads clip at the top edge */
+  max-height:calc(100% - var(--yd-seo-section-pt) - var(--yd-seo-section-pb));
+  width:auto;
+  max-width:none;
+}
+
+/* .yd-seo-banner > .yd-seo-stats > .yd-seo-stat ------------------------ */
+.yd-seo-banner .yd-seo-stats{
+  position:absolute;
+  left:0;
+  bottom:0;
+  z-index:2;
+  margin:0;
+  padding:var(--yd-seo-gap-md) var(--yd-seo-gap-lg);
+  list-style:none;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  background:var(--yd-seo-white);
+  border-radius:var(--yd-seo-radius-card);
+  box-shadow:var(--yd-seo-shadow-card);
+}
+
+.yd-seo-banner .yd-seo-stat{
+  flex:1 1 auto;
+  min-width:104px;
+  padding-inline:var(--yd-seo-gap-md);
+  text-align:center;
+  border-left:1px solid var(--yd-seo-line);
+}
+.yd-seo-banner .yd-seo-stat:first-child{border-left:0;}
+
+.yd-seo-banner .yd-seo-stat-value{
+  margin:0;
+  font-size:var(--yd-seo-fs-stat);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.2;
+  letter-spacing:-.01em;
+}
+
+.yd-seo-banner .yd-seo-stat-label{
+  margin:6px 0 0;
+  color:var(--yd-seo-muted);
+  font-size:var(--yd-seo-fs-label);
+  font-weight:var(--yd-seo-fw-medium);
+  line-height:1.2;
+  letter-spacing:var(--yd-seo-ls-label);
+  text-transform:uppercase;
+}
+
+.yd-seo-banner .yd-seo-text-accent{color:var(--yd-seo-primary);}
+
+/* ==========================================================================
+   5. FEATURES  ->  .yd-seo-features { ... everything nested inside ... }
+   ========================================================================== */
+.yd-seo-section.yd-seo-features{
+  overflow:hidden;                                /* clips the big numbers */
+  background:var(--yd-seo-dark);
+}
+
+/* .yd-seo-features > .yd-seo-grid -------------------------------------- */
+.yd-seo-features .yd-seo-grid{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  grid-template-columns:repeat(var(--yd-seo-features-cols),minmax(0,1fr));
+  gap:var(--yd-seo-features-row-gap) var(--yd-seo-features-gap);
+}
+
+/* .yd-seo-features > .yd-seo-feature ----------------------------------- */
+.yd-seo-features .yd-seo-feature{
+  position:relative;
+}
+
+/* the watermark number - artwork masked so CSS controls the colour -------- */
+.yd-seo-features .yd-seo-feature::before{
+  content:"";
+  position:absolute;
+  left:var(--yd-seo-num-left);
+  top:50%;
+  transform:translateY(-50%);
+  z-index:0;
+  width:var(--yd-seo-num-size);
+  height:var(--yd-seo-num-size);
+  background-color:var(--yd-seo-dark-ghost);
+  -webkit-mask:var(--yd-seo-num-art) left center/contain no-repeat;
+          mask:var(--yd-seo-num-art) left center/contain no-repeat;
+  pointer-events:none;
+}
+
+/* .yd-seo-features > .yd-seo-feature-title ----------------------------- */
+.yd-seo-features .yd-seo-feature-title{
+  position:relative;
+  z-index:1;
+  margin:0 0 var(--yd-seo-gap-xs);
+  color:var(--yd-seo-on-dark);
+  font-size:var(--yd-seo-fs-feature-title);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.3;
+  letter-spacing:var(--yd-seo-ls-feature-title);
+  text-transform:uppercase;
+}
+
+/* .yd-seo-features > .yd-seo-feature-text ------------------------------ */
+.yd-seo-features .yd-seo-feature-text{
+  position:relative;
+  z-index:1;
+  margin:0;
+  color:var(--yd-seo-on-dark-muted);
+  font-size:var(--yd-seo-fs-feature-text);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+}
+
+/* ==========================================================================
+   6. SPORTS SLIDER  ->  .yd-seo-sports { ... everything nested inside ... }
+   ========================================================================== */
+.yd-seo-section.yd-seo-sports{
+  display:grid;
+  align-content:center;                 /* centres the block in the viewport */
+  min-height:var(--yd-seo-sports-min-h);
+  overflow:hidden;
+}
+/* svh tracks the real viewport once mobile browser chrome retracts */
+@supports (height:100svh){
+  :root{
+    --yd-seo-banner-min-h:100svh;
+    --yd-seo-sports-min-h:100svh;
+    --yd-seo-print-min-h:100svh;
+  }
+}
+
+@media(max-width:479px){
+
+  .yd-seo-section.yd-seo-sports{
+    min-height:85svh;
+  }
+}
+
+/* .yd-seo-sports > .yd-seo-stage --------------------------------------- */
+.yd-seo-sports .yd-seo-stage{
+  display:grid;
+  grid-template-columns:var(--yd-seo-arc-w) minmax(0,1fr) var(--yd-seo-arc-w);
+  align-items:center;
+  gap:var(--yd-seo-stage-gap);
+}
+
+/* .yd-seo-sports > .yd-seo-arc ----------------------------------------- */
+.yd-seo-sports .yd-seo-arc{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:var(--yd-seo-arc-gap);
+}
+.yd-seo-sports .yd-seo-arc-start{align-items:flex-end;}
+.yd-seo-sports .yd-seo-arc-end{align-items:flex-start;}
+
+/* middle chips push outwards so the column follows the curve ------------ */
+.yd-seo-sports .yd-seo-arc-start .yd-seo-sport:nth-of-type(2),
+.yd-seo-sports .yd-seo-arc-start .yd-seo-sport:nth-of-type(3){margin-right:var(--yd-seo-arc-bulge);}
+.yd-seo-sports .yd-seo-arc-end .yd-seo-sport:nth-of-type(2),
+.yd-seo-sports .yd-seo-arc-end .yd-seo-sport:nth-of-type(3){margin-left:var(--yd-seo-arc-bulge);}
+
+/* The thin curve the chips sit on, drawn as the edge of an ellipse so it is
+   smooth and symmetric by construction. The box runs from the first chip's
+   centre to the last chip's centre and is twice the bulge wide, which puts
+   the curve exactly through the outer chips and within ~6% of the bulge on
+   the inner two - and that ratio holds at every viewport size, because it
+   depends only on chip size vs gap, never on pixels. */
+.yd-seo-sports .yd-seo-arc::before{
+  content:"";
+  position:absolute;
+  top:calc(var(--yd-seo-sport-size) / 2);
+  bottom:calc(var(--yd-seo-sport-size) / 2);
+  width:calc(2 * var(--yd-seo-arc-bulge));
+  border-radius:50%;
+  pointer-events:none;
+}
+.yd-seo-sports .yd-seo-arc-start::before{
+  right:calc(var(--yd-seo-sport-size) / 2 - var(--yd-seo-arc-bulge));
+  border-left:1px solid var(--yd-seo-line);
+}
+.yd-seo-sports .yd-seo-arc-end::before{
+  left:calc(var(--yd-seo-sport-size) / 2 - var(--yd-seo-arc-bulge));
+  border-right:1px solid var(--yd-seo-line);
+}
+
+/* .yd-seo-sports > .yd-seo-sport (the icon chip) ----------------------- */
+.yd-seo-sports .yd-seo-sport{
+  position:relative;
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:var(--yd-seo-sport-size);
+  height:var(--yd-seo-sport-size);
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:var(--yd-seo-white);
+  color:var(--yd-seo-ink);
+  box-shadow:var(--yd-seo-shadow-chip);
+  cursor:pointer;
+  transition:background var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             color var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             box-shadow var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-sports .yd-seo-sport:hover{transform:scale(1.12);}
+.yd-seo-sports .yd-seo-sport:focus-visible{outline:2px solid var(--yd-seo-accent);outline-offset:3px;}
+
+.yd-seo-sports .yd-seo-sport.is-active{
+  background:var(--yd-seo-ink);
+  color:var(--yd-seo-white);
+  transform:scale(1.18);
+}
+
+/* the icon artwork - masked, so one file serves both colour states ------ */
+.yd-seo-sports .yd-seo-sport-art{
+  width:var(--yd-seo-sport-art-size);
+  height:var(--yd-seo-sport-art-size);
+  background-color:currentColor;
+  -webkit-mask:var(--yd-seo-sport-art) center/contain no-repeat;
+          mask:var(--yd-seo-sport-art) center/contain no-repeat;
+}
+
+/* the label, shown only for the active sport --------------------------- */
+.yd-seo-sports .yd-seo-sport-name{
+  position:absolute;
+  top:50%;
+  width:var(--yd-seo-sport-name-w);
+  color:var(--yd-seo-ink);
+  font-size:var(--yd-seo-fs-sport-name);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.3;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-sports .yd-seo-arc-start .yd-seo-sport-name{
+  right:calc(100% + var(--yd-seo-gap-sm));
+  text-align:right;
+  transform:translate(8px,-50%);
+}
+.yd-seo-sports .yd-seo-arc-end .yd-seo-sport-name{
+  left:calc(100% + var(--yd-seo-gap-sm));
+  text-align:left;
+  transform:translate(-8px,-50%);
+}
+.yd-seo-sports .yd-seo-sport.is-active .yd-seo-sport-name{
+  opacity:1;
+  transform:translate(0,-50%);
+}
+
+/* .yd-seo-sports > .yd-seo-viewer -------------------------------------- */
+.yd-seo-sports .yd-seo-viewer{
+  position:relative;
+  display:grid;
+  grid-template-columns:auto auto auto;   /* nav | jerseys | nav, hugging */
+  justify-content:center;
+  align-items:center;
+  gap:var(--yd-seo-gap-md);
+}
+
+/* .yd-seo-sports > .yd-seo-nav ----------------------------------------- */
+.yd-seo-sports .yd-seo-nav{
+  z-index:2;
+  display:grid;
+  place-items:center;
+  width:var(--yd-seo-nav-size);
+  height:var(--yd-seo-nav-size);
+  padding:0;
+  border:0;
+  border-radius:50%;
+  cursor:pointer;
+  transition:background var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-sports .yd-seo-nav:hover{transform:scale(1.1);}
+.yd-seo-sports .yd-seo-nav:active{transform:scale(.94);}
+.yd-seo-sports .yd-seo-nav:focus-visible{outline:2px solid var(--yd-seo-accent);outline-offset:3px;}
+
+.yd-seo-sports .yd-seo-nav-prev{
+  background:var(--yd-seo-surface-2);
+  color:var(--yd-seo-ink);
+}
+.yd-seo-sports .yd-seo-nav-next{
+  background:var(--yd-seo-ink);
+  color:var(--yd-seo-white);
+}
+
+.yd-seo-sports .yd-seo-nav-icon{width:14px;height:14px;}
+
+/* .yd-seo-sports > .yd-seo-panel --------------------------------------- */
+.yd-seo-sports .yd-seo-panels{
+  width:100%;
+  min-height:var(--yd-seo-jersey-h);
+}
+
+.yd-seo-sports .yd-seo-panel{
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  gap:var(--yd-seo-jersey-gap);
+  min-height:var(--yd-seo-jersey-h);
+}
+/* display:flex above would otherwise beat the [hidden] attribute */
+.yd-seo-sports .yd-seo-panel[hidden]{display:none;}
+
+.yd-seo-sports .yd-seo-jersey{
+  height:var(--yd-seo-jersey-h);
+  width:auto;
+  object-fit:contain;
+}
+
+.yd-seo-sports .yd-seo-panel-empty{
+  align-items:center;
+  text-align:center;
+}
+.yd-seo-sports .yd-seo-empty-text{
+  margin:0;
+  max-width:352px;
+  color:var(--yd-seo-muted);
+  font-size:var(--yd-seo-fs-subtitle);
+  line-height:1.7;
+}
+.yd-seo-sports .yd-seo-empty-sport{color:var(--yd-seo-ink);}
+
+/* .yd-seo-sports > .yd-seo-cta ----------------------------------------- */
+.yd-seo-sports .yd-seo-cta{
+  margin-top:var(--yd-seo-gap-lg);
+  text-align:center;
+}
+
+/* ==========================================================================
+   7. STEPS  ->  .yd-seo-steps { ... everything nested inside ... }
+   ========================================================================== */
+.yd-seo-section.yd-seo-steps{
+  background:var(--yd-seo-dark);
+  overflow:hidden;
+
+  /* flip the shared heading tokens for a dark background */
+  --yd-seo-head-title:var(--yd-seo-on-dark);
+  --yd-seo-head-text:var(--yd-seo-on-dark-muted);
+  --yd-seo-subtitle-max:384px;
+}
+
+/* .yd-seo-steps > .yd-seo-steps-layout --------------------------------- */
+/* the rows run the full width and the artwork floats over their right end,
+   so the dividers pass behind it exactly like the design */
+.yd-seo-steps .yd-seo-steps-layout{
+  position:relative;
+}
+
+/* .yd-seo-steps > .yd-seo-step-list ------------------------------------ */
+.yd-seo-steps .yd-seo-step-list{
+  margin:0;
+  padding:0;
+  list-style:none;
+  border-bottom:1px solid var(--yd-seo-on-dark-line);
+}
+
+/* .yd-seo-steps > .yd-seo-step ----------------------------------------- */
+.yd-seo-steps .yd-seo-step{
+  position:relative;
+  display:grid;
+  grid-template-columns:var(--yd-seo-step-num-w)
+                        var(--yd-seo-step-title-w)
+                        minmax(0,var(--yd-seo-step-text-w))
+                        1fr;              /* empty column holds the artwork */
+  align-items:center;
+  gap:var(--yd-seo-step-gap);
+  padding:var(--yd-seo-step-py) 0 var(--yd-seo-step-py) var(--yd-seo-step-pl);
+  border-top:1px solid var(--yd-seo-on-dark-line);
+  cursor:default;
+}
+
+/* the accent bar on the active row */
+.yd-seo-steps .yd-seo-step::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:var(--yd-seo-step-bar-w);
+  background:var(--yd-seo-primary);
+  transform:scaleY(0);
+  transform-origin:center;
+  transition:transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+/* the first row is highlighted by default; hovering any row moves the
+   highlight to it. No timer - the accent only follows the pointer. */
+.yd-seo-steps .yd-seo-step.is-active::before,
+.yd-seo-steps .yd-seo-step:hover::before{transform:scaleY(1);}
+
+.yd-seo-steps .yd-seo-step-num{
+  margin:0;
+  color:var(--yd-seo-on-dark-dim);
+  font-size:var(--yd-seo-fs-step-num);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.2;
+  letter-spacing:var(--yd-seo-ls-label);
+  transition:color var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+
+.yd-seo-steps .yd-seo-step-title{
+  margin:0;
+  color:var(--yd-seo-on-dark);
+  font-size:var(--yd-seo-fs-step-title);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.3;
+  letter-spacing:var(--yd-seo-ls-feature-title);
+  text-transform:uppercase;
+  transition:color var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+
+.yd-seo-steps .yd-seo-step-text{
+  margin:0;
+  color:var(--yd-seo-on-dark-muted);
+  font-size:var(--yd-seo-fs-step-text);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+  transition:color var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+
+/* everything on the active or hovered row turns accent */
+.yd-seo-steps .yd-seo-step.is-active .yd-seo-step-num,
+.yd-seo-steps .yd-seo-step.is-active .yd-seo-step-title,
+.yd-seo-steps .yd-seo-step.is-active .yd-seo-step-text,
+.yd-seo-steps .yd-seo-step:hover .yd-seo-step-num,
+.yd-seo-steps .yd-seo-step:hover .yd-seo-step-title,
+.yd-seo-steps .yd-seo-step:hover .yd-seo-step-text{
+  color:var(--yd-seo-primary);
+}
+
+/* while another row is hovered, the default row steps back, so exactly one
+   row is ever highlighted */
+.yd-seo-steps .yd-seo-step-list:hover .yd-seo-step.is-active:not(:hover)::before{
+  transform:scaleY(0);
+}
+.yd-seo-steps .yd-seo-step-list:hover .yd-seo-step.is-active:not(:hover) .yd-seo-step-num{
+  color:var(--yd-seo-on-dark-dim);
+}
+.yd-seo-steps .yd-seo-step-list:hover .yd-seo-step.is-active:not(:hover) .yd-seo-step-title{
+  color:var(--yd-seo-on-dark);
+}
+.yd-seo-steps .yd-seo-step-list:hover .yd-seo-step.is-active:not(:hover) .yd-seo-step-text{
+  color:var(--yd-seo-on-dark-muted);
+}
+
+/* .yd-seo-steps > .yd-seo-steps-media ---------------------------------- */
+/* centred without a transform, because .yd-seo-reveal animates transform and
+   would otherwise cancel the centring once it lands */
+.yd-seo-steps .yd-seo-steps-media{
+  position:absolute;
+  right:0;
+  top:0;
+  bottom:0;
+  display:grid;
+  align-content:center;
+  width:var(--yd-seo-steps-media-w);
+  pointer-events:none;              /* keep row hover working underneath */
+}
+
+/* wraps tightly around the shot so the ring can be sized against the image
+   rather than against the full-height centring box */
+.yd-seo-steps .yd-seo-steps-frame{
+  position:relative;
+  aspect-ratio:var(--yd-seo-shot-ratio);   /* definite height from the start,
+                                              so the ring's % sizing resolves
+                                              before the image has loaded */
+}
+
+.yd-seo-steps .yd-seo-steps-shot{
+  position:relative;
+  z-index:1;                        /* the card covers most of the outline */
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:var(--yd-seo-radius-card);
+}
+
+/* the hand-drawn ring, stroked on with a dash animation ----------------- */
+/* overlays the shot exactly - the viewBox is the shot's own pixel size, so
+   the ring's coordinates are the measured card geometry and scale with it */
+.yd-seo-steps .yd-seo-scribble{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;                        /* sits behind the card */
+  color:var(--yd-seo-primary);
+  pointer-events:none;
+  overflow:visible;
+}
+.yd-seo-steps .yd-seo-scribble rect{
+  fill:none;
+  stroke:currentColor;
+  stroke-width:var(--yd-seo-scribble-w);
+  stroke-linecap:round;
+  stroke-dasharray:1;                 /* pathLength="1" normalises the length */
+  stroke-dashoffset:1;
+}
+
+/* ==========================================================================
+   8. PRICING  ->  .yd-seo-pricing { ... everything nested inside ... }
+   ========================================================================== */
+/* .yd-seo-pricing > .yd-seo-pricing-intro ------------------------------ */
+.yd-seo-pricing .yd-seo-pricing-intro{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  align-items:start;
+  gap:var(--yd-seo-pricing-split);
+  margin-bottom:var(--yd-seo-pricing-gap);
+}
+
+/* the two grid cells; min-width:0 stops a long word blowing the column out */
+.yd-seo-pricing .yd-seo-pricing-lead,
+.yd-seo-pricing .yd-seo-pricing-aside{
+  min-width:0;
+}
+
+.yd-seo-pricing .yd-seo-title{
+  max-width:var(--yd-seo-pricing-lead-max);
+  margin:var(--yd-seo-gap-sm) 0 0;
+  font-size:var(--yd-seo-fs-pricing-title);
+  font-weight:var(--yd-seo-fw-title);
+  line-height:1.22;
+  letter-spacing:var(--yd-seo-ls-title);
+  text-transform:uppercase;
+}
+
+.yd-seo-pricing .yd-seo-text{
+  max-width:var(--yd-seo-pricing-aside-max);
+  margin:0 0 var(--yd-seo-gap-md);
+  color:var(--yd-seo-body);
+  font-size:var(--yd-seo-fs-subtitle);
+  line-height:1.7;
+}
+
+/* .yd-seo-pricing > .yd-seo-price-grid --------------------------------- */
+.yd-seo-pricing .yd-seo-price-grid{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  grid-template-columns:repeat(var(--yd-seo-price-cols),minmax(0,1fr));
+  gap:var(--yd-seo-price-gap);
+}
+
+/* .yd-seo-pricing > .yd-seo-price-card --------------------------------- */
+/* the <li> is the grid cell; the card inside it is the link, stretched to
+   fill so the whole tile is clickable and every card stays the same height */
+.yd-seo-pricing .yd-seo-price-item{
+  display:flex;
+  min-width:0;
+}
+
+.yd-seo-pricing .yd-seo-price-card{
+  flex:1;
+  display:flex;
+  cursor:auto;
+  flex-direction:column;
+  padding:var(--yd-seo-price-pad);
+  border-radius:var(--yd-seo-price-radius);
+  background:var(--yd-seo-dark);
+  color:inherit;
+  text-decoration:none;
+  transition:transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             box-shadow var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-pricing .yd-seo-price-card:hover,
+.yd-seo-pricing .yd-seo-price-card:focus-visible{
+  transform:translateY(var(--yd-seo-price-lift));
+  box-shadow:var(--yd-seo-shadow-card);
+}
+.yd-seo-pricing .yd-seo-price-card:focus-visible{
+  outline:2px solid var(--yd-seo-accent);
+  outline-offset:3px;
+}
+
+/* the title carries the underline, so the tile reads as a link on hover */
+.yd-seo-pricing .yd-seo-price-card:hover .yd-seo-price-title,
+.yd-seo-pricing .yd-seo-price-card:focus-visible .yd-seo-price-title{
+  text-decoration:underline;
+  text-underline-offset:.2em;
+}
+
+/* the figure clips the zoom, so the corners stay rounded while it scales */
+.yd-seo-pricing .yd-seo-price-figure{
+  margin:0;
+  overflow:hidden;
+  border-radius:var(--yd-seo-price-img-radius);
+  aspect-ratio:var(--yd-seo-price-img-ratio);
+}
+
+.yd-seo-pricing .yd-seo-price-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform var(--yd-seo-dur-slow) var(--yd-seo-ease-out);
+}
+.yd-seo-pricing .yd-seo-price-card:hover .yd-seo-price-img{
+  transform:scale(var(--yd-seo-price-zoom));
+}
+
+/* grows to fill the card so every price line sits on the same baseline,
+   even when a title needs two lines */
+.yd-seo-pricing .yd-seo-price-body{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  padding:var(--yd-seo-gap-sm) var(--yd-seo-gap-xs) var(--yd-seo-gap-xs);
+}
+
+.yd-seo-pricing .yd-seo-price-title{
+  margin:0;
+  color:var(--yd-seo-on-dark);
+  font-size:var(--yd-seo-fs-price-title);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.3;
+  letter-spacing:var(--yd-seo-ls-feature-title);
+  text-transform:uppercase;
+}
+
+.yd-seo-pricing .yd-seo-price-note{
+  margin:6px 0 0;
+  padding-top:0;
+  margin-top:auto;                  /* pins the price to the card floor */
+  color:var(--yd-seo-primary);
+  font-size:var(--yd-seo-fs-price-note);
+  font-style:italic;
+  font-weight:var(--yd-seo-fw-medium);
+  line-height:1.3;
+}
+
+/* ==========================================================================
+   9. PRINT OPTIONS  ->  .yd-seo-print { ... everything nested inside ... }
+   ========================================================================== */
+.yd-seo-section.yd-seo-print{
+  display:grid;
+  align-content:center;                 /* centres the block in the viewport */
+  min-height:var(--yd-seo-print-min-h);
+  background:var(--yd-seo-cream);
+}
+
+/* .yd-seo-print > .yd-seo-print-stage ---------------------------------- */
+/* cards | models | cards - the middle column is sized by the artwork */
+.yd-seo-print .yd-seo-print-stage{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;
+  gap:var(--yd-seo-print-stage-gap);
+}
+
+/* .yd-seo-print > .yd-seo-print-list ----------------------------------- */
+.yd-seo-print .yd-seo-print-list{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  grid-template-columns:repeat(var(--yd-seo-print-cols),minmax(0,1fr));
+  gap:var(--yd-seo-print-gap);
+}
+
+/* .yd-seo-print > .yd-seo-print-card ----------------------------------- */
+.yd-seo-print .yd-seo-print-card{
+  display:flex;
+  overflow:hidden;                    /* clips the image to the card radius */
+  min-height:var(--yd-seo-print-card-min-h);
+  border-radius:var(--yd-seo-print-radius);
+  background:var(--yd-seo-white);
+  transition:transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             box-shadow var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-print .yd-seo-print-card:hover{
+  transform:translateY(var(--yd-seo-price-lift));
+  box-shadow:var(--yd-seo-shadow-card);
+}
+
+.yd-seo-print .yd-seo-print-figure{
+  flex:0 0 var(--yd-seo-print-fig-w);
+  align-self:stretch;                 /* definite height for the image below */
+  margin:0;
+  overflow:hidden;
+}
+
+.yd-seo-print .yd-seo-print-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform var(--yd-seo-dur-slow) var(--yd-seo-ease-out);
+}
+.yd-seo-print .yd-seo-print-card:hover .yd-seo-print-img{
+  transform:scale(var(--yd-seo-price-zoom));
+}
+
+.yd-seo-print .yd-seo-print-body{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:var(--yd-seo-gap-sm);
+}
+
+.yd-seo-print .yd-seo-print-title{
+  margin:0 0 6px;
+  color:var(--yd-seo-ink);
+  font-size:var(--yd-seo-fs-print-title);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.3;
+  letter-spacing:var(--yd-seo-ls-feature-title);
+  text-transform:uppercase;
+}
+
+.yd-seo-print .yd-seo-print-text{
+  margin:0;
+  color:var(--yd-seo-body);
+  font-size:var(--yd-seo-fs-print-text);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+}
+
+/* .yd-seo-print > .yd-seo-print-media ---------------------------------- */
+.yd-seo-print .yd-seo-print-media{
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  gap:var(--yd-seo-print-model-gap);
+}
+
+.yd-seo-print .yd-seo-print-model{
+  height:var(--yd-seo-print-model-h);
+  width:auto;
+  object-fit:contain;
+}
+
+/* ==========================================================================
+   10. WHY YOODE  ->  .yd-seo-why { ... everything nested inside ... }
+   ========================================================================== */
+/* .yd-seo-why > .yd-seo-why-stage -------------------------------------- */
+.yd-seo-why .yd-seo-why-stage{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) var(--yd-seo-why-panel-w);
+  align-items:stretch;
+  gap:var(--yd-seo-why-stage-gap);
+}
+
+/* .yd-seo-why > .yd-seo-why-grid --------------------------------------- */
+.yd-seo-why .yd-seo-why-grid{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  grid-template-columns:repeat(var(--yd-seo-why-cols),minmax(0,1fr));
+  gap:var(--yd-seo-why-gap);
+}
+
+/* .yd-seo-why > .yd-seo-why-card --------------------------------------- */
+.yd-seo-why .yd-seo-why-card{
+  display:flex;
+  flex-direction:column;
+  padding:var(--yd-seo-why-card-pad);
+  border-radius:var(--yd-seo-why-card-radius);
+  background:var(--yd-seo-surface);
+  transition:transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             box-shadow var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-why .yd-seo-why-card:hover{
+  transform:translateY(var(--yd-seo-price-lift));
+  box-shadow:var(--yd-seo-shadow-card);
+}
+
+.yd-seo-why .yd-seo-why-icon{
+  display:grid;
+  place-items:center;
+  width:var(--yd-seo-why-icon-size);
+  height:var(--yd-seo-why-icon-size);
+  margin-bottom:var(--yd-seo-why-icon-gap);
+  border-radius:var(--yd-seo-why-icon-radius);
+  background:var(--yd-seo-white);
+  transition:transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-why .yd-seo-why-card:hover .yd-seo-why-icon{
+  transform:scale(1.08);
+}
+
+.yd-seo-why .yd-seo-why-icon-art{
+  width:var(--yd-seo-why-icon-art);
+  height:var(--yd-seo-why-icon-art);
+  object-fit:contain;
+}
+
+.yd-seo-why .yd-seo-why-title{
+  margin:0 0 var(--yd-seo-gap-xs);
+  color:var(--yd-seo-ink);
+  font-size:var(--yd-seo-fs-why-title);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.35;
+  letter-spacing:var(--yd-seo-ls-feature-title);
+  text-transform:uppercase;
+}
+
+.yd-seo-why .yd-seo-why-text{
+  margin:0;
+  color:var(--yd-seo-body);
+  font-size:var(--yd-seo-fs-why-text);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+}
+
+/* .yd-seo-why > .yd-seo-why-panel -------------------------------------- */
+.yd-seo-why .yd-seo-why-panel{
+  display:flex;
+  flex-direction:column;
+  padding:var(--yd-seo-why-panel-pad);
+  border-radius:var(--yd-seo-why-panel-radius);
+  background:var(--yd-seo-dark);
+}
+
+.yd-seo-why .yd-seo-why-photo{
+  width:100%;
+  height:auto;              /* beats the img height attribute, so the
+                               aspect-ratio below is what sizes the box */
+  aspect-ratio:var(--yd-seo-why-photo-ratio);
+  object-fit:cover;
+  border-radius:calc(var(--yd-seo-why-panel-radius) - var(--yd-seo-why-panel-pad));
+}
+
+.yd-seo-why .yd-seo-why-panel-body{
+  padding:var(--yd-seo-gap-md) var(--yd-seo-gap-xs) var(--yd-seo-gap-xs);
+}
+
+.yd-seo-why .yd-seo-why-panel-title{
+  margin:0 0 var(--yd-seo-gap-xs);
+  color:var(--yd-seo-on-dark);
+  font-size:var(--yd-seo-fs-why-panel-title);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.35;
+  letter-spacing:var(--yd-seo-ls-feature-title);
+  text-transform:uppercase;
+}
+
+.yd-seo-why .yd-seo-why-panel-text{
+  margin:0;
+  color:var(--yd-seo-on-dark-muted);
+  font-size:var(--yd-seo-fs-why-text);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+}
+
+/* ==========================================================================
+   11. BULK ORDERS  ->  .yd-seo-bulk { ... everything nested inside ... }
+   ========================================================================== */
+.yd-seo-section.yd-seo-bulk{
+  background:var(--yd-seo-dark);
+
+  /* flip the shared heading and outline-button tokens for a dark ground */
+  --yd-seo-head-title:var(--yd-seo-on-dark);
+  --yd-seo-head-text:var(--yd-seo-on-dark-muted);
+  --yd-seo-btn-outline-fg:var(--yd-seo-on-dark);
+  --yd-seo-btn-outline-bd:var(--yd-seo-bulk-card-bd-hover);
+  --yd-seo-btn-outline-hover-bg:var(--yd-seo-white);
+  --yd-seo-btn-outline-hover-fg:var(--yd-seo-ink);
+}
+
+/* .yd-seo-bulk > .yd-seo-bulk-stage ------------------------------------ */
+.yd-seo-bulk .yd-seo-bulk-stage{
+  display:grid;
+  grid-template-columns:var(--yd-seo-bulk-side-w)
+                        minmax(0,1fr)
+                        var(--yd-seo-bulk-side-w);
+  align-items:start;                  /* cards keep their own height - they
+                                         must not stretch to fill the row */
+  align-content:space-between;        /* spreads the card rows against the
+                                         height of the photo column */
+  column-gap:var(--yd-seo-bulk-stage-gap);
+  row-gap:var(--yd-seo-bulk-gap);
+}
+
+/* .yd-seo-bulk > .yd-seo-bulk-list ------------------------------------- */
+/* Both <ul> boxes are dissolved, so every card is a grid item of the stage
+   itself. Nothing about a card's visibility depends on which list it came
+   from - the side class picks the column, --yd-seo-row picks the row. */
+.yd-seo-bulk .yd-seo-bulk-list{
+  display:contents;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+/* .yd-seo-bulk > .yd-seo-bulk-card ------------------------------------- */
+.yd-seo-bulk .yd-seo-bulk-card-start{grid-column:1;}
+.yd-seo-bulk .yd-seo-bulk-card-end{grid-column:3;}
+.yd-seo-bulk .yd-seo-bulk-card{
+  grid-row:var(--yd-seo-row,auto);
+  padding:var(--yd-seo-bulk-card-pad);
+  border:1px solid var(--yd-seo-bulk-card-bd);
+  border-radius:var(--yd-seo-bulk-card-radius);
+  transition:border-color var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-bulk .yd-seo-bulk-card:hover{
+  border-color:var(--yd-seo-bulk-card-bd-hover);
+  transform:translateY(var(--yd-seo-price-lift));
+}
+
+.yd-seo-bulk .yd-seo-bulk-title{
+  margin:0 0 var(--yd-seo-gap-xs);
+  color:var(--yd-seo-on-dark);
+  font-size:var(--yd-seo-fs-bulk-title);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.35;
+  letter-spacing:var(--yd-seo-ls-feature-title);
+  text-transform:uppercase;
+}
+
+.yd-seo-bulk .yd-seo-bulk-text{
+  margin:0;
+  color:var(--yd-seo-on-dark-muted);
+  font-size:var(--yd-seo-fs-bulk-text);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+}
+
+/* .yd-seo-bulk > .yd-seo-bulk-media ------------------------------------ */
+.yd-seo-bulk .yd-seo-bulk-media{
+  grid-column:2;
+  grid-row:1 / span var(--yd-seo-bulk-rows,1);
+  align-self:center;
+  min-width:0;
+  display:grid;
+  align-content:center;
+  justify-items:center;
+  gap:var(--yd-seo-gap-md);
+}
+
+.yd-seo-bulk .yd-seo-bulk-photo{
+  width:100%;
+  height:auto;                        /* beats the img height attribute */
+  aspect-ratio:var(--yd-seo-bulk-photo-ratio);
+  object-fit:cover;
+  border-radius:var(--yd-seo-bulk-photo-radius);
+}
+
+.yd-seo-bulk .yd-seo-bulk-actions{
+  justify-content:center;
+}
+
+/* ==========================================================================
+   12. REVIEWS  ->  .yd-seo-reviews { ... everything nested inside ... }
+   ========================================================================== */
+/* .yd-seo-reviews > .yd-seo-reviews-grid ------------------------------- */
+.yd-seo-reviews .yd-seo-reviews-grid{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  grid-template-columns:repeat(var(--yd-seo-reviews-cols),minmax(0,1fr));
+  align-items:stretch;
+  gap:var(--yd-seo-reviews-gap);
+}
+
+/* .yd-seo-reviews > .yd-seo-reviews-aside ------------------------------ */
+/* score card takes the slack so the button lines up with the card floors */
+.yd-seo-reviews .yd-seo-reviews-aside{
+  display:grid;
+  grid-template-rows:1fr auto;
+  gap:var(--yd-seo-reviews-gap);
+}
+
+.yd-seo-reviews .yd-seo-score{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:var(--yd-seo-gap-sm);
+  padding:var(--yd-seo-review-pad);
+  border-radius:var(--yd-seo-review-radius);
+  background:var(--yd-seo-dark);
+  text-align:center;
+
+  --yd-seo-star-off:rgba(255,255,255,.25);   /* grey stars read on dark */
+}
+
+.yd-seo-reviews .yd-seo-score-value{
+  margin:0;
+  color:var(--yd-seo-on-dark);
+  font-size:var(--yd-seo-fs-score);
+  font-weight:var(--yd-seo-fw-title);
+  line-height:1;
+  letter-spacing:var(--yd-seo-ls-title);
+}
+
+.yd-seo-reviews .yd-seo-score-label{
+  margin:var(--yd-seo-gap-xs) 0 0;
+  color:var(--yd-seo-on-dark-muted);
+  font-size:var(--yd-seo-fs-score-label);
+  line-height:1.6;
+}
+
+.yd-seo-reviews .yd-seo-reviews-aside .yd-seo-btn{
+  width:100%;
+}
+
+/* .yd-seo-reviews > .yd-seo-review ------------------------------------- */
+.yd-seo-reviews .yd-seo-review{
+  display:flex;
+  flex-direction:column;
+  margin:0;
+  padding:var(--yd-seo-review-pad);
+  border-radius:var(--yd-seo-review-radius);
+  background:var(--yd-seo-review-bg);
+  transition:transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             box-shadow var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-reviews .yd-seo-review:hover{
+  transform:translateY(var(--yd-seo-price-lift));
+  box-shadow:var(--yd-seo-shadow-card);
+}
+
+/* masked so the glyph colour is a token rather than baked into the png */
+.yd-seo-reviews .yd-seo-review-mark{
+  width:var(--yd-seo-quote-w);
+  aspect-ratio:var(--yd-seo-quote-ratio);
+  margin-bottom:var(--yd-seo-gap-sm);
+  background-color:var(--yd-seo-quote-colour);
+  -webkit-mask:var(--yd-seo-quote-art) left top/contain no-repeat;
+          mask:var(--yd-seo-quote-art) left top/contain no-repeat;
+}
+
+.yd-seo-reviews .yd-seo-review-text{
+  margin:0 0 var(--yd-seo-gap-lg);
+  color:var(--yd-seo-body);
+  font-size:var(--yd-seo-fs-review);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+}
+
+/* pinned to the floor so names and stars line up across the row */
+.yd-seo-reviews .yd-seo-review-meta{
+  margin-top:auto;
+}
+
+.yd-seo-reviews .yd-seo-review-name{
+  margin:0;
+  color:var(--yd-seo-ink);
+  font-size:var(--yd-seo-fs-review-name);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.4;
+}
+
+.yd-seo-reviews .yd-seo-review-role{
+  margin:2px 0 var(--yd-seo-gap-xs);
+  color:var(--yd-seo-muted);
+  font-size:var(--yd-seo-fs-review-role);
+  line-height:1.4;
+}
+
+/* ==========================================================================
+   13. EXPERIENCE CENTRES  ->  .yd-seo-stores { ... nested inside ... }
+   ========================================================================== */
+.yd-seo-section.yd-seo-stores{
+  background:var(--yd-seo-cream);
+}
+
+/* .yd-seo-stores > .yd-seo-store-grid ---------------------------------- */
+.yd-seo-stores .yd-seo-store-grid{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  grid-template-columns:repeat(var(--yd-seo-stores-cols),minmax(0,1fr));
+  gap:var(--yd-seo-stores-gap);
+}
+
+/* .yd-seo-stores > .yd-seo-store --------------------------------------- */
+.yd-seo-stores .yd-seo-store{
+  display:flex;
+  flex-direction:column;
+  padding:var(--yd-seo-store-pad);
+  border-radius:var(--yd-seo-store-radius);
+  background:var(--yd-seo-dark);
+  transition:transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out),
+             box-shadow var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-stores .yd-seo-store:hover{
+  transform:translateY(var(--yd-seo-price-lift));
+  box-shadow:var(--yd-seo-shadow-card);
+}
+
+.yd-seo-stores .yd-seo-store-photo{
+  width:100%;
+  height:auto;                        /* beats the img height attribute */
+  aspect-ratio:var(--yd-seo-store-photo-ratio);
+  object-fit:cover;
+  border-radius:var(--yd-seo-store-photo-radius);
+}
+
+.yd-seo-stores .yd-seo-store-body{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  padding:var(--yd-seo-gap-sm) var(--yd-seo-gap-xs) var(--yd-seo-gap-xs);
+}
+
+.yd-seo-stores .yd-seo-store-name{
+  margin:0 0 var(--yd-seo-gap-xs);
+  color:var(--yd-seo-on-dark);
+  font-size:var(--yd-seo-fs-store-name);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.3;
+  letter-spacing:var(--yd-seo-ls-feature-title);
+  text-transform:uppercase;
+}
+
+.yd-seo-stores .yd-seo-store-address{
+  margin:0 0 var(--yd-seo-gap-sm);
+  color:var(--yd-seo-on-dark-muted);
+  font-size:var(--yd-seo-fs-store-address);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+}
+
+/* pinned to the floor so the hours and buttons line up across the row */
+.yd-seo-stores .yd-seo-store-hours{
+  display:flex;
+  align-items:center;
+  gap:var(--yd-seo-gap-xs);
+  margin:auto 0 var(--yd-seo-gap-sm);
+  color:var(--yd-seo-on-dark);
+  font-size:var(--yd-seo-fs-store-hours);
+  line-height:1;
+}
+
+.yd-seo-stores .yd-seo-store-sep{
+  color:var(--yd-seo-on-dark-muted);
+}
+
+.yd-seo-stores .yd-seo-store-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--yd-seo-gap-xs);
+}
+/* share the row while they fit, then fall to full width rather than
+   leaving one stranded half-width */
+.yd-seo-stores .yd-seo-store-actions .yd-seo-btn{
+  flex:1 1 auto;
+}
+
+/* ==========================================================================
+   14. CLOSING CTA  ->  .yd-seo-cta { ... everything nested inside ... }
+   ========================================================================== */
+.yd-seo-section.yd-seo-cta{
+  display:grid;
+  align-content:center;
+  min-height:var(--yd-seo-cta-min-h);
+  overflow:hidden;
+  background:var(--yd-seo-dark);
+  text-align:center;
+
+  /* flip the shared heading tokens, and pull the copy in tighter */
+  --yd-seo-head-title:var(--yd-seo-on-dark);
+  --yd-seo-head-text:var(--yd-seo-on-dark-muted);
+  --yd-seo-head-gap:var(--yd-seo-gap-md);
+  --yd-seo-subtitle-max:416px;
+}
+
+/* .yd-seo-cta > .yd-seo-cta-orbs --------------------------------------- */
+.yd-seo-cta .yd-seo-cta-orbs{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+/* .yd-seo-cta > .yd-seo-orb -------------------------------------------- */
+/* one class; each circle's place and size come from custom properties set
+   on the element, so adding or moving one never needs a new rule */
+.yd-seo-cta .yd-seo-orb{
+  position:absolute;
+  left:var(--yd-seo-orb-x);
+  top:var(--yd-seo-orb-y);
+  width:var(--yd-seo-orb-size);
+  height:var(--yd-seo-orb-size);
+  border-radius:50%;
+  overflow:hidden;
+  transform:translate(-50%,-50%);
+  animation:yd-seo-float var(--yd-seo-orb-cycle) ease-in-out infinite;
+  animation-delay:calc(var(--yd-seo-i,0) * -1.1s);
+}
+
+.yd-seo-cta .yd-seo-orb-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* .yd-seo-cta > .yd-seo-cta-action ------------------------------------- */
+.yd-seo-cta .yd-seo-cta-action{
+  position:relative;      /* keeps the button above the drifting circles */
+  z-index:1;
+}
+
+/* ==========================================================================
+   15. SEO COPY + FAQ  ->  .yd-seo-faq { ... everything nested inside ... }
+   ========================================================================== */
+/* .yd-seo-faq > .yd-seo-faq-stage -------------------------------------- */
+.yd-seo-faq .yd-seo-faq-stage{
+  display:grid;
+  grid-template-columns:minmax(0,var(--yd-seo-faq-copy-w)) minmax(0,1fr);
+  align-items:start;
+  gap:var(--yd-seo-faq-split);
+}
+
+.yd-seo-faq-intro.yd-seo-reveal.is-visible a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+/* the two grid cells and the question text; min-width:0 lets long words and
+   long questions wrap instead of forcing their track wider */
+.yd-seo-faq .yd-seo-faq-intro,
+.yd-seo-faq .yd-seo-faq-panel,
+.yd-seo-faq .yd-seo-faq-label{
+  min-width:0;
+}
+
+/* .yd-seo-faq > .yd-seo-faq-copy --------------------------------------- */
+.yd-seo-faq .yd-seo-faq-copy{
+  margin:0 0 var(--yd-seo-gap-md);
+  color:var(--yd-seo-body);
+  font-size:var(--yd-seo-fs-faq-lead);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+}
+.yd-seo-faq .yd-seo-faq-copy:last-child{margin-bottom:0;}
+
+/* .yd-seo-faq > .yd-seo-faq-subtitle ----------------------------------- */
+.yd-seo-faq .yd-seo-faq-subtitle{
+  margin:0 0 var(--yd-seo-gap-md);
+  color:var(--yd-seo-ink);
+  font-size:var(--yd-seo-fs-faq-sub);
+  font-weight:var(--yd-seo-fw-bold);
+  line-height:1.3;
+  letter-spacing:var(--yd-seo-ls-feature-title);
+  text-transform:uppercase;
+}
+
+/* .yd-seo-faq > .yd-seo-faq-list --------------------------------------- */
+.yd-seo-faq .yd-seo-faq-list{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  gap:var(--yd-seo-faq-gap);
+}
+
+/* .yd-seo-faq > .yd-seo-faq-item --------------------------------------- */
+.yd-seo-faq .yd-seo-faq-item{
+  border-radius:var(--yd-seo-faq-radius);
+  background:var(--yd-seo-faq-bg);
+  transition:background var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-faq .yd-seo-faq-item.is-open{background:var(--yd-seo-faq-bg-open);}
+
+.yd-seo-faq .yd-seo-faq-heading{
+  margin:0;
+  font-size:inherit;
+  font-weight:inherit;
+}
+
+/* the whole bar is the control */
+.yd-seo-faq .yd-seo-faq-btn{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--yd-seo-gap-sm);
+  width:100%;
+  padding:var(--yd-seo-faq-pad);
+  border:0;
+  background:none;
+  color:var(--yd-seo-ink);
+  font-family:inherit;
+  font-size:var(--yd-seo-fs-faq-q);
+  font-weight:var(--yd-seo-fw-semi);
+  line-height:1.4;
+  text-align:left;
+  cursor:pointer;
+}
+.yd-seo-faq .yd-seo-faq-btn:focus-visible{
+  outline:2px solid var(--yd-seo-accent);
+  outline-offset:-2px;
+  border-radius:var(--yd-seo-faq-radius);
+}
+
+/* masked so one asset serves both states and the colour stays a token */
+.yd-seo-faq .yd-seo-faq-icon{
+  flex:0 0 auto;
+  width:var(--yd-seo-faq-icon-size);
+  height:var(--yd-seo-faq-icon-size);
+  background-color:var(--yd-seo-faq-icon-colour);
+  -webkit-mask:var(--yd-seo-faq-icon-art) center/contain no-repeat;
+          mask:var(--yd-seo-faq-icon-art) center/contain no-repeat;
+  transform:rotate(180deg);          /* asset points up; closed shows down */
+  transition:transform var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-faq .yd-seo-faq-item.is-open .yd-seo-faq-icon{transform:rotate(0deg);}
+
+/* 0fr -> 1fr animates the height without measuring anything in JS */
+.yd-seo-faq .yd-seo-faq-answer{
+  display:grid;
+  grid-template-rows:0fr;
+  transition:grid-template-rows var(--yd-seo-dur-fast) var(--yd-seo-ease-out);
+}
+.yd-seo-faq .yd-seo-faq-item.is-open .yd-seo-faq-answer{grid-template-rows:1fr;}
+
+.yd-seo-faq .yd-seo-faq-answer > div{overflow:hidden;}
+
+.yd-seo-faq .yd-seo-faq-text{
+  margin:0;
+  padding:0 var(--yd-seo-faq-pad) var(--yd-seo-faq-pad);
+  color:var(--yd-seo-body);
+  font-size:var(--yd-seo-fs-faq-a);
+  line-height:var(--yd-seo-lh-feature-text);
+  text-align:var(--yd-seo-align-feature-text);
+}
+
+/* ==========================================================================
+   16. OUTRO BANNER  ->  .yd-seo-outro { ... everything nested inside ... }
+   ========================================================================== */
+.yd-seo-section.yd-seo-outro{
+  overflow:hidden;                      /* lets the player bleed off the edges */
+  background:var(--yd-seo-cream);
+}
+
+/* .yd-seo-outro > .yd-seo-outro-stage ---------------------------------- */
+.yd-seo-outro .yd-seo-outro-stage{
+  display:grid;
+  grid-template-columns:var(--yd-seo-outro-card-w)
+                        minmax(0,1fr)
+                        var(--yd-seo-outro-player-w);
+  align-items:center;
+  gap:var(--yd-seo-outro-gap);
+  min-height:var(--yd-seo-outro-min-h);
+}
+
+/* .yd-seo-outro > .yd-seo-outro-card ----------------------------------- */
+.yd-seo-outro .yd-seo-outro-card{
+  margin:0;
+  overflow:hidden;
+  border-radius:var(--yd-seo-outro-card-radius);
+  aspect-ratio:var(--yd-seo-outro-card-ratio);
+}
+
+.yd-seo-outro .yd-seo-outro-kit{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform var(--yd-seo-dur-slow) var(--yd-seo-ease-out);
+}
+.yd-seo-outro .yd-seo-outro-card:hover .yd-seo-outro-kit{
+  transform:scale(var(--yd-seo-price-zoom));
+}
+
+/* .yd-seo-outro > .yd-seo-outro-copy ----------------------------------- */
+.yd-seo-outro .yd-seo-outro-copy{
+  min-width:0;
+  text-align:center;
+}
+
+.yd-seo-outro .yd-seo-title{
+  margin:0;
+  font-size:var(--yd-seo-fs-outro-title);
+  font-weight:var(--yd-seo-fw-title);
+  line-height:1.25;
+  letter-spacing:var(--yd-seo-ls-title);
+  text-transform:uppercase;
+}
+
+.yd-seo-outro .yd-seo-subtitle{
+  margin:var(--yd-seo-gap-xs) auto var(--yd-seo-gap-md);
+  max-width:var(--yd-seo-subtitle-max);
+  color:var(--yd-seo-body);
+  font-size:var(--yd-seo-fs-subtitle);
+  line-height:1.6;
+}
+
+/* .yd-seo-outro > .yd-seo-outro-figure --------------------------------- */
+/* the cut-out is anchored to the floor and bleeds over the section padding */
+.yd-seo-outro .yd-seo-outro-figure{
+  position:relative;
+  align-self:stretch;
+  margin:calc(-1 * var(--yd-seo-section-pt)) 0 calc(-1 * var(--yd-seo-section-pb));
+}
+
+.yd-seo-outro .yd-seo-outro-player{
+  position:absolute;
+  right:0;
+  bottom:0;
+  height:100%;                          /* the figure already spans the band,
+                                           so this fills it exactly even when
+                                           the card makes the row taller */
+  width:auto;
+  max-width:none;
+}
+
+/* ==========================================================================
+   17. RESPONSIVE - mostly just re-declares tokens
+   ========================================================================== */
+@media (max-width:1199px){
+  /* these two sit at headline height, so they go before the rest */
+  .yd-seo-cta .yd-seo-orb-inner{display:none;}
+
+  :root{
+    --yd-seo-content-max:480px;
+    --yd-seo-media-start:48%;
+  }
+}
+
+@media (max-width:991px){
+  :root{
+    --yd-seo-section-pt:48px;
+    --yd-seo-section-pb:40px;
+    --yd-seo-row-min-h:auto;
+    --yd-seo-content-max:608px;
+    --yd-seo-features-cols:2;
+    --yd-seo-num-size:clamp(64px,16px + 6vw,104px);  /* keep rows clear */
+    --yd-seo-arc-bulge:0;               /* no curve on the rail, so the
+                                          desktop bulge margins collapse */
+    --yd-seo-price-cols:3;
+    --yd-seo-print-cols:2;
+    --yd-seo-why-cols:2;
+    --yd-seo-bulk-cols:2;
+    --yd-seo-reviews-cols:2;
+    --yd-seo-stores-cols:2;
+  }
+
+  /* new changes 14-09-2026 */
+    .yd-seo-features .yd-seo-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:75px;
+    }
+
+    .yd-seo-pricing .yd-seo-price-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--yd-seo-price-gap);
+    }
+
+    .yd-seo-why .yd-seo-why-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:var(--yd-seo-why-gap);
+    }
+
+    .yd-seo-reviews .yd-seo-reviews-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:var(--yd-seo-reviews-gap);
+    }
+
+    .yd-seo-reviews .yd-seo-reviews-aside .yd-seo-btn{
+      width:50%;
+      margin:auto;
+    }
+
+    .yd-seo-reviews-aside{
+      grid-column: 1 / -1;
+    }
+
+    .yd-seo-stores .yd-seo-store-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--yd-seo-stores-gap);
+    }
+  
+    /* end */
+
+  .yd-seo-faq .yd-seo-faq-stage{grid-template-columns:minmax(0,1fr);}
+  .yd-seo-outro .yd-seo-outro-stage{
+    grid-template-columns:var(--yd-seo-outro-card-w) minmax(0,1fr);
+  }
+  .yd-seo-outro .yd-seo-outro-figure{display:none;}
+
+  /* same trick as the print section: display:contents dissolves the two
+     side lists so all six cards flow through a single grid --------------- */
+  /* .yd-seo-bulk .yd-seo-bulk-stage{
+    grid-template-columns:repeat(var(--yd-seo-bulk-cols),minmax(0,1fr));
+    align-items:start;
+    gap:var(--yd-seo-bulk-gap);
+  } */
+
+  .yd-seo-bulk .yd-seo-bulk-stage{
+    display:flex;
+    flex-direction:column;
+  }
+  .yd-seo-bulk .yd-seo-bulk-list{display: grid; gap:15px;}
+  .yd-seo-bulk .yd-seo-bulk-media{
+    grid-column:1 / -1;
+    order:-1;
+    margin-bottom:var(--yd-seo-gap-sm);
+  }
+
+  /* the dark panel moves under the cards and goes photo-beside-copy ------ */
+  .yd-seo-why .yd-seo-why-stage{
+    grid-template-columns:minmax(0,1fr);
+    gap:var(--yd-seo-why-gap);
+  }
+  .yd-seo-why .yd-seo-why-panel{
+    display:grid;
+    grid-template-columns:minmax(0,256px) minmax(0,1fr);
+    align-items:center;
+    gap:var(--yd-seo-gap-md);
+  }
+  .yd-seo-why .yd-seo-why-panel-body{padding:var(--yd-seo-gap-xs) var(--yd-seo-gap-sm);}
+
+  /* the models move above the cards. display:contents dissolves the two
+     list boxes so all six cards flow through one grid - otherwise each list
+     keeps its own rows and the odd card leaves a hole beside it ---------- */
+  .yd-seo-print .yd-seo-print-stage{
+    grid-template-columns:repeat(var(--yd-seo-print-cols),minmax(0,1fr));
+    align-items:start;
+    gap:var(--yd-seo-print-gap);
+  }
+  .yd-seo-print .yd-seo-print-list{display:contents;}
+  .yd-seo-print .yd-seo-print-media{
+    grid-column:1 / -1;
+    order:-1;
+    margin-bottom:var(--yd-seo-gap-sm);
+  }
+
+  /* the headline and the quote block stack ------------------------------ */
+  .yd-seo-pricing .yd-seo-pricing-intro{
+    grid-template-columns:minmax(0,1fr);
+    gap:var(--yd-seo-gap-md);
+  }
+
+  /* the two arcs flatten into one chip rail above the jerseys ----------- */
+  /* display:contents dissolves both arc boxes, so all eight chips become
+     siblings on a single straight line with one even gap - otherwise each
+     arc wraps as a block of four and you get two rows */
+  .yd-seo-sports .yd-seo-stage{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:flex-start;
+    column-gap:var(--yd-seo-rail-gap);
+    row-gap:var(--yd-seo-gap-lg);
+  }
+  .yd-seo-sports .yd-seo-arc{display:contents;}
+  .yd-seo-sports .yd-seo-arc::before{display:none;}
+  .yd-seo-sports .yd-seo-sport{
+    order:1;
+    margin:0 0 var(--yd-seo-rail-label-h);   /* the label sits in this space */
+  }
+  .yd-seo-sports .yd-seo-viewer{order:2;flex:1 0 100%;}
+
+  /* label drops underneath the chip instead of beside it ---------------- */
+  .yd-seo-sports .yd-seo-arc-start .yd-seo-sport-name,
+  .yd-seo-sports .yd-seo-arc-end .yd-seo-sport-name{
+    top:calc(100% + 6px);
+    right:auto;
+    left:50%;
+    width:88px;
+    text-align:center;
+    transform:translate(-50%,-4px);
+  }
+  .yd-seo-sports .yd-seo-sport.is-active .yd-seo-sport-name{transform:translate(-50%,0);}
+
+  /* artwork leaves the overlay and settles under the rows, which get the
+     full width back ------------------------------------------------------ */
+  .yd-seo-steps .yd-seo-steps-media{
+    position:static;
+    display:block;
+    width:min(100%,352px);
+    margin:var(--yd-seo-gap-lg) auto 0;
+  }
+  .yd-seo-steps .yd-seo-step{
+    grid-template-columns:var(--yd-seo-step-num-w) minmax(0,1fr);
+    align-items:start;
+    row-gap:8px;
+  }
+  .yd-seo-steps .yd-seo-step-title,
+  .yd-seo-steps .yd-seo-step-text{grid-column:2;}
+
+  .yd-seo-banner .yd-seo-content{
+    order:2;
+    padding-bottom:0;
+  }
+  .yd-seo-banner .yd-seo-media{
+    position:relative;
+    order:1;
+    inset:auto;
+    display:block;
+    justify-items:center;
+  }
+  /* a cut-out has nothing to crop into, so it just sits at its own size */
+  .yd-seo-banner .yd-seo-img{
+    position:static;
+    height:var(--yd-seo-img-height);
+    width:100%;
+    object-fit:cover;
+    object-position:top center;
+  }
+  .yd-seo-banner .yd-seo-stats{
+    position:static;
+    order:3;
+  }
+}
+
+@media (max-width:767px){
+  :root{
+    --yd-seo-section-pt:40px;
+    --yd-seo-radius-card:20px;
+    --yd-seo-align-feature-text:left;   /* justify looks bad in narrow columns */
+    --yd-seo-sport-size:34px;       /* keeps all eight chips on one line */
+    --yd-seo-outro-card-w:min(100%,256px);
+    --yd-seo-sport-art-size:16px;
+    --yd-seo-price-cols:2;
+    --yd-seo-print-cols:1;
+    --yd-seo-why-cols:1;
+    --yd-seo-bulk-cols:1;
+    --yd-seo-reviews-cols:1;
+    --yd-seo-stores-cols:1;
+  }
+  .yd-seo-cta .yd-seo-cta-orbs{display:none;}
+  .yd-seo-why .yd-seo-why-panel{grid-template-columns:minmax(0,1fr);}
+  .yd-seo-outro .yd-seo-outro-stage{
+    grid-template-columns:minmax(0,1fr);
+    justify-items:center;
+  }
+  .yd-seo-banner .yd-seo-stats{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    padding:var(--yd-seo-gap-sm);
+  }
+  .yd-seo-banner .yd-seo-stat{
+    min-width:0;
+    padding:var(--yd-seo-gap-sm) var(--yd-seo-gap-xs);
+  }
+  .yd-seo-banner .yd-seo-stat:nth-child(odd){border-left:0;}
+  .yd-seo-banner .yd-seo-stat:nth-child(n+3){border-top:1px solid var(--yd-seo-line);}
+}
+@media (max-width:600px){
+:root{
+    --yd-seo-nav-size: 20px;
+}
+.yd-seo-sports .yd-seo-nav-icon {
+    width: 12.4px;
+    height: 12.4px;
+}
+}
+@media (max-width:479px){
+  :root{
+    --yd-seo-text-max:none;
+    --yd-seo-features-cols:1;
+    --yd-seo-features-row-gap:28px;
+    --yd-seo-sport-size:30px;
+    --yd-seo-sport-art-size:14px;
+    --yd-seo-rail-gap:8.96px;           /* eight chips still fit at 320px */
+    --yd-seo-price-cols:1;
+  }
+  .yd-seo-section .yd-seo-btn-group{align-items:stretch;}
+
+  /* new changes 14-09-2026*/
+  .yd-seo-features .yd-seo-grid{
+  grid-template-columns:repeat(1,minmax(0,1fr));
+  gap:35px;
+ 
+  }
+
+  .yd-seo-pricing .yd-seo-price-figure {
+    aspect-ratio: 245/205;
+  }
+
+  .yd-seo-reviews .yd-seo-reviews-aside .yd-seo-btn{
+      width:100%;
+      margin:auto;
+    }
+
+  .yd-seo-stores .yd-seo-store-grid {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: var(--yd-seo-stores-gap);
+  }
+
+  .yd-seo-banner .yd-seo-media {
+        margin-top: 25px;
+    }
+  .yd-seo-badge{
+    font-size:10px !important;
+  }  
+
+  .yd-seo-btn-mob{
+    justify-content:center;
+  }
+  .yd-seo-sports .yd-seo-jersey {
+    object-fit:cover;
+    object-position:left;
+    
+  }
+  .yd-seo-jersey{
+    aspect-ratio:0.8/2
+  }
+  .yd-seo-sports .yd-seo-viewer{
+    gap:50px;
+  }
+
+  /* end */
+}
+
+
+
+/* ==========================================================================
+   18. ANIMATION - reusable keyframes + a .yd-seo-reveal scroll-in helper
+   ========================================================================== */
+@keyframes yd-seo-fade-up{
+  from{opacity:0;transform:translateY(20px);}
+  to  {opacity:1;transform:none;}
+}
+@keyframes yd-seo-fade-in{
+  from{opacity:0;}
+  to  {opacity:1;}
+}
+@keyframes yd-seo-pop-in{
+  from{opacity:0;transform:scale(.85);}
+  to  {opacity:1;transform:none;}
+}
+
+/* --- on-load entrance for the banner ---------------------------------- */
+.yd-seo-banner .yd-seo-badge,
+.yd-seo-banner .yd-seo-title,
+.yd-seo-banner .yd-seo-text,
+.yd-seo-banner .yd-seo-btn-group,
+.yd-seo-banner .yd-seo-stats{
+  animation:yd-seo-fade-up var(--yd-seo-dur-slow) var(--yd-seo-ease-out) both;
+  animation-delay:calc(var(--yd-seo-i,0) * var(--yd-seo-stagger));
+}
+.yd-seo-banner .yd-seo-title{--yd-seo-i:1;}
+.yd-seo-banner .yd-seo-text{--yd-seo-i:2;}
+.yd-seo-banner .yd-seo-btn-group{--yd-seo-i:3;}
+.yd-seo-banner .yd-seo-stats{--yd-seo-i:4;}
+
+.yd-seo-banner .yd-seo-img{
+  animation:yd-seo-fade-in var(--yd-seo-dur-slow) var(--yd-seo-ease-out) both;
+}
+
+@keyframes yd-seo-float{
+  0%,100%{transform:translate(-50%,-50%);}
+  50%    {transform:translate(-50%,calc(-50% - var(--yd-seo-orb-float)));}
+}
+
+@keyframes yd-seo-star-fill{
+  from{transform:scaleX(0);}
+  to  {transform:scaleX(1);}
+}
+
+@keyframes yd-seo-draw{
+  to{stroke-dashoffset:0;}
+}
+
+/* --- steps run without any JavaScript --------------------------------- */
+/* the entrance is an on-load animation rather than a .yd-seo-reveal class,
+   so this section needs no script at all */
+.yd-seo-steps .yd-seo-head,
+.yd-seo-steps .yd-seo-steps-media{
+  animation:yd-seo-fade-up var(--yd-seo-dur-slow) var(--yd-seo-ease-out) both;
+}
+.yd-seo-steps .yd-seo-steps-media{
+  animation-delay:var(--yd-seo-stagger);
+}
+
+/* the ring draws itself on load - no .is-visible hook, so no JS */
+.yd-seo-steps .yd-seo-scribble rect{
+  animation:yd-seo-draw var(--yd-seo-dur-draw) var(--yd-seo-ease-out) forwards;
+}
+
+/* --- scroll reveal: JS adds .is-visible when the block enters view ----- */
+.yd-seo-reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity var(--yd-seo-dur-slow) var(--yd-seo-ease-out),
+             transform var(--yd-seo-dur-slow) var(--yd-seo-ease-out);
+  transition-delay:calc(var(--yd-seo-i,0) * var(--yd-seo-stagger));
+}
+.yd-seo-reveal.is-visible{
+  opacity:1;
+  transform:none;
+}
+
+/* --- the circles fade in as a layer; each one drifts on its own clock --- */
+.yd-seo-cta .yd-seo-cta-orbs{
+  animation:yd-seo-fade-in var(--yd-seo-dur-slow) var(--yd-seo-ease-out) both;
+}
+
+/* --- ratings sweep in once their card is revealed ---------------------- */
+.yd-seo-reveal.is-visible .yd-seo-stars::before{
+  transform-origin:left center;
+  animation:yd-seo-star-fill var(--yd-seo-dur-slow) var(--yd-seo-ease-out) both;
+  animation-delay:calc(var(--yd-seo-i,0) * var(--yd-seo-stagger));
+}
+
+/* --- sports slider: jerseys animate in each time the sport changes ----- */
+.yd-seo-sports .yd-seo-panel.is-entering .yd-seo-jersey,
+.yd-seo-sports .yd-seo-panel.is-entering .yd-seo-empty-text{
+  animation:yd-seo-fade-up var(--yd-seo-dur-slow) var(--yd-seo-ease-out) both;
+}
+.yd-seo-sports .yd-seo-panel.is-entering .yd-seo-jersey:nth-child(2){animation-delay:var(--yd-seo-stagger);}
+.yd-seo-sports .yd-seo-panel.is-entering .yd-seo-jersey:nth-child(3){animation-delay:calc(2 * var(--yd-seo-stagger));}
+
+/* --- the chip that just became active gets a small pop ----------------- */
+/* the pop runs on the inner art, so it cannot fight the .is-active scale
+   that lives on the button itself */
+.yd-seo-sports .yd-seo-sport.is-entering .yd-seo-sport-art{
+  animation:yd-seo-pop-in var(--yd-seo-dur-fast) var(--yd-seo-ease-out) both;
+}
+
+/* ==========================================================================
+   19. REDUCED MOTION - opt every animation back out
+   ========================================================================== */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  .yd-seo-section .yd-seo-btn:hover,
+  .yd-seo-sports .yd-seo-sport:hover,
+  .yd-seo-sports .yd-seo-nav:hover,
+  .yd-seo-pricing .yd-seo-price-card:hover,
+  .yd-seo-pricing .yd-seo-price-card:focus-visible,
+  .yd-seo-print .yd-seo-print-card:hover,
+  .yd-seo-why .yd-seo-why-card:hover,
+  .yd-seo-bulk .yd-seo-bulk-card:hover,
+  .yd-seo-reviews .yd-seo-review:hover,
+  .yd-seo-stores .yd-seo-store:hover{transform:none;}
+  .yd-seo-reveal.is-visible .yd-seo-stars::before{transform:none;}
+  .yd-seo-why .yd-seo-why-card:hover .yd-seo-why-icon{transform:none;}
+  .yd-seo-print .yd-seo-print-card:hover .yd-seo-print-img{transform:none;}
+  .yd-seo-outro .yd-seo-outro-card:hover .yd-seo-outro-kit{transform:none;}
+  .yd-seo-pricing .yd-seo-price-card:hover .yd-seo-price-img{transform:none;}
+  .yd-seo-reveal{opacity:1;transform:none;}
+  .yd-seo-steps .yd-seo-scribble rect{stroke-dashoffset:0;}
+}
+
+/* new changes 15-09-2026 */
+ .yd-enquiry-modal {
+    width: min(92vw, 600px);
+    max-height: 90vh;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: #fff;
+    color: inherit;
+    font: inherit;
+  }
+
+  .yd-enquiry-modal::backdrop {
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  html:has(.yd-enquiry-modal[open]) {
+    overflow: hidden;
+  }
+
+  .yd-enquiry-inner {
+    position: relative;
+    padding: 28px 24px 24px;
+  }
+
+  .yd-enquiry-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .yd-enquiry-close svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .yd-enquiry-close:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  .yd-enquiry-title {
+    margin: 0 40px 8px 0;
+    line-height: 1.3;
+    font-weight:500;
+    text-align:center;
+  }
+
+  .yd-enquiry-text {
+    margin: 0 0 20px;
+    opacity: 0.75;
+  }
+
+  .yd-enquiry-form {
+    display: grid;
+    gap: 16px;
+  }
+
+  .yd-enquiry-field {
+    display: grid;
+    gap: 6px;
+  }
+
+  .yd-enquiry-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    background: #fff;
+    color: inherit;
+    font: inherit;
+  }
+
+  .yd-enquiry-textarea {
+    resize: vertical;
+    min-height: 96px;
+  }
+
+  .yd-enquiry-input:focus-visible,
+  .yd-enquiry-close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .yd-enquiry-form .yd-seo-btn-primary {
+    background: var(--yd-seo-primary);
+    color: var(--yd-seo-white);
+    box-shadow: var(--yd-seo-btn-shadow);
+}
+.yd-enquiry-form .yd-seo-btn {
+    margin:20px auto;
+    width:100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 24px;
+    border: 1px solid transparent;
+    border-radius: var(--yd-seo-radius-pill);
+    font-family: inherit;
+    font-size: var(--yd-seo-fs-btn);
+    font-weight: var(--yd-seo-fw-semi);
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--yd-seo-transition), color var(--yd-seo-transition), border-color var(--yd-seo-transition), transform var(--yd-seo-transition), box-shadow var(--yd-seo-transition);
+}
+
+.yd-enquiry-form .yd-seo-btn-primary:hover {
+    background: var(--yd-seo-primary-dark);
+}
+
+  .yd-enquiry-success {
+    margin: 8px 0 0;
+    font-weight: 600;
+    font-size:16px;
+  }
+  .yd-enquiry-label{
+    margin-top:15px;
+  }
+  .yd-enquiry-terms{
+    text-align:center;
+    font-size:var(--yd-seo-btn-sm-px);
+  }
+  .yd-enq-required{
+    color:var(--yd-seo-formreq);
+    font-size:12px;
+  }
+  @media (max-width: 575px) {
+    .yd-enquiry-inner {
+      padding: 24px 16px 16px;
+    }
+
+    .yd-enquiry-submit {
+      justify-self: stretch;
+    }
+  }
+/* end */

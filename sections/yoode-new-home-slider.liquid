@@ -1,0 +1,710 @@
+{%- liquid
+  assign background_word = section.settings.background_word | default: 'YOODE'
+  assign autoplay_ms = section.settings.autoplay_speed | times: 1000
+  assign arrow_icon = '<svg viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 8 8 2M3.5 2H8v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+-%}
+
+<yoode-new-home-slider
+  class="yn-hero yn-source-hero yn-hero--mobile-{{ section.settings.mobile_image_fit | default: 'cover' }}{% if section.settings.full_height %} yn-hero--full{% endif %} section-{{ section.id }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-speed="{{ autoplay_ms }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-hero-content-inset: {{ section.settings.content_inset | default: 42 }}px; --yn-hero-bottom-space: {{ section.settings.desktop_bottom_space | default: 60 }}px; --yn-hero-copy-top: {{ section.settings.content_position | default: 23 }}%; --yn-hero-card-height: {{ section.settings.card_height | default: 120 }}px; --yn-hero-dock-bottom: {{ section.settings.cards_bottom | default: 6.5 }}%; --yn-outline-size: {{ section.settings.outline_size | default: 28 }}vw; --yn-outline-top: {{ section.settings.outline_position | default: 49 }}%; --yn-outline-top-mobile: {{ section.settings.outline_position_mobile | default: 58 }}%; --yn-outline-opacity: {{ section.settings.outline_opacity | default: 20 | divided_by: 100.0 }}; --yn-curve-color: {{ section.settings.curve_color }}; --yn-hero-media-h-mobile: {{ section.settings.mobile_image_height | default: 420 | divided_by: 10.0 }}rem;"
+>
+  <div class="yn-hero__slides">
+    {%- for block in section.blocks -%}
+      <div
+        class="yn-hero__slide{% if forloop.first %} is-active{% endif %}"
+        {% unless forloop.first %}aria-hidden="true" inert{% endunless %}
+        style="--yn-slide-bg: {{ block.settings.background_color }}; --yn-hero-img-x: {{ block.settings.image_offset_x | default: 0 }}%; --yn-hero-img-y: {{ block.settings.image_offset_y | default: 0 }}%; --yn-hero-img-scale: {{ block.settings.image_scale | default: 100 | divided_by: 100.0 }}; --yn-hero-img-focus-x: {{ block.settings.image_focus_x_mobile | default: 50 }}%; --yn-hero-img-focus-y: {{ block.settings.image_focus_y_mobile | default: 0 }}%; --yn-hero-img-scale-mobile: {{ block.settings.image_scale_mobile | default: 100 | divided_by: 100.0 }};"
+        {{ block.shopify_attributes }}
+      >
+        {%- if block.settings.background_image != blank -%}
+          {{
+            block.settings.background_image
+            | image_url: width: 2400
+            | image_tag: class: 'yn-hero__bg', loading: 'lazy', sizes: '100vw', widths: '750, 1100, 1500, 2000, 2400', alt: ''
+          }}
+        {%- endif -%}
+
+        <div class="yn-hero__stage">
+        {%- if section.settings.show_background_word -%}
+          <div class="yn-hero__outline" aria-hidden="true">
+            {{ background_word | strip | upcase | escape }}
+          </div>
+        {%- endif -%}
+
+        <div class="yn-container yn-hero__inner">
+          <div class="yn-hero__intro">
+            {%- if block.settings.pill_label != blank -%}
+              <a class="yn-pill" href="{{ block.settings.pill_link | default: '#' }}">
+                <span class="yn-pill__dot" aria-hidden="true"></span>
+                {{ block.settings.pill_label | escape }}
+              </a>
+            {%- endif -%}
+            {%- if block.settings.title != blank -%}
+              {%- if forloop.first -%}
+                <h2 class="yn-hero__title">{{ block.settings.title | escape }}</h2>
+              {%- else -%}
+                <p class="yn-hero__title">{{ block.settings.title | escape }}</p>
+              {%- endif -%}
+            {%- endif -%}
+            {%- if block.settings.caption != blank -%}
+              <span class="yn-caption">{{ block.settings.caption | escape }}</span>
+            {%- endif -%}
+          </div>
+
+          <div class="yn-hero__aside">
+            {%- if block.settings.text != blank -%}
+              <div class="yn-hero__text">{{ block.settings.text }}</div>
+            {%- endif -%}
+            {%- if block.settings.button_label != blank -%}
+              <a class="yn-button yn-button--{{ block.settings.button_style | default: 'dark' }}" href="{{ block.settings.button_link | default: '#' }}">
+                {{- block.settings.button_label | escape }} &rarr;
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class="yn-hero__media">
+          {%- liquid
+            assign loading = 'lazy'
+            if forloop.first
+              assign loading = 'eager'
+            endif
+          -%}
+          {%- if block.settings.image != blank -%}
+            {%- if block.settings.image_mobile != blank or block.settings.image_tablet != blank -%}
+              <picture class="yn-hero__picture">
+                {%- if block.settings.image_tablet != blank -%}
+                  <source
+                    media="(min-width: 800px) and (max-width: 1100px)"
+                    srcset="{{ block.settings.image_tablet | image_url: width: 800 }} 800w, {{ block.settings.image_tablet | image_url: width: 1100 }} 1100w, {{ block.settings.image_tablet | image_url: width: 1600 }} 1600w, {{ block.settings.image_tablet | image_url: width: 2200 }} 2200w"
+                    sizes="100vw"
+                    width="{{ block.settings.image_tablet.width }}"
+                    height="{{ block.settings.image_tablet.height }}"
+                  >
+                {%- endif -%}
+                {%- if block.settings.image_mobile != blank -%}
+                  <source
+                    media="(max-width: 749px)"
+                    srcset="{{ block.settings.image_mobile | image_url: width: 750 }} 750w, {{ block.settings.image_mobile | image_url: width: 1100 }} 1100w, {{ block.settings.image_mobile | image_url: width: 1500 }} 1500w"
+                    sizes="100vw"
+                  >
+                {%- endif -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 2000
+                  | image_tag: loading: loading, sizes: '(min-width: 1500px) 1500px, (min-width: 750px) 100vw, 200vw', widths: '750, 1100, 1500, 2000', alt: block.settings.image.alt
+                }}
+              </picture>
+            {%- else -%}
+              {{
+                block.settings.image
+                | image_url: width: 2000
+                | image_tag: loading: loading, sizes: '(min-width: 1500px) 1500px, (min-width: 750px) 100vw, 200vw', widths: '750, 1100, 1500, 2000', alt: block.settings.image.alt
+              }}
+            {%- endif -%}
+          {%- elsif block.settings.fallback_image != blank -%}
+            <img
+              src="{{ block.settings.fallback_image | asset_url }}"
+              alt="{{ block.settings.title | escape }}"
+              loading="{{ loading }}"
+              width="1200"
+              height="1200"
+            >
+          {%- else -%}
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.blocks.size > 1 -%}
+    <div class="yn-container yn-hero__nav">
+      <ul
+        class="yn-hero__nav-list"
+        role="tablist"
+        aria-label="{{ section.settings.nav_label | escape }}"
+        style="--yn-nav-count: {{ section.blocks.size }};"
+      >
+        {%- for block in section.blocks -%}
+          {%- assign thumb = block.settings.card_image | default: block.settings.image -%}
+          <li class="yn-hero__nav-item" role="presentation">
+            <button
+              type="button"
+              class="yn-hero__card{% if forloop.first %} is-active{% endif %}"
+              role="tab"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              data-index="{{ forloop.index0 }}"
+            >
+              <span class="yn-hero__card-thumb">
+                {%- if thumb != blank -%}
+                  {{ thumb | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+                {%- elsif block.settings.fallback_image != blank -%}
+                  <img src="{{ block.settings.fallback_image | asset_url }}" alt="" loading="lazy" width="160" height="160">
+                {%- else -%}
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </span>
+              <span class="yn-hero__card-body">
+                <span class="yn-hero__card-title">{{ block.settings.card_title | default: block.settings.title | escape }}</span>
+                {%- if block.settings.card_subtitle != blank -%}
+                  <span class="yn-hero__card-subtitle">{{ block.settings.card_subtitle | escape }}</span>
+                {%- endif -%}
+              </span>
+              <span class="yn-hero__card-arrow" aria-hidden="true">{{ arrow_icon }}</span>
+              <span class="yn-hero__card-progress" aria-hidden="true"></span>
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_curve -%}
+    <div class="yn-curve" aria-hidden="true"></div>
+  {%- endif -%}
+</yoode-new-home-slider>
+
+{% schema %}
+{
+  "name": "YN Home Slider",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Change slide every",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "default": 6
+    },
+    {
+      "type": "checkbox",
+      "id": "full_height",
+      "label": "Full screen height",
+      "info": "The slider fills the whole browser window on desktop, tablet and mobile.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Mobile image"
+    },
+    {
+      "type": "select",
+      "id": "mobile_image_fit",
+      "label": "Mobile & tablet image display",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Fill the area (crops the sides)"
+        },
+        {
+          "value": "contain",
+          "label": "Show the whole image"
+        }
+      ],
+      "default": "cover",
+      "info": "Fine-tune each slide with its mobile focal point and size, or upload a portrait mobile image."
+    },
+    {
+      "type": "range",
+      "id": "mobile_image_height",
+      "label": "Mobile image height",
+      "min": 240,
+      "max": 700,
+      "step": 20,
+      "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "text",
+      "id": "nav_label",
+      "label": "Card navigation accessibility label",
+      "default": "Shop by category"
+    },
+    {
+      "type": "header",
+      "content": "Bottom curve"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_curve",
+      "label": "Show rounded bottom edge",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "curve_color",
+      "label": "Curve color",
+      "info": "Match the background of the next section.",
+      "default": "#f8f6f1"
+    },
+    {
+      "type": "header",
+      "content": "Background lettering"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_background_word",
+      "label": "Show background word",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "background_word",
+      "label": "Background word",
+      "default": "YOODE"
+    },
+    {
+      "type": "range",
+      "id": "outline_size",
+      "label": "Background word size",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "vw",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "outline_position",
+      "label": "Background word vertical position",
+      "min": 20,
+      "max": 80,
+      "step": 1,
+      "unit": "%",
+      "default": 49
+    },
+    {
+      "type": "range",
+      "id": "outline_position_mobile",
+      "label": "Background word position on mobile",
+      "min": 20,
+      "max": 80,
+      "step": 1,
+      "unit": "%",
+      "default": 58
+    },
+    {
+      "type": "range",
+      "id": "outline_opacity",
+      "label": "Background word opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Desktop layout"
+    },
+    {
+      "type": "range",
+      "id": "content_position",
+      "label": "Text vertical position",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "%",
+      "default": 23
+    },
+    {
+      "type": "range",
+      "id": "card_height",
+      "label": "Navigation card height",
+      "min": 90,
+      "max": 160,
+      "step": 5,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "cards_bottom",
+      "label": "Navigation distance from bottom",
+      "min": 2,
+      "max": 15,
+      "step": 0.5,
+      "unit": "%",
+      "default": 6.5
+    },
+    {
+      "type": "range",
+      "id": "content_inset",
+      "label": "Desktop text side inset",
+      "info": "Equal inset from the shared page edges on both sides.",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "desktop_bottom_space",
+      "label": "Desktop bottom spacing",
+      "info": "Reserves room below the composition for the rounded section transition.",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "#3d4a63"
+        },
+        {
+          "type": "image_picker",
+          "id": "background_image",
+          "label": "Background image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "outline_text",
+          "label": "Large outline text",
+          "default": "UNIFORM"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Model image",
+          "info": "Transparent PNG works best. 2000px wide recommended."
+        },
+        {
+          "type": "image_picker",
+          "id": "image_tablet",
+          "label": "Model image (tablet, optional)",
+          "info": "Shown from 800px to 1100px. Uses the model image when empty."
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Model image (mobile, optional)"
+        },
+        {
+          "type": "header",
+          "content": "Image balance"
+        },
+        {
+          "type": "range",
+          "id": "image_offset_x",
+          "label": "Horizontal position",
+          "info": "Desktop and tablet. Negative moves left.",
+          "min": -50,
+          "max": 50,
+          "step": 1,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "image_offset_y",
+          "label": "Vertical offset",
+          "info": "Desktop and tablet. Negative moves up.",
+          "min": -30,
+          "max": 30,
+          "step": 1,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "image_scale",
+          "label": "Image size",
+          "info": "Desktop and tablet.",
+          "min": 50,
+          "max": 150,
+          "step": 5,
+          "unit": "%",
+          "default": 100
+        },
+        {
+          "type": "range",
+          "id": "image_focus_x_mobile",
+          "label": "Mobile focal point (horizontal)",
+          "info": "Which part stays visible when the image is cropped. 0% = left, 100% = right.",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "image_focus_y_mobile",
+          "label": "Mobile focal point (vertical)",
+          "info": "0% keeps the top (faces) visible.",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "image_scale_mobile",
+          "label": "Mobile image size",
+          "min": 50,
+          "max": 200,
+          "step": 5,
+          "unit": "%",
+          "default": 100
+        },
+        {
+          "type": "text",
+          "id": "fallback_image",
+          "label": "Demo image file (used when no image is uploaded)",
+          "info": "Theme asset file name, e.g. yoode-new-home-img-banner-1.webp"
+        },
+        {
+          "type": "header",
+          "content": "Left content"
+        },
+        {
+          "type": "text",
+          "id": "pill_label",
+          "label": "Pill button label",
+          "default": "View uniforms"
+        },
+        {
+          "type": "url",
+          "id": "pill_link",
+          "label": "Pill button link"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Durable"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "default": "All-day comfort"
+        },
+        {
+          "type": "header",
+          "content": "Right content"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Elevate your brand image with premium, durable uniforms. Designed for comfort, styled for professionalism.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Shop uniforms"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "value": "dark",
+              "label": "Dark"
+            },
+            {
+              "value": "accent",
+              "label": "Coral"
+            },
+            {
+              "value": "light",
+              "label": "White"
+            }
+          ],
+          "default": "dark"
+        },
+        {
+          "type": "header",
+          "content": "Navigation card"
+        },
+        {
+          "type": "image_picker",
+          "id": "card_image",
+          "label": "Card thumbnail",
+          "info": "Falls back to the model image."
+        },
+        {
+          "type": "text",
+          "id": "card_title",
+          "label": "Card title",
+          "info": "Falls back to the slide title."
+        },
+        {
+          "type": "text",
+          "id": "card_subtitle",
+          "label": "Card subtitle"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Home Slider",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "background_color": "#e8403a",
+            "outline_text": "YOODE",
+            "pill_label": "Watch corporate tour",
+            "title": "10,000+",
+            "caption": "Teams & brands equipped",
+            "text": "<p>Customised Apparel & Merchandise for Modern Brands. Kit out your team in minutes with precision embroidery and sustainable fabrics.</p>",
+            "button_label": "Explore corporate",
+            "card_title": "Corporate Merch",
+            "card_subtitle": "Onboarding kits & teamwear"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "background_color": "#2f2f36",
+            "outline_text": "TRENDZ",
+            "pill_label": "View collection",
+            "title": "Heavyweight",
+            "caption": "Everyday streetwear",
+            "button_label": "Shop trendz",
+            "card_title": "Trendz",
+            "card_subtitle": "Heavyweight hoodies & tees"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "background_color": "#1f6f5c",
+            "outline_text": "SPORTS",
+            "pill_label": "View jerseys",
+            "title": "Team-ready",
+            "caption": "Built for performance",
+            "button_label": "Shop sports",
+            "card_title": "Sports",
+            "card_subtitle": "Custom Jerseys & Activewear"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "background_color": "#3d4a63",
+            "outline_text": "UNIFORM",
+            "card_title": "Uniforms",
+            "card_subtitle": "Professional Staff & Workwear"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

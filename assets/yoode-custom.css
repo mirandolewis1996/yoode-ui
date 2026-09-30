@@ -1,0 +1,2379 @@
+:root {
+  --color-primary: #111111;
+  --color-secondary: #666666;
+  --color-accent: #f9e5bf;
+  --color-accent-text: #996b0c;
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-bg: #FAF8F3;
+  --color-bg-light: #F8F8F8;
+  --color-border: #E5E5E5;
+  --color-success: #28A745;
+  --color-warning: #FFC107;
+  --color-danger: #DC3545;
+
+  --font-primary: "Inter", sans-serif;
+  --font-secondary: "Poppins", sans-serif;
+
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  --fs-xs: 12px;
+  --fs-sm: 14px;
+  --fs-base: 16px;
+  --fs-md: 18px;
+  --fs-lg: 20px;
+  --fs-xl: 24px;
+  --fs-2xl: 32px;
+  --fs-3xl: 40px;
+  --fs-4xl: 48px;
+
+  --lh-small: 1.3;
+  --lh-normal: 1.5;
+  --lh-large: 1.8;
+
+  --border-width: 1px;
+  --border-style: solid;
+  --border-color: var(--color-border);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-round: 50%;
+  --radius-pill: 50px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  --container-width: 1700px;
+  --container-padding: 20px;
+
+  --section-padding-vertical: 80px;
+  --section-padding-vertical-md: 60px;
+  --section-padding-vertical-sm: 40px;
+}
+
+/* ==========================================
+   BASE STYLES
+========================================== */
+
+body {
+  font-family: var(--font-primary);
+  color: var(--color-primary);
+  background-color: var(--color-white);
+  line-height: var(--lh-normal);
+}
+
+.yoode-container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+/* ==========================================
+   BUTTONS (REUSABLE)
+========================================== */
+
+.yoode-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-family: var(--font-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.yoode-btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.yoode-btn-primary:hover {
+  background-color: var(--color-black);
+  box-shadow: var(--shadow-md);
+}
+
+.yoode-btn-secondary {
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  border: var(--border-width) var(--border-style) var(--color-border);
+}
+
+.yoode-btn-secondary:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================
+   BANNER SECTION
+========================================== */
+
+.yoode-banner {
+  background-color: var(--color-bg);
+  padding: var(--section-padding-vertical) 0;
+}
+
+.yoode-banner-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  height: 100%;
+}
+
+.yoode-banner-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.yoode-banner-badge {
+  display: inline-block;
+  background-color: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  width: fit-content;
+  letter-spacing: 0.5px;
+}
+
+.yoode-banner-title {
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-small);
+  color: var(--color-primary);
+}
+
+.yoode-banner-description {
+  font-size: var(--fs-base);
+  color: var(--color-secondary);
+  line-height: var(--lh-large);
+  margin-bottom:10px;
+}
+
+.yoode-banner-buttons {
+  display: flex;
+  gap: 16px;
+  padding-top: 8px;
+  flex-wrap: wrap;
+}
+
+.yoode-banner-image {
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  height: 100%;
+}
+
+.yoode-banner-image img {
+  width: 100%;
+  aspect-ratio: auto;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yoode-banner-image-caption {
+  font-size: var(--fs-xs);
+  color: var(--color-secondary);
+  padding: 12px;
+  text-align: center;
+}
+@media (max-width: 600px) {
+.yoode-banner-image img {
+    aspect-ratio: 1.67 / 2;
+}
+}
+/* ==========================================
+   SHOP CATEGORIES SECTION
+========================================== */
+
+.yoode-shop-categories {
+  background-color: var(--color-white);
+  padding: var(--section-padding-vertical) 0;
+}
+
+.yoode-shop-header {
+  text-align: left;
+  margin-bottom: 60px;
+}
+
+.yoode-shop-title {
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.yoode-shop-subtitle {
+  font-size: var(--fs-base);
+  color: var(--color-secondary);
+  line-height: var(--lh-large);
+  max-width: 600px;
+}
+
+.yoode-categories-grid {
+  /* Indirection so breakpoints can override the per-section inline value */
+  --yoode-cat-cols: var(--yoode-cat-cols-desktop, 6);
+  display: grid;
+  grid-template-columns: repeat(var(--yoode-cat-cols), 1fr);
+  gap: 24px;
+}
+
+.yoode-category-card {
+  background-color: var(--color-white);
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.yoode-category-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+/* Card renders as <a> when the block has a link set */
+a.yoode-category-card {
+  text-decoration: none;
+  color: inherit;
+}
+
+.yoode-category-image {
+  background-color: var(--color-bg-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.yoode-category-image img {
+  width: 100%;
+  aspect-ratio: auto;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yoode-category-name {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  padding: 12px;
+  text-align: center;
+}
+
+/* ==========================================
+   CTA SECTION
+========================================== */
+
+.yoode-cta-section {
+  background-color: var(--color-white);
+}
+
+.yoode-cta-container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0px var(--container-padding);
+
+}
+
+.yoode-cta-border {
+  border: var(--border-width) var(--border-style) var(--color-border);
+  padding: 60px 0;
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+.yoode-cta-border--flat {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+
+.yoode-cta-heading {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+  max-width: 700px;
+  line-height: var(--lh-small);
+  margin-top:0px;
+}
+
+.yoode-cta-description {
+  font-size: var(--fs-base);
+  color: var(--color-secondary);
+  font-weight: var(--fw-regular);
+  margin-bottom: 24px;
+  line-height: var(--lh-normal);
+  max-width: 600px;
+}
+.template-index .logo-list__container .description {
+    font-size: var(--fs-base);
+  color: var(--color-secondary);
+  font-weight: var(--fw-regular);
+  margin-bottom: 24px;
+  line-height: var(--lh-normal);
+  max-width: 600px;
+}
+
+.yoode-cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.yoode-cta-section .yoode-btn-primary,
+.yoode-cta-section .yoode-btn-secondary {
+  padding: 14px 24px;
+  font-size: var(--fs-base);
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.yoode-cta-section .yoode-btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: var(--border-width) var(--border-style) var(--color-primary);
+}
+
+.yoode-cta-section .yoode-btn-primary:hover {
+  background-color: var(--color-black);
+  transform: translateY(-1px);
+}
+
+.yoode-cta-section .yoode-btn-secondary {
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  border: var(--border-width) var(--border-style) var(--color-border);
+}
+
+.yoode-cta-section .yoode-btn-secondary:hover {
+  background-color: var(--color-bg-light);
+  border-color: var(--color-secondary);
+  transform: translateY(-1px);
+}
+
+.yoode-btn-arrow {
+  margin-left: 8px;
+  font-size: 1.1em;
+}
+
+/* ==========================================
+   RESPONSIVE - 1200px (DESKTOP)
+========================================== */
+
+@media (max-width: 1200px) {
+  .yoode-container {
+    --container-padding: 30px;
+  }
+
+  .yoode-banner-content {
+    gap: 40px;
+  }
+
+  .yoode-categories-grid {
+    gap: 20px;
+  }
+
+  .yoode-cta-container {
+    padding: 0px var(--container-padding);
+  }
+
+  .yoode-cta-border {
+    padding: 50px 0;
+
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 1024px (TABLET LANDSCAPE)
+========================================== */
+
+@media (max-width: 1024px) {
+  .yoode-container {
+    --container-padding: 24px;
+  }
+
+  .yoode-banner {
+    padding: var(--section-padding-vertical-md) 0;
+  }
+
+  .yoode-banner-content {
+    gap: 32px;
+  }
+
+  .yoode-banner-title {
+    font-size: var(--fs-3xl);
+  }
+
+  .yoode-btn {
+    padding: 10px 20px;
+    font-size: var(--fs-sm);
+  }
+
+  .yoode-shop-categories {
+    padding: var(--section-padding-vertical-md) 0;
+  }
+
+  .yoode-categories-grid {
+    --yoode-cat-cols: var(--yoode-cat-cols-tablet, 3);
+  }
+
+  .yoode-shop-title {
+    font-size: var(--fs-2xl);
+  }
+
+  .yoode-shop-header {
+    margin-bottom: 50px;
+  }
+
+  .yoode-cta-container {
+    padding: 0px 30px;
+  }
+
+  .yoode-cta-border {
+    padding: 50px 0;
+
+  }
+
+  .yoode-cta-heading {
+    font-size: var(--fs-2xl);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 768px (TABLET PORTRAIT)
+========================================== */
+
+@media (max-width: 768px) {
+  .yoode-container {
+    --container-padding: 20px;
+  }
+
+  html {
+    font-size: 15px;
+  }
+
+  .yoode-banner {
+    padding: var(--section-padding-vertical-sm) 0;
+  }
+
+  .yoode-banner-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .yoode-banner-title {
+    font-size: var(--fs-2xl);
+  }
+
+  .yoode-banner-description {
+    font-size: var(--fs-sm);
+  }
+
+  .yoode-banner-buttons {
+    gap: 12px;
+  }
+
+  .yoode-btn {
+    padding: 10px 20px;
+    font-size: var(--fs-sm);
+  }
+
+  .yoode-shop-categories {
+    padding: var(--section-padding-vertical-sm) 0;
+  }
+
+  .yoode-categories-grid {
+    --yoode-cat-cols: var(--yoode-cat-cols-mobile, 2);
+    gap: 16px;
+  }
+
+
+
+  .yoode-shop-subtitle {
+    font-size: var(--fs-sm);
+  }
+
+  .yoode-shop-header {
+    margin-bottom: 40px;
+  }
+
+  .yoode-category-image {
+    height: 180px;
+  }
+
+  .yoode-category-name {
+    font-size: var(--fs-sm);
+    padding: 12px;
+  }
+
+  .yoode-cta-container {
+    padding: 0px 24px;
+  }
+
+  .yoode-cta-border {
+    padding: 48px 20px;
+
+  }
+  .yoode-cta-description,
+  .template-index .logo-list__container .description {
+    font-size: var(--fs-sm);
+  }
+
+  .yoode-cta-buttons {
+    gap: 12px;
+  }
+
+  .yoode-cta-section .yoode-btn-primary,
+  .yoode-cta-section .yoode-btn-secondary {
+    padding: 12px 20px;
+    font-size: var(--fs-sm);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 640px (MOBILE)
+========================================== */
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+
+  .yoode-banner {
+    padding: 40px 0 30px 0;
+  }
+
+  .yoode-banner-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+  .yoode-banner-buttons {
+    gap: 8px;
+  }
+
+  .yoode-btn {
+    padding: 8px 16px;
+    font-size: var(--fs-xs);
+    flex: 1;
+    min-width: 130px;
+  }
+
+  .yoode-banner-image-caption {
+    font-size: 10px;
+    padding: 8px;
+  }
+
+  .yoode-shop-categories {
+    padding: 40px 0 30px 0;
+  }
+
+  .yoode-categories-grid {
+    gap: 12px;
+  }
+
+  .yoode-shop-header {
+    margin-bottom: 30px;
+  }
+
+  .yoode-category-image {
+    height: 150px;
+  }
+
+  .yoode-category-name {
+    font-size: var(--fs-sm);
+    padding: 10px;
+  }
+
+  .yoode-cta-container {
+    padding: 0px 20px;
+  }
+
+  .yoode-cta-border {
+    padding: 40px 20px;
+    border-radius: var(--radius-lg);
+
+
+  }
+
+  .yoode-cta-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .yoode-cta-section .yoode-btn-primary,
+  .yoode-cta-section .yoode-btn-secondary {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: var(--fs-sm);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 480px (SMALL MOBILE)
+========================================== */
+
+@media (max-width: 480px) {
+  html {
+    /* The theme's rem scale is based on 10px. Increasing the root here made
+       shared header controls and typography overflow narrow screens. */
+    font-size: 10px;
+  }
+
+  .yoode-container {
+    --container-padding: 16px;
+  }
+
+  .yoode-banner {
+    padding: 30px 0 20px 0;
+  }
+
+  .yoode-banner-badge {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+
+  .yoode-banner-buttons {
+    gap: 6px;
+  }
+
+  .yoode-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .yoode-banner-image-caption {
+    font-size: 10px;
+    padding: 8px;
+  }
+
+  .yoode-shop-categories {
+    padding: 30px 0 20px 0;
+  }
+
+  .yoode-categories-grid {
+    gap: 10px;
+  }
+
+  .yoode-shop-header {
+    margin-bottom: 24px;
+  }
+
+  .yoode-category-image {
+    height: 120px;
+  }
+
+  .yoode-category-name {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .yoode-cta-container {
+    padding: 0px 16px;
+  }
+
+  .yoode-cta-border {
+    padding: 32px 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .yoode-cta-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .yoode-cta-section .yoode-btn-primary,
+  .yoode-cta-section .yoode-btn-secondary {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 360px (EXTRA SMALL)
+========================================== */
+
+@media (max-width: 360px) {
+  .yoode-container {
+    --container-padding: 12px;
+  }
+
+
+  .yoode-btn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .yoode-banner-buttons {
+    gap: 4px;
+  }
+
+
+  .yoode-category-image {
+    height: 100px;
+  }
+
+  .yoode-category-name {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+
+
+  .yoode-cta-container {
+    padding: 0px 12px;
+  }
+
+  .yoode-cta-border {
+    padding: 24px 20px;
+  }
+
+  .yoode-cta-section .yoode-btn-primary,
+  .yoode-cta-section .yoode-btn-secondary {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+}
+
+/* ==========================================
+   YOODE TESTIMONIALS SECTION STYLES
+========================================== */
+
+.yoode-testimonials-section {
+  background-color: var(--color-bg-light);
+}
+
+.yoode-testimonials-header {
+  text-align: left;
+  margin-bottom: 48px;
+}
+
+.yoode-testimonials-title {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 8px;
+    margin-top:0px;
+}
+.template-index .logo-list__container .logo-list__header__titles .h2{
+    font-family: var(--font-secondary);
+    font-size: var(--fs-3xl);
+    font-weight: var(--fw-bold);
+    color: var(--color-primary);
+    margin-bottom: 8px;
+}
+
+.yoode-testimonials-subtitle {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  color: var(--color-secondary);
+  line-height: var(--lh-normal);
+}
+
+.yoode-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.yoode-testimonial-card {
+  background-color: var(--color-white);
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.yoode-testimonial-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.yoode-testimonial-text {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary);
+  font-style: italic;
+  line-height: var(--lh-large);
+  margin-bottom: 20px;
+  font-weight: var(--fw-regular);
+}
+
+.yoode-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.yoode-author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-round);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-bg-light));
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.yoode-author-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yoode-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.yoode-author-name {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+
+.yoode-author-role {
+  font-size: var(--fs-xs);
+  color: var(--color-secondary);
+  font-weight: var(--fw-regular);
+}
+
+/* ==========================================
+   RESPONSIVE - 1200px (DESKTOP)
+========================================== */
+
+@media (max-width: 1200px) {
+  .yoode-testimonials-header {
+    margin-bottom: 50px;
+  }
+
+  .yoode-testimonials-grid {
+    gap: 28px;
+  }
+
+  .yoode-testimonial-card {
+    padding: 28px 24px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 1024px (TABLET LANDSCAPE)
+========================================== */
+
+@media (max-width: 1024px) {
+  .yoode-testimonials-title {
+    font-size: var(--fs-2xl);
+  }
+  .template-index .logo-list__container .logo-list__header__titles .h2{
+    font-size: var(--fs-2xl);
+  }
+
+  .yoode-testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .yoode-testimonial-card {
+    padding: 20px;
+  }
+
+  .yoode-testimonial-text {
+    font-size: var(--fs-xs);
+    margin-bottom: 16px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 768px (TABLET PORTRAIT)
+========================================== */
+
+@media (max-width: 768px) {
+  .yoode-testimonials-header {
+    margin-bottom: 36px;
+  }
+
+
+  .yoode-testimonials-subtitle {
+    font-size: var(--fs-sm);
+  }
+
+  .yoode-testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .yoode-testimonial-card {
+    padding: 18px 14px;
+  }
+
+  .yoode-testimonial-text {
+    font-size: var(--fs-xs);
+    margin-bottom: 14px;
+    line-height: var(--lh-normal);
+  }
+
+  .yoode-testimonial-author {
+    gap: 10px;
+  }
+
+  .yoode-author-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .yoode-author-name {
+    font-size: var(--fs-xs);
+  }
+
+  .yoode-author-role {
+    font-size: 10px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 640px (MOBILE)
+========================================== */
+
+@media (max-width: 640px) {
+  .yoode-testimonials-header {
+    margin-bottom: 32px;
+  }
+
+  .yoode-testimonials-grid {
+    gap: 16px;
+  }
+
+  .yoode-testimonial-card {
+    padding: 16px 12px;
+  }
+
+  .yoode-testimonial-text {
+    font-size: var(--fs-xs);
+    margin-bottom: 12px;
+    line-height: var(--lh-normal);
+  }
+
+  .yoode-testimonial-author {
+    gap: 12px;
+  }
+
+  .yoode-author-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .yoode-author-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .yoode-author-name {
+    font-size: 13px;
+  }
+
+  .yoode-author-role {
+    font-size: 11px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 480px (SMALL MOBILE)
+========================================== */
+
+@media (max-width: 480px) {
+  .yoode-testimonials-header {
+    margin-bottom: 24px;
+  }
+
+  .yoode-testimonials-grid {
+    gap: 12px;
+  }
+
+  .yoode-testimonial-card {
+    padding: 14px 10px;
+  }
+
+  .yoode-testimonial-text {
+    font-size: 12px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .yoode-author-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .yoode-author-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .yoode-author-name {
+    font-size: 12px;
+  }
+
+  .yoode-author-role {
+    font-size: 10px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 360px (EXTRA SMALL)
+========================================== */
+
+@media (max-width: 360px) {
+
+  .yoode-testimonial-card {
+    padding: 12px 8px;
+  }
+
+  .yoode-testimonial-text {
+    font-size: 11px;
+  }
+
+  .yoode-author-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .yoode-author-name {
+    font-size: 11px;
+  }
+
+  .yoode-author-role {
+    font-size: 9px;
+  }
+}
+
+/* ==========================================
+   YOODE STUDIO SECTION STYLES
+========================================== */
+
+.yoode-studio-section {
+  background-color: var(--color-white);
+}
+
+.yoode-studio-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+/* Left Text Column */
+.yoode-studio-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.yoode-studio-title {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  line-height: var(--lh-small);
+  margin-bottom: 12px;
+}
+
+.yoode-studio-subtitle {
+  font-size: var(--fs-base);
+  color: var(--color-secondary);
+  line-height: var(--lh-normal);
+  margin-bottom: 20px;
+}
+
+.yoode-studio-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.yoode-studio-list-item {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary);
+  line-height: var(--lh-normal);
+  padding-left: 16px;
+  position: relative;
+}
+
+.yoode-studio-list-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-secondary);
+}
+
+.yoode-studio-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.yoode-studio-btn {
+  width: fit-content;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Image Position: Left */
+.yoode-studio-content--left .yoode-studio-text {
+  order: 2;
+}
+
+.yoode-studio-content--left .yoode-studio-preview {
+  order: 1;
+}
+
+/* Right Preview Column */
+.yoode-studio-preview {
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background-color: var(--color-white);
+}
+
+.yoode-studio-preview-image {
+  background-color: var(--color-bg-light);
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.yoode-studio-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yoode-studio-preview-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+.yoode-studio-preview-label {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary);
+}
+
+.yoode-studio-preview-link {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-accent-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity var(--transition-fast);
+}
+
+.yoode-studio-preview-link:hover {
+  opacity: 0.75;
+}
+
+.yoode-studio-arrow {
+  margin-left: 4px;
+}
+
+/* ==========================================
+   RESPONSIVE - 1024px (TABLET LANDSCAPE)
+========================================== */
+
+@media (max-width: 1024px) {
+  .yoode-studio-content {
+    gap: 40px;
+  }
+
+  .yoode-studio-title {
+    font-size: var(--fs-xl);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 768px (TABLET PORTRAIT)
+========================================== */
+
+@media (max-width: 768px) {
+  .yoode-studio-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  /* Stack text above image on mobile regardless of position */
+  .yoode-studio-content--left .yoode-studio-text,
+  .yoode-studio-content--left .yoode-studio-preview {
+    order: 0;
+  }
+
+  .yoode-studio-title {
+    font-size: var(--fs-xl);
+    margin-bottom: 10px;
+  }
+
+  .yoode-studio-subtitle {
+    font-size: var(--fs-sm);
+    margin-bottom: 16px;
+  }
+
+  .yoode-studio-list {
+    margin-bottom: 24px;
+  }
+
+  .yoode-studio-preview-footer {
+    padding: 16px 20px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 640px (MOBILE)
+========================================== */
+
+@media (max-width: 640px) {
+  .yoode-studio-content {
+    gap: 24px;
+  }
+
+  .yoode-studio-title {
+    font-size: var(--fs-lg);
+  }
+
+  .yoode-studio-subtitle {
+    font-size: var(--fs-xs);
+  }
+
+  .yoode-studio-list-item {
+    font-size: var(--fs-xs);
+  }
+
+  .yoode-studio-preview-footer {
+    padding: 14px 16px;
+  }
+
+  .yoode-studio-preview-label,
+  .yoode-studio-preview-link {
+    font-size: var(--fs-xs);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 480px (SMALL MOBILE)
+========================================== */
+
+@media (max-width: 480px) {
+  .yoode-studio-title {
+    font-size: 18px;
+  }
+
+  .yoode-studio-subtitle {
+    font-size: 12px;
+  }
+
+  .yoode-studio-list-item {
+    font-size: 12px;
+  }
+
+  .yoode-studio-preview-footer {
+    padding: 12px 14px;
+  }
+}
+
+/* ==========================================
+   YOODE MOST LOVED PRODUCTS SECTION
+========================================== */
+
+.yoode-loved-products {
+  background-color: var(--color-white);
+}
+
+/* Section Header */
+.yoode-products-header {
+  margin-bottom: 32px;
+}
+
+.yoode-products-title {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.yoode-products-subtitle {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  color: var(--color-secondary);
+  line-height: var(--lh-normal);
+}
+
+/* Products Grid */
+.yoode-products-grid {
+  /* Indirection so breakpoints can override the per-section inline value */
+  --yoode-prod-cols: var(--yoode-prod-cols-desktop, 5);
+  display: grid;
+  grid-template-columns: repeat(var(--yoode-prod-cols), 1fr);
+  gap: 16px;
+}
+
+/* Product Card */
+.yoode-product-card {
+  background-color: var(--color-white);
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.yoode-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Media Area */
+.yoode-product-media {
+  background-color: #EAEAEA;
+  width: 100%;
+  height:100%;
+  overflow: hidden;
+}
+
+.yoode-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Card Content */
+.yoode-product-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-grow: 1;
+}
+
+.yoode-product-name {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+.yoode-product-price {
+  font-size: var(--fs-xs);
+  color: var(--color-secondary);
+  margin-bottom: 14px;
+}
+
+/* Outline Accent Button */
+.yoode-product-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--color-accent-text);
+  border: 1.5px var(--border-style) var(--color-accent);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.yoode-product-btn:hover {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+}
+
+/* ==========================================
+   RESPONSIVE - 1200px
+========================================== */
+
+@media (max-width: 1200px) {
+  .yoode-products-grid {
+    --yoode-prod-cols: var(--yoode-prod-cols-laptop, 4);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 1024px (TABLET LANDSCAPE)
+========================================== */
+
+@media (max-width: 1024px) {
+  .yoode-products-grid {
+    --yoode-prod-cols: var(--yoode-prod-cols-tablet, 3);
+  }
+
+  .yoode-products-title {
+    font-size: var(--fs-2xl);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 768px (TABLET PORTRAIT)
+========================================== */
+
+@media (max-width: 768px) {
+  .yoode-products-header {
+    margin-bottom: 24px;
+  }
+
+  .yoode-products-subtitle {
+    font-size: var(--fs-sm);
+  }
+
+  .yoode-products-grid {
+    --yoode-prod-cols: var(--yoode-prod-cols-mobile, 2);
+    gap: 14px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 480px (SMALL MOBILE)
+========================================== */
+
+@media (max-width: 480px) {
+  .yoode-products-grid {
+    gap: 10px;
+  }
+
+  .yoode-product-content {
+    padding: 12px;
+  }
+
+  .yoode-product-price {
+    margin-bottom: 10px;
+  }
+
+  .yoode-product-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}
+
+
+/* ==========================================
+   YOODE WHAT CAN WE BUILD SECTION
+========================================== */
+
+.yoode-build-section {
+  background-color: var(--color-bg-light);
+}
+
+/* Header */
+.yoode-build-header {
+  margin-bottom: 32px;
+}
+
+.yoode-build-title {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+   margin-top:0px;
+}
+
+.yoode-build-subtitle {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  color: var(--color-secondary);
+  line-height: var(--lh-normal);
+}
+
+/* Grid */
+.yoode-build-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Card */
+.yoode-build-card {
+  background-color: var(--color-white);
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.yoode-build-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Card Media */
+.yoode-build-card-media {
+  background-color: #E6E6E6;
+  width: 100%;
+  overflow: hidden;
+}
+
+.yoode-build-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Card Content */
+.yoode-build-card-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.yoode-build-category {
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  color: var(--color-accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.yoode-build-card-title {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  line-height: var(--lh-small);
+  margin-bottom: 8px;
+}
+
+.yoode-build-card-text {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary);
+  line-height: var(--lh-normal);
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+/* CTA Link */
+.yoode-build-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: gap var(--transition-fast);
+  width: fit-content;
+}
+
+.yoode-build-card-link:hover {
+  gap: 10px;
+}
+
+.yoode-build-arrow {
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   RESPONSIVE - 1024px (TABLET LANDSCAPE)
+========================================== */
+
+@media (max-width: 1024px) {
+  .yoode-build-title {
+    font-size: var(--fs-2xl);
+  }
+
+  .yoode-build-grid {
+    gap: 20px;
+  }
+
+  .yoode-build-card-content {
+    padding: 20px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 768px (TABLET PORTRAIT)
+========================================== */
+
+@media (max-width: 768px) {
+  .yoode-build-header {
+    margin-bottom: 24px;
+  }
+  .yoode-build-subtitle {
+    font-size: var(--fs-sm);
+  }
+
+  .yoode-build-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .yoode-build-card-content {
+    padding: 20px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 480px (SMALL MOBILE)
+========================================== */
+
+@media (max-width: 480px) {
+
+  .yoode-build-card-content {
+    padding: 16px;
+  }
+
+  .yoode-build-card-title {
+    font-size: var(--fs-base);
+  }
+
+  .yoode-build-card-text {
+    font-size: var(--fs-xs);
+    margin-bottom: 16px;
+  }
+}
+
+/* ==========================================
+   YOODE EXPERIENCE CENTRES SECTION
+========================================== */
+
+.yoode-experience-section {
+  background-color: var(--color-white);
+}
+
+/* Header */
+.yoode-experience-header {
+  margin-bottom: 32px;
+}
+
+.yoode-experience-title {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.yoode-experience-subtitle {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  color: var(--color-secondary);
+  line-height: var(--lh-normal);
+}
+
+/* Grid */
+.yoode-experience-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+/* Slider */
+.yoode-experience-slider {
+  /* Indirection so breakpoints can override the per-section inline value */
+  --yoode-slides: var(--yoode-slides-desktop, 2);
+  --yoode-slider-gap: 24px;
+  position: relative;
+  /* Gutters so the arrows sit outside the cards, like the banner slider */
+  padding: 0 56px;
+}
+
+.yoode-experience-track {
+  display: flex;
+  gap: var(--yoode-slider-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  /* Room for the card hover lift/shadow, which the scroll container would clip */
+  padding: 6px 0 18px;
+}
+
+.yoode-experience-track::-webkit-scrollbar {
+  display: none;
+}
+
+.yoode-location-slide {
+  flex: 0 0 calc(
+    (100% - (var(--yoode-slides, 2) - 1) * var(--yoode-slider-gap)) / var(--yoode-slides, 2)
+  );
+  scroll-snap-align: start;
+}
+
+/* Arrows — matches the banner slider's arrow treatment */
+.yoode-slider-arrow {
+  position: absolute;
+  /* Nudged up so it centres on the cards, not on the cards + dots row */
+  top: calc(50% - 17px);
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-round);
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-fast);
+  z-index: 3;
+}
+
+.yoode-slider-arrow:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.yoode-slider-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+.yoode-slider-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.yoode-slider-arrow[hidden] {
+  display: none;
+}
+
+.yoode-slider-arrow-prev {
+  left: 0;
+}
+
+.yoode-slider-arrow-next {
+  right: 0;
+}
+
+/* Gutters + arrows only where there is room for them, as the banner does */
+@media (max-width: 1100px) {
+  .yoode-experience-slider {
+    padding: 0;
+  }
+
+  .yoode-slider-arrow {
+    display: none;
+  }
+}
+
+/* Dots */
+.yoode-slider-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.yoode-slider-dots:empty {
+  display: none;
+}
+
+.yoode-slider-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-border);
+  cursor: pointer;
+  transition: width var(--transition-fast), background-color var(--transition-fast);
+}
+
+.yoode-slider-dot:hover {
+  background-color: var(--color-secondary);
+}
+
+.yoode-slider-dot.is-active {
+  width: 24px;
+  background-color: var(--color-primary);
+}
+
+/* Fewer cards than fit the viewport — nothing to scroll */
+.yoode-slider-static .yoode-experience-track {
+  scroll-snap-type: none;
+}
+
+/* Location Card */
+.yoode-location-card {
+  background-color: var(--color-white);
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.yoode-location-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Media */
+.yoode-location-media {
+  background-color: #E0E0E0;
+  aspect-ratio: 1.6 / 1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.yoode-location-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Content */
+.yoode-location-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.yoode-location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.yoode-location-name {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+}
+
+/* Status Badge */
+.yoode-status-badge {
+  background-color: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Info Text */
+.yoode-location-address {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary);
+  margin-bottom: 4px;
+}
+
+.yoode-location-hours {
+  font-size: var(--fs-xs);
+  color: var(--color-secondary);
+  margin-bottom: 20px;
+}
+
+/* Actions */
+.yoode-location-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.yoode-location-btn {
+  padding: 10px 18px;
+  font-size: var(--fs-xs);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================
+   RESPONSIVE - 1024px (TABLET LANDSCAPE)
+========================================== */
+
+@media (max-width: 1024px) {
+  .yoode-experience-title {
+    font-size: var(--fs-2xl);
+  }
+
+  .yoode-experience-grid {
+    gap: 20px;
+  }
+
+  .yoode-experience-slider {
+    --yoode-slides: var(--yoode-slides-tablet, 2);
+    --yoode-slider-gap: 20px;
+  }
+
+  .yoode-location-content {
+    padding: 20px;
+  }
+
+  .yoode-location-header {
+    margin-bottom: 12px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 768px (TABLET PORTRAIT)
+========================================== */
+
+@media (max-width: 768px) {
+  .yoode-experience-header {
+    margin-bottom: 24px;
+  }
+
+  .yoode-experience-subtitle {
+    font-size: var(--fs-sm);
+  }
+
+  .yoode-experience-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Defaults to one card plus a peek of the next, so the swipe affordance is obvious */
+  .yoode-experience-slider {
+    --yoode-slides: var(--yoode-slides-mobile, 1.15);
+    --yoode-slider-gap: 16px;
+  }
+
+  .yoode-location-content {
+    padding: 20px;
+  }
+
+  .yoode-location-name {
+    font-size: var(--fs-lg);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 480px (SMALL MOBILE)
+========================================== */
+
+@media (max-width: 480px) {
+
+  .yoode-location-content {
+    padding: 16px;
+  }
+
+  .yoode-location-name {
+    font-size: var(--fs-base);
+  }
+
+  .yoode-location-actions {
+    gap: 8px;
+  }
+
+  .yoode-location-btn {
+    flex: 1;
+    padding: 10px 12px;
+    min-width: 120px;
+  }
+}
+
+/* ==========================================
+   YOODE FOOTER SECTION
+========================================== */
+
+.yoode-footer {
+  background-color: var(--color-white);
+}
+
+/* Divider */
+.yoode-footer-divider {
+  border-top: var(--border-width) var(--border-style) var(--color-border);
+  margin-bottom: 40px;
+}
+
+/* Layout: Brand + Links */
+.yoode-footer-content {
+  display: grid;
+  grid-template-columns: 1.5fr 3fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* Brand */
+.yoode-footer-logo {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+
+.yoode-footer-logo-link {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.yoode-footer-logo-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.yoode-footer-brand-text {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary);
+  line-height: var(--lh-large);
+  max-width: 260px;
+}
+
+/* Links Grid */
+.yoode-footer-links-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.yoode-footer-heading {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.yoode-footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.yoode-footer-link {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.yoode-footer-link:hover {
+  color: var(--color-primary);
+}
+
+/* Divider above the bottom bar */
+.yoode-footer-divider--bottom {
+  margin-top: 40px;
+  margin-bottom: 0;
+}
+
+/* Bottom Bar */
+.yoode-footer-bottom {
+  background-color: var(--yoode-footer-bottom-bg, #242C33);
+  padding: 18px 0;
+}
+
+.yoode-footer-bottom-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+}
+
+.yoode-footer-copyright {
+  font-size: var(--fs-sm);
+  color: var(--yoode-footer-bottom-text, var(--color-white));
+  margin: 0;
+}
+
+.yoode-footer-policies {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+}
+
+.yoode-footer-policy-link {
+  font-size: var(--fs-sm);
+  color: var(--yoode-footer-bottom-text, var(--color-white));
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity var(--transition-fast);
+}
+
+.yoode-footer-policy-link:hover,
+.yoode-footer-policy-link[aria-current="page"] {
+  opacity: 1;
+}
+
+/* ==========================================
+   RESPONSIVE - 1024px (TABLET LANDSCAPE)
+========================================== */
+
+@media (max-width: 1024px) {
+  .yoode-footer-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .yoode-footer-brand-text {
+    max-width: 400px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 768px (TABLET PORTRAIT)
+========================================== */
+
+@media (max-width: 768px) {
+  .yoode-footer-divider {
+    margin-bottom: 32px;
+  }
+
+  .yoode-footer-divider--bottom {
+    margin-top: 32px;
+    margin-bottom: 0;
+  }
+
+  .yoode-footer-content {
+    gap: 32px;
+  }
+
+  .yoode-footer-links-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .yoode-footer-bottom-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 480px (SMALL MOBILE)
+========================================== */
+
+@media (max-width: 480px) {
+  .yoode-footer-content {
+    gap: 28px;
+  }
+
+  .yoode-footer-links-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .yoode-footer-heading {
+    margin-bottom: 12px;
+  }
+
+  .yoode-footer-list {
+    gap: 10px;
+  }
+}
+
+/* ==========================================
+   YOODE WHY CHOOSE SECTION
+========================================== */
+
+.yoode-why-choose {
+  background-color: var(--color-bg-light);
+}
+
+.yoode-why-title {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 32px;
+  letter-spacing: -0.5px;
+}
+
+/* Grid — Block Style (equal columns) */
+.yoode-why-grid--block {
+  display: grid;
+  grid-template-columns: repeat(var(--yoode-why-columns, 4), 1fr);
+  gap: 24px;
+}
+
+/* Grid — Inline Style (flow / wrap) */
+.yoode-why-grid--inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.yoode-why-grid--inline .yoode-why-card {
+  flex: 1 1 240px;
+}
+
+/* Card */
+.yoode-why-card {
+  background-color: var(--color-white);
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: all var(--transition-normal);
+}
+
+.yoode-why-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.yoode-why-card-title {
+  font-family: var(--font-secondary);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  margin-top: 0px;
+
+}
+
+.yoode-why-card-text {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary);
+  line-height: var(--lh-normal);
+}
+
+/* ==========================================
+   RESPONSIVE - 1024px (TABLET LANDSCAPE)
+========================================== */
+
+@media (max-width: 1024px) {
+  .yoode-why-title {
+    font-size: var(--fs-2xl);
+  }
+
+  .yoode-why-grid--block {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .yoode-why-grid--block,
+  .yoode-why-grid--inline {
+    gap: 20px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 768px (TABLET PORTRAIT)
+========================================== */
+
+@media (max-width: 768px) {
+  .yoode-why-title {
+    font-size: var(--fs-xl);
+    margin-bottom: 24px;
+  }
+
+  .yoode-why-grid--block {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .yoode-why-grid--inline {
+    gap: 16px;
+  }
+
+  .yoode-why-card {
+    padding: 20px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - 480px (SMALL MOBILE)
+========================================== */
+
+@media (max-width: 480px) {
+  .yoode-why-title {
+    font-size: var(--fs-lg);
+    margin-bottom: 20px;
+  }
+
+  .yoode-why-grid--block {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .yoode-why-grid--inline {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .yoode-why-card {
+    padding: 16px;
+  }
+
+  .yoode-why-card-text {
+    font-size: var(--fs-xs);
+  }
+}

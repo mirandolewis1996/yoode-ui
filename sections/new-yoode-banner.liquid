@@ -1,0 +1,751 @@
+{% style %}
+  {% render 'section-margin' %}
+  {% render 'section-padding' %}
+{% endstyle %}
+
+{%- comment -%}
+  Slider styles + script are scoped to this section instance only
+  (#yoode-banner-{{ section.id }}), so editing them here can never
+  affect any other section's styles.
+{%- endcomment -%}
+{% style %}
+    /* --- Slider (scoped to this section instance only) --- */
+  @media (min-width: 1200px) {
+    .yoode-banner-slider {
+      height: 78vh;
+    }
+  }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider {
+      position: relative;
+      padding: 0 56px;
+    }
+    .yoode-banner-slider-viewport{
+          display: flex;
+      height: 100%;
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-viewport {
+      overflow: hidden;
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-track {
+      display: flex;
+      transition: transform 0.5s ease;
+      will-change: transform;
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slide {
+      flex: 0 0 100%;
+      min-width: 100%;
+    }
+
+    /* Buttons become <a> once a link is set — keep them looking like buttons */
+    #yoode-banner-{{ section.id }} a.yoode-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    /* Side arrows sit in the gutters so they never overlap the content */
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: var(--border-width) var(--border-style) var(--color-border);
+      border-radius: var(--radius-round);
+      background-color: var(--color-white);
+      color: var(--color-primary);
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: all var(--transition-fast);
+      z-index: 3;
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-arrow:hover {
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      border-color: var(--color-primary);
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-arrow:disabled {
+      opacity: 0.3;
+      cursor: default;
+      background-color: var(--color-white);
+      color: var(--color-primary);
+      border-color: var(--color-border);
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-arrow svg {
+      width: 20px;
+      height: 20px;
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-arrow--prev { left: 0; }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-arrow--next { right: 0; }
+
+    /* Dots below */
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-dot {
+      width: 8px;
+      height: 8px;
+      padding: 0;
+      border: none;
+      border-radius: var(--radius-pill);
+      background-color: var(--color-border);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-dot:hover {
+      background-color: var(--color-secondary);
+    }
+    #yoode-banner-{{ section.id }} .yoode-banner-slider-dot.is-active {
+      width: 24px;
+      background-color: var(--color-primary);
+    }
+
+    /* Use the stacked "mobile" banner look from 1100px and down:
+       single column (text above image), and drop the slider's
+       side gutters + arrows (swipe + dots remain). */
+    @media (max-width: 1100px) {
+      #yoode-banner-{{ section.id }} .yoode-banner-content {
+        grid-template-columns: 1fr;
+        gap: 32px;
+                align-items: baseline;
+          grid-template-rows: 20% 80%;
+      }
+      #yoode-banner-{{ section.id }} .yoode-banner-slider {
+        padding: 0;
+      }
+      #yoode-banner-{{ section.id }} .yoode-banner-slider-arrow {
+        display: none;
+      }
+    }
+     @media (max-width: 500px) {
+      #yoode-banner-{{ section.id }} .yoode-banner-content{
+      grid-template-rows:auto !important;
+
+      }
+     }
+{% endstyle %}
+
+{%- comment -%} Count slides: blocks, or the single fallback banner {%- endcomment -%}
+{% assign slide_count = section.blocks.size %}
+{% if slide_count == 0 %}
+  {% assign slide_count = 1 %}
+{% endif %}
+
+<!-- Customisation Banner Section -->
+<section
+  id="yoode-banner-{{ section.id }}"
+  class="yoode-banner yoode-banner--margin-{{ section.settings.margin_top }} yoode-banner--margin-bottom-{{ section.settings.margin_bottom }} yoode-banner--padding-{{ section.settings.padding_top }} yoode-banner--padding-bottom-{{ section.settings.padding_bottom }} section-padding"
+>
+  <div class="yoode-container">
+    <div
+      class="yoode-banner-slider"
+      data-yoode-slider
+      data-autoplay="{{ section.settings.autoplay }}"
+      data-interval="{{ section.settings.autoplay_speed | times: 1000 }}"
+      data-loop="{{ section.settings.loop }}"
+    >
+      <div class="yoode-banner-slider-viewport">
+        <div class="yoode-banner-slider-track">
+          {% if section.blocks.size > 0 %}
+            {% for block in section.blocks %}
+              <div class="yoode-banner-slide" {{ block.shopify_attributes }}>
+                <div class="yoode-banner-content">
+                  <div class="yoode-banner-text">
+                    {% if block.settings.badge_text != blank %}
+                      <span class="yoode-banner-badge">{{ block.settings.badge_text }}</span>
+                    {% endif %}
+                    {% if block.settings.title != blank %}
+                      <h2 class="yoode-banner-title">{{ block.settings.title }}</h2>
+                    {% endif %}
+                    {% if block.settings.description != blank %}
+                      <p class="yoode-banner-description">{{ block.settings.description }}</p>
+                    {% endif %}
+                    {% if block.settings.button_primary_text != blank
+                      or block.settings.button_secondary_text != blank
+                      or block.settings.button_tertiary_text != blank
+                    %}
+                      <div class="yoode-banner-buttons">
+                        {% if block.settings.button_primary_text != blank %}
+                          {% if block.settings.button_primary_link != blank %}
+                            <a href="{{ block.settings.button_primary_link }}" class="yoode-btn yoode-btn-primary">
+                              {{- block.settings.button_primary_text -}}
+                            </a>
+                          {% else %}
+                            <button type="button" class="yoode-btn yoode-btn-primary">
+                              {{ block.settings.button_primary_text }}
+                            </button>
+                          {% endif %}
+                        {% endif %}
+                        {% if block.settings.button_secondary_text != blank %}
+                          {% if block.settings.button_secondary_link != blank %}
+                            <a href="{{ block.settings.button_secondary_link }}" class="yoode-btn yoode-btn-secondary">
+                              {{- block.settings.button_secondary_text -}}
+                            </a>
+                          {% else %}
+                            <button type="button" class="yoode-btn yoode-btn-secondary">
+                              {{ block.settings.button_secondary_text }}
+                            </button>
+                          {% endif %}
+                        {% endif %}
+                        {% if block.settings.button_tertiary_text != blank %}
+                          {% if block.settings.button_tertiary_link != blank %}
+                            <a href="{{ block.settings.button_tertiary_link }}" class="yoode-btn yoode-btn-secondary">
+                              {{- block.settings.button_tertiary_text -}}
+                            </a>
+                          {% else %}
+                            <button type="button" class="yoode-btn yoode-btn-secondary">
+                              {{ block.settings.button_tertiary_text }}
+                            </button>
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="yoode-banner-image">
+                    {% if block.settings.image %}
+                      {{
+                        block.settings.image
+                        | image_url: width: 3000
+                        | image_tag: class: 'yoode-image-fluid', alt: block.settings.image_alt, loading: 'lazy'
+                      }}
+                    {% endif %}
+                    {% if block.settings.image_caption != blank %}
+                      <p class="yoode-banner-image-caption">{{ block.settings.image_caption }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            {%- comment -%} Fallback: render the single banner from section settings when no slides are added {%- endcomment -%}
+            <div class="yoode-banner-slide">
+              <div class="yoode-banner-content">
+                <div class="yoode-banner-text">
+                  {% if section.settings.badge_text != blank %}
+                    <span class="yoode-banner-badge">{{ section.settings.badge_text }}</span>
+                  {% endif %}
+                  {% if section.settings.title != blank %}
+                    <h1 class="yoode-banner-title">{{ section.settings.title }}</h1>
+                  {% endif %}
+                  {% if section.settings.description != blank %}
+                    <p class="yoode-banner-description">{{ section.settings.description }}</p>
+                  {% endif %}
+                  {% if section.settings.button_primary_text != blank
+                    or section.settings.button_secondary_text != blank
+                    or section.settings.button_tertiary_text != blank
+                  %}
+                    <div class="yoode-banner-buttons">
+                      {% if section.settings.button_primary_text != blank %}
+                        {% if section.settings.button_primary_link != blank %}
+                          <a href="{{ section.settings.button_primary_link }}" class="yoode-btn yoode-btn-primary">
+                            {{- section.settings.button_primary_text -}}
+                          </a>
+                        {% else %}
+                          <button type="button" class="yoode-btn yoode-btn-primary">
+                            {{ section.settings.button_primary_text }}
+                          </button>
+                        {% endif %}
+                      {% endif %}
+                      {% if section.settings.button_secondary_text != blank %}
+                        {% if section.settings.button_secondary_link != blank %}
+                          <a href="{{ section.settings.button_secondary_link }}" class="yoode-btn yoode-btn-secondary">
+                            {{- section.settings.button_secondary_text -}}
+                          </a>
+                        {% else %}
+                          <button type="button" class="yoode-btn yoode-btn-secondary">
+                            {{ section.settings.button_secondary_text }}
+                          </button>
+                        {% endif %}
+                      {% endif %}
+                      {% if section.settings.button_tertiary_text != blank %}
+                        {% if section.settings.button_tertiary_link != blank %}
+                          <a href="{{ section.settings.button_tertiary_link }}" class="yoode-btn yoode-btn-secondary">
+                            {{- section.settings.button_tertiary_text -}}
+                          </a>
+                        {% else %}
+                          <button type="button" class="yoode-btn yoode-btn-secondary">
+                            {{ section.settings.button_tertiary_text }}
+                          </button>
+                        {% endif %}
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+                <div class="yoode-banner-image">
+                  {% if section.settings.image %}
+                    {{
+                      section.settings.image
+                      | image_url: width: 3000
+                      | image_tag: class: 'yoode-image-fluid', alt: section.settings.image_alt
+                    }}
+                  {% endif %}
+                  {% if section.settings.image_caption != blank %}
+                    <p class="yoode-banner-image-caption">{{ section.settings.image_caption }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if slide_count > 1 %}
+        {% if section.settings.show_arrows %}
+          <button
+            class="yoode-banner-slider-arrow yoode-banner-slider-arrow--prev"
+            type="button"
+            aria-label="Previous slide"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button
+            class="yoode-banner-slider-arrow yoode-banner-slider-arrow--next"
+            type="button"
+            aria-label="Next slide"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        {% endif %}
+        {% if section.settings.show_dots %}
+          <div class="yoode-banner-slider-dots">
+            {% for i in (1..slide_count) %}
+              <button
+                class="yoode-banner-slider-dot{% if forloop.first %} is-active{% endif %}"
+                type="button"
+                aria-label="Go to slide {{ i }}"
+              ></button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var root = document.getElementById('yoode-banner-{{ section.id }}');
+    if (!root) return;
+    var slider = root.querySelector('[data-yoode-slider]');
+    if (!slider || slider.dataset.init === 'true') return;
+    slider.dataset.init = 'true';
+
+    var track = slider.querySelector('.yoode-banner-slider-track');
+    var slides = Array.prototype.slice.call(slider.querySelectorAll('.yoode-banner-slide'));
+    var dots = Array.prototype.slice.call(slider.querySelectorAll('.yoode-banner-slider-dot'));
+    var prev = slider.querySelector('.yoode-banner-slider-arrow--prev');
+    var next = slider.querySelector('.yoode-banner-slider-arrow--next');
+    var count = slides.length;
+    if (!track || count <= 1) return;
+
+    var index = 0;
+    var autoplay = slider.dataset.autoplay === 'true';
+    var interval = parseInt(slider.dataset.interval, 10) || 5000;
+    var loop = slider.dataset.loop === 'true';
+    var timer = null;
+
+    function go(i) {
+      index = loop ? (i + count) % count : Math.max(0, Math.min(i, count - 1));
+      track.style.transform = 'translateX(' + -index * 100 + '%)';
+      dots.forEach(function (d, di) {
+        d.classList.toggle('is-active', di === index);
+      });
+      if (prev && !loop) prev.disabled = index === 0;
+      if (next && !loop) next.disabled = index === count - 1;
+    }
+
+    function start() {
+      if (!autoplay) return;
+      stop();
+      timer = setInterval(function () {
+        go(index + 1);
+      }, interval);
+    }
+    function stop() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    if (prev)
+      prev.addEventListener('click', function () {
+        go(index - 1);
+        start();
+      });
+    if (next)
+      next.addEventListener('click', function () {
+        go(index + 1);
+        start();
+      });
+    dots.forEach(function (d, di) {
+      d.addEventListener('click', function () {
+        go(di);
+        start();
+      });
+    });
+
+    slider.addEventListener('mouseenter', stop);
+    slider.addEventListener('mouseleave', start);
+
+    var startX = 0,
+      dx = 0,
+      dragging = false;
+    slider.addEventListener(
+      'touchstart',
+      function (e) {
+        startX = e.touches[0].clientX;
+        dragging = true;
+        stop();
+      },
+      { passive: true }
+    );
+    slider.addEventListener(
+      'touchmove',
+      function (e) {
+        if (dragging) dx = e.touches[0].clientX - startX;
+      },
+      { passive: true }
+    );
+    slider.addEventListener('touchend', function () {
+      if (!dragging) return;
+      if (Math.abs(dx) > 40) go(dx < 0 ? index + 1 : index - 1);
+      dragging = false;
+      dx = 0;
+      start();
+    });
+
+    go(0);
+    start();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "New Yoode Banner",
+  "class": "yoode-banner-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Slider"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add one or more \"Banner slide\" blocks below. Each slide is a full banner (text + buttons + image) and the whole banner slides between them."
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "default": true,
+      "label": "Autoplay slides"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5,
+      "label": "Seconds between slides"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "default": true,
+      "label": "Loop slides"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "default": true,
+      "label": "Show arrows"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "default": true,
+      "label": "Show dots"
+    },
+    {
+      "type": "header",
+      "content": "Single banner (used only when no slides are added)"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "default": "Customisation ecosystem - India",
+      "label": "Badge Text"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Customised Apparel & Merchandise for Modern Brands",
+      "label": "t:sections.all.title.label"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "default": "Walk in. Design it. Wear it. Experience customisation at Yoode Experience Centres across India.",
+      "label": "Description"
+    },
+    {
+      "type": "text",
+      "id": "button_primary_text",
+      "default": "For corporates",
+      "label": "Primary Button Text"
+    },
+    {
+      "type": "url",
+      "id": "button_primary_link",
+      "label": "Primary Button Link"
+    },
+    {
+      "type": "text",
+      "id": "button_secondary_text",
+      "default": "For sports teams",
+      "label": "Secondary Button Text"
+    },
+    {
+      "type": "url",
+      "id": "button_secondary_link",
+      "label": "Secondary Button Link"
+    },
+    {
+      "type": "text",
+      "id": "button_tertiary_text",
+      "default": "Personalise yours",
+      "label": "Tertiary Button Text"
+    },
+    {
+      "type": "url",
+      "id": "button_tertiary_link",
+      "label": "Tertiary Button Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image.label"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "default": "Experience Centre / on-premise customisation",
+      "label": "Image Alt"
+    },
+    {
+      "type": "text",
+      "id": "image_caption",
+      "default": "Hero Image — Experience Centre / on-premise customisation",
+      "label": "Image Caption"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-margin.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-margin.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-margin.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-margin.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-margin.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-margin.options__6.label" }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-margin.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-margin.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-margin.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-margin.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-margin.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-margin.options__6.label" }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Banner slide",
+      "settings": [
+        {
+          "type": "text",
+          "id": "badge_text",
+          "default": "Customisation ecosystem - India",
+          "label": "Badge Text"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Customised Apparel & Merchandise for Modern Brands",
+          "label": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "default": "Walk in. Design it. Wear it. Experience customisation at Yoode Experience Centres across India.",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "button_primary_text",
+          "default": "For corporates",
+          "label": "Primary Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button_primary_link",
+          "label": "Primary Button Link"
+        },
+        {
+          "type": "text",
+          "id": "button_secondary_text",
+          "default": "For sports teams",
+          "label": "Secondary Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button_secondary_link",
+          "label": "Secondary Button Link"
+        },
+        {
+          "type": "text",
+          "id": "button_tertiary_text",
+          "default": "Personalise yours",
+          "label": "Tertiary Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button_tertiary_link",
+          "label": "Tertiary Button Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "default": "Experience Centre / on-premise customisation",
+          "label": "Image Alt"
+        },
+        {
+          "type": "text",
+          "id": "image_caption",
+          "default": "Hero Image — Experience Centre / on-premise customisation",
+          "label": "Image Caption"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "New Yoode Banner",
+      "settings": {
+        "autoplay": true,
+        "autoplay_speed": 5,
+        "loop": true,
+        "show_arrows": true,
+        "show_dots": true,
+        "padding_bottom": "xl"
+      },
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "badge_text": "Customisation ecosystem - India",
+            "title": "Customised Apparel & Merchandise for Modern Brands",
+            "description": "Walk in. Design it. Wear it. Experience customisation at Yoode Experience Centres across India."
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "badge_text": "For corporates",
+            "title": "Kit Out Your Team in Minutes",
+            "description": "Bulk corporate merchandise, branded and delivered — designed at your nearest Yoode Experience Centre."
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "badge_text": "For sports teams",
+            "title": "Custom Jerseys Built for Winners",
+            "description": "Names, numbers and colours — personalise full team kits on the spot."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

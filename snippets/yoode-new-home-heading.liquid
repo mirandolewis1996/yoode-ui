@@ -1,0 +1,32 @@
+{% comment %}
+  Common heading for yoode-new-home-* sections (styles: yoode-new-home.css).
+
+  Accepts:
+  - subtitle {String} small red label above the title
+  - title {String}
+  - description {String} richtext / plain text
+  - align {String} 'center' (default) or 'left'
+  - tag {String} title tag, default 'h2'
+
+  Usage:
+  {% render 'yoode-new-home-heading', subtitle: section.settings.subtitle, title: section.settings.title, description: section.settings.description %}
+{% endcomment %}
+
+{%- liquid
+  assign heading_tag = tag | default: 'h2'
+  assign heading_align = align | default: 'center'
+-%}
+
+{%- if subtitle != blank or title != blank or description != blank -%}
+  <div class="yn-heading{% if heading_align == 'center' %} yn-heading--center{% endif %}">
+    {%- if subtitle != blank -%}
+      <p class="yn-subtitle">{{ subtitle | escape }}</p>
+    {%- endif -%}
+    {%- if title != blank -%}
+      <{{ heading_tag }} class="yn-title">{{ title | escape }}</{{ heading_tag }}>
+    {%- endif -%}
+    {%- if description != blank -%}
+      <div class="yn-description">{{ description }}</div>
+    {%- endif -%}
+  </div>
+{%- endif -%}

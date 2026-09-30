@@ -1,0 +1,612 @@
+{{ 'aop-calculator.css' | asset_url | stylesheet_tag }}
+<link
+  href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Poppins:wght@600;700;800&display=swap"
+  rel="stylesheet" />
+
+<div class="aop-calc-section section-padding" id="aop-calc-app">
+{% raw %}
+
+  <div class="aop-page-title">AOP Price Estimator</div>
+
+  <div class="aop-container">
+
+    <!-- ROW 1 : STEP 1 (Product)  +  STEP 2 (Design) -->
+    <div class="step-row">
+
+      <!-- STEP 1: Product -->
+      <div class="aop-card" :class="{active:step===1}">
+        <div class="card-title">
+          <span class="num">1</span>Select Product
+          <span class="card-sub" v-if="selectedProduct">{{selectedProduct}}</span>
+        </div>
+        <div class="product-grid">
+          <div v-for="p in PRODUCT_ORDER" :key="p" class="prod-card" :class="{selected:selectedProduct===p}"
+            @click="selectProduct(p)">
+            <div class="prod-check"></div>
+            <div class="prod-card-name">{{p}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Design -->
+      <div class="aop-card" :class="{active:step===2,'card-locked':!selectedProduct}">
+        <div class="card-title">
+          <span class="num">2</span>Select Design
+          <span class="card-sub" v-if="selectedDesign">{{selectedDesign}}</span>
+        </div>
+        <div class="step-hint" v-if="!selectedProduct">Pick a product first to unlock designs.</div>
+        <template v-else>
+          <div class="design-grid">
+            <div v-for="d in DESIGNS" :key="d.name" class="design-chip" :class="{selected:selectedDesign===d.name}"
+              @click="selectDesign(d.name)">
+              {{d.name}}
+              <span v-if="d.charge>0"
+                style="color:var(--aop-yorange);font-size:11px;margin-left:4px;font-weight:700">+₹{{d.charge}}/design</span>
+            </div>
+          </div>
+          <div class="design-charge-note" v-if="selectedDesign&&designCharge>0">
+            <span>🎨</span>
+            <span><strong>Own Design charge: ₹{{designCharge}}/design</strong> — × number of custom designs, added to the total estimate</span>
+          </div>
+          <div class="own-design-row" v-if="selectedDesign&&designCharge>0"
+            style="display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap">
+            <label style="font-size:13px;font-weight:600">How many own designs?</label>
+            <input type="number" class="qty-inp" min="1" placeholder="1" style="max-width:90px"
+              :value="ownDesignCount" @input="setOwnDesignCount(+$event.target.value||1)" />
+          </div>
+        </template>
+      </div>
+
+    </div>
+
+    <!-- ROW 2 : STEP 3 (Quantity)  +  STEP 4 (Fabric) -->
+    <div class="step-row quality-fabric" v-if="selectedDesign">
+
+    <!-- STEP 3: Qty per individual size -->
+    <div class="aop-card" :class="{active:step===3}">
+      <div class="card-title"><span class="num">3</span>Quantity by Size</div>
+      <div class="qty-section">
+        <div v-for="(sleeveBlock, si) in sleeveBlocks" :key="sleeveBlock.sleeve"
+          :style="si>0?'margin-top:24px;padding-top:24px;border-top:1px solid var(--aop-border)':''">
+          <div class="sleeve-label" v-if="sleeveBlock.showLabel" style="margin-bottom:12px">
+            {{sleeveBlock.sleeve}} Sleeve
+          </div>
+          <div class="size-grid">
+            <div v-for="sz in sleeveBlock.allSizes" :key="sz" class="size-cell">
+              <div class="size-num">{{sz}}</div>
+              <input type="number" class="qty-inp" min="0" placeholder="0"
+                :class="{'has-val':getQty(sleeveBlock.sleeve,sz)>0}" :value="getQty(sleeveBlock.sleeve,sz)"
+                @input="setQty(sleeveBlock.sleeve,sz,+$event.target.value||0)" />
+              <div class="size-rate" v-if="selectedFabric">₹{{sleeveBlock.rateFor(sz)}}</div>
+              <div class="size-sub" v-if="selectedFabric&&getQty(sleeveBlock.sleeve,sz)>0">
+                ₹{{fmt(getQty(sleeveBlock.sleeve,sz)*sleeveBlock.rateFor(sz))}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Totals bar -->
+      <div class="totals-bar" v-if="totalQty>0" style="margin-top:20px">
+        <div class="tot-item">
+          <div class="tot-lbl">Total Pieces</div>
+          <div class="tot-val">{{totalQty}}</div>
+          <div class="tot-sub">all sizes &amp; sleeves</div>
+        </div>
+        <template v-if="selectedFabric">
+          <div class="tot-div"></div>
+          <div class="tot-item">
+            <div class="tot-lbl">Product Subtotal</div>
+            <div class="tot-val">₹{{fmt(baseTotal)}}</div>
+            <div class="tot-sub">excl. design charge</div>
+          </div>
+        </template>
+        <template v-if="designCharge>0">
+          <div class="tot-div"></div>
+          <div class="tot-item">
+            <div class="tot-lbl">Design Charge</div>
+            <div class="tot-val" style="color:var(--aop-yorange)">₹{{fmt(designTotal)}}</div>
+            <div class="tot-sub">₹{{fmt(designCharge)}} × {{ownDesignCount}} design{{ownDesignCount>1?'s':''}}</div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- STEP 4: Fabric -->
+    <div class="aop-card" :class="{active:step===4,'card-locked':totalQty===0}">
+      <div class="card-title">
+        <span class="num">4</span>Select Fabric
+        <span class="card-sub" v-if="selectedFabric">{{selectedFabric}}</span>
+      </div>
+      <div class="step-hint" v-if="totalQty===0">Enter quantities to compare fabric prices.</div>
+      <div class="fabric-grid" v-else>
+        <div v-for="f in availableFabrics" :key="f.name" class="fab-card" :class="{selected:selectedFabric===f.name}"
+          @click="selectFabric(f.name)">
+          <div class="fab-name">{{f.name}}</div>
+          <div class="fab-gsm">{{f.gsm}} GSM</div>
+          <div class="fab-treats" v-if="f.treats.length">
+            <span class="treat-pill" v-for="t in f.treats" :key="t">{{t}}</span>
+          </div>
+          <div class="fab-price"
+            style="margin-top:10px;padding-top:10px;border-top:1px solid var(--aop-border);font-family:Poppins,sans-serif;font-weight:800;font-size:18px;color:var(--aop-yorange);line-height:1.2">
+            <span v-if="designCharge>0"
+              style="display:inline-block;margin-bottom:6px;padding:2px 9px;border-radius:20px;background:rgba(246,94,33,.12);color:var(--aop-yorange);font-family:'DM Sans',sans-serif;font-weight:600;font-size:11px;line-height:1.5">₹{{fmt(fabricTotal(f.name))}} + ₹{{fmt(designTotal)}} design</span>
+            <span style="display:block">₹{{fmt(fabricEstimate(f.name))}}</span>
+            <span
+              style="display:block;font-family:'DM Sans',sans-serif;font-weight:400;font-size:11px;color:var(--aop-muted)">est. total for {{totalQty}} pcs{{designCharge>0?' (incl. design)':''}}</span> 
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- /step-row 2 -->
+
+    <!-- PRICE SUMMARY -->
+    <div class="summary-card" v-if="selectedFabric&&totalQty>0">
+      <div class="card-title" style="margin-bottom:22px">
+        <span class="num" style="background:var(--aop-yorange)">✦</span>Price Summary
+      </div>
+      <div class="summary-meta"
+        style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px">
+        <div
+          style="flex:1 1 140px;background:var(--aop-bg,#f6f7fb);border:1px solid var(--aop-border);border-radius:10px;padding:10px 14px">
+          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--aop-muted)">Product</div>
+          <div style="font-size:14px;font-weight:700;margin-top:3px">{{selectedProduct}}</div>
+        </div>
+        <div
+          style="flex:1 1 140px;background:var(--aop-bg,#f6f7fb);border:1px solid var(--aop-border);border-radius:10px;padding:10px 14px">
+          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--aop-muted)">Fabric</div>
+          <div style="font-size:14px;font-weight:700;margin-top:3px">{{selectedFabric}}</div>
+        </div>
+        <div
+          style="flex:1 1 140px;background:var(--aop-bg,#f6f7fb);border:1px solid var(--aop-border);border-radius:10px;padding:10px 14px">
+          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--aop-muted)">Design</div>
+          <div style="font-size:14px;font-weight:700;margin-top:3px">{{selectedDesign}}</div>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-box blue">
+          <div class="kpi-lbl">Total Pieces</div>
+          <div class="kpi-val c-blue">{{totalQty}}<span class="kpi-unit"> pcs</span></div>
+        </div>
+        <div class="kpi-box orange">
+          <div class="kpi-lbl">Product Subtotal</div>
+          <div class="kpi-val c-orange">₹{{fmt(baseTotal)}}</div>
+        </div>
+        <div class="kpi-box green">
+          <div class="kpi-lbl">Design Charge</div>
+          <div class="kpi-val c-green">{{designCharge>0?'₹'+fmt(designCharge)+' × '+ownDesignCount+' = ₹'+fmt(designTotal):'—'}}</div>
+        </div>
+      </div>
+
+      <div class="shipping-row">
+        <label>Shipping &amp; Other Charges (₹)</label>
+        <input type="number" class="shipping-inp" v-model.number="shipping" min="0" placeholder="0" />
+      </div>
+
+      <div class="breakdown-wrap">
+        <table class="bd-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Qty</th>
+              <th>Rate (₹)</th>
+              <th>Total (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in breakdown" :key="row.label">
+              <td>{{row.label}}</td>
+              <td style="text-align:right">{{row.qty}}</td>
+              <td style="text-align:right">{{fmt(row.rate)}}</td>
+              <td style="text-align:right">{{fmt(row.total)}}</td>
+            </tr>
+            <tr v-if="designCharge>0">
+              <td>Design Charge — {{selectedDesign}} <span style="font-size:11px;color:var(--aop-muted)">(per design)</span></td>
+              <td style="text-align:right">{{ownDesignCount}}</td>
+              <td style="text-align:right">{{fmt(designCharge)}}</td>
+              <td style="text-align:right">{{fmt(designTotal)}}</td>
+            </tr>
+            <tr v-if="shipping>0">
+              <td>Shipping &amp; Other</td>
+              <td style="text-align:right">—</td>
+              <td style="text-align:right">—</td>
+              <td style="text-align:right">{{fmt(shipping)}}</td>
+            </tr>
+            <tr class="grand">
+              <td>Grand Total</td>
+              <td style="text-align:right">{{totalQty}} pcs</td>
+              <td style="text-align:right">₹{{fmt(ratePerPc)}} /pc</td>
+              <td style="text-align:right">{{fmt(grandTotal)}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="final-grid">
+        <div class="final-hero fblue">
+          <div class="f-lbl">Rate Per Piece</div>
+          <div class="f-val">₹{{fmt(ratePerPc)}}</div>
+        </div>
+        <div class="final-hero forange">
+          <div class="f-lbl">Grand Total</div>
+          <div class="f-val">₹{{fmt(grandTotal)}}</div>
+        </div>
+      </div>
+
+      <div class="export-row">
+        <button class="export-btn pdf-btn" @click="exportPDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="12" y1="18" x2="12" y2="12" />
+            <polyline points="9 15 12 18 15 15" />
+          </svg>
+          Export PDF
+        </button>
+        <button class="export-btn wa-btn" @click="shareWhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+          </svg>
+          Share via WhatsApp
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STICKY FOOTER: live totals -->
+  <div class="sticky-footer" v-if="selectedFabric&&totalQty>0">
+    <div class="sf-meta">
+      <div class="sf-item">
+        <div class="sf-lbl">Pieces</div>
+        <div class="sf-val">{{totalQty}}</div>
+      </div>
+      <div class="sf-item">
+        <div class="sf-lbl">Subtotal</div>
+        <div class="sf-val">₹{{fmt(baseTotal)}}</div>
+      </div>
+      <div class="sf-item">
+        <div class="sf-lbl">Rate/pc</div>
+        <div class="sf-val orange">₹{{fmt(ratePerPc)}}</div>
+      </div>
+      <div class="sf-item">
+        <div class="sf-lbl">Grand Total</div>
+        <div class="sf-val orange">₹{{fmt(grandTotal)}}</div>
+      </div>
+    </div>
+    <button class="sf-reset" @click="resetAll">Reset</button>
+  </div>
+
+{% endraw %}
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+<script>
+  // Load calculator data then boot Vue
+  (function() {
+    var s = document.createElement('script');
+    s.src = {{ 'aop-calculator-data.js' | asset_url | json }};
+    s.onload = function() { initAopCalc(); };
+    document.head.appendChild(s);
+  })();
+
+  function initAopCalc() {
+    var data = window.AOP_CALCULATOR_DATA;
+    var FABRIC_INFO   = data.fabricInfo;
+    var FABRIC_ORDER  = data.fabricOrder;
+    var DESIGNS       = data.designs;
+    var PRODUCT_ORDER = data.productOrder;
+    var ALL_SIZES     = data.sizes;
+    var PD            = data.pd;
+
+    function sizeToBand(sz) {
+      if (sz <= 28) return '22 - 28';
+      if (sz <= 36) return '30 - 36';
+      if (sz <= 44) return '38 - 44';
+      return '46 - 52';
+    }
+
+    var { createApp, ref, reactive, computed } = Vue;
+
+    createApp({
+      setup() {
+        var CUSTOMER_TYPE = 'Retail';
+
+        var selectedProduct = ref('');
+        var selectedFabric = ref('');
+        var selectedDesign = ref('');
+        var ownDesignCount = ref(1);
+        var shipping = ref(0);
+        var quantities = reactive({});
+
+        function setOwnDesignCount(val) { ownDesignCount.value = Math.max(1, Math.floor(val || 1)); }
+
+        var availableFabrics = computed(function() {
+          if (!selectedProduct.value) return [];
+          var fabs = new Set(PD.filter(function(r) { return r[0] === selectedProduct.value; }).map(function(r) { return r[1]; }));
+          return FABRIC_ORDER.filter(function(f) { return fabs.has(f); }).map(function(f) {
+            return { name: f, gsm: FABRIC_INFO[f] ? FABRIC_INFO[f].gsm : '', treats: FABRIC_INFO[f] ? FABRIC_INFO[f].treats : [] };
+          });
+        });
+
+        var availableSleeves = computed(function() {
+          if (!selectedProduct.value) return [];
+          var sl = new Set(PD.filter(function(r) { return r[0] === selectedProduct.value; }).map(function(r) { return r[2]; }));
+          var order = ['Half', 'Full', 'none'];
+          return order.filter(function(s) { return sl.has(s); });
+        });
+
+        var hasBothSleeves = computed(function() {
+          return availableSleeves.value.includes('Half') && availableSleeves.value.includes('Full');
+        });
+
+        function qKey(sleeve, size) { return sleeve + '|' + size; }
+        function getQty(sleeve, size) { return quantities[qKey(sleeve, size)] || 0; }
+        function setQty(sleeve, size, val) { quantities[qKey(sleeve, size)] = Math.max(0, Math.floor(val || 0)); }
+
+        function ctIdx() { return 0; }
+
+        function getRateFor(fabric, sleeve, band) {
+          var row = PD.find(function(r) { return r[0] === selectedProduct.value && r[1] === fabric && r[2] === sleeve && r[3] === band; });
+          return row ? [row[4], row[5], row[6]][ctIdx()] : 0;
+        }
+        function getRate(sleeve, band) { return getRateFor(selectedFabric.value, sleeve, band); }
+
+        // Estimated product subtotal for a given fabric using the quantities already entered
+        function fabricTotal(fabric) {
+          var t = 0;
+          for (var i = 0; i < availableSleeves.value.length; i++)
+            for (var j = 0; j < ALL_SIZES.length; j++) {
+              var q = getQty(availableSleeves.value[i], ALL_SIZES[j]);
+              if (q > 0) t += q * getRateFor(fabric, availableSleeves.value[i], sizeToBand(ALL_SIZES[j]));
+            }
+          return t;
+        }
+
+        // Fabric-card preview: (product + fabric rate) x qty + design charge x num custom designs
+        function fabricEstimate(fabric) {
+          return fabricTotal(fabric) + designCharge.value * ownDesignCount.value;
+        }
+
+        var sleeveBlocks = computed(function() {
+          if (!selectedProduct.value) return [];
+          return availableSleeves.value.map(function(sleeve) {
+            function rateFor(sz) { return getRate(sleeve, sizeToBand(sz)); }
+            return { sleeve: sleeve, showLabel: hasBothSleeves.value, allSizes: ALL_SIZES, rateFor: rateFor };
+          });
+        });
+
+        var designCharge = computed(function() {
+          var d = DESIGNS.find(function(d) { return d.name === selectedDesign.value; });
+          return d ? d.charge : 0;
+        });
+
+        var totalQty = computed(function() {
+          var t = 0;
+          for (var i = 0; i < availableSleeves.value.length; i++)
+            for (var j = 0; j < ALL_SIZES.length; j++)
+              t += getQty(availableSleeves.value[i], ALL_SIZES[j]);
+          return t;
+        });
+
+        var baseTotal = computed(function() {
+          var t = 0;
+          for (var i = 0; i < availableSleeves.value.length; i++)
+            for (var j = 0; j < ALL_SIZES.length; j++) {
+              var q = getQty(availableSleeves.value[i], ALL_SIZES[j]);
+              if (q > 0) t += q * getRate(availableSleeves.value[i], sizeToBand(ALL_SIZES[j]));
+            }
+          return t;
+        });
+
+        var designTotal = computed(function() { return designCharge.value * ownDesignCount.value; });
+        var grandTotal = computed(function() { return baseTotal.value + designTotal.value + (shipping.value || 0); });
+        var ratePerPc = computed(function() { return totalQty.value === 0 ? 0 : grandTotal.value / totalQty.value; });
+
+        var breakdown = computed(function() {
+          var rows = [];
+          for (var i = 0; i < availableSleeves.value.length; i++) {
+            for (var j = 0; j < ALL_SIZES.length; j++) {
+              var sl = availableSleeves.value[i];
+              var sz = ALL_SIZES[j];
+              var q = getQty(sl, sz);
+              if (!q) continue;
+              var rate = getRate(sl, sizeToBand(sz));
+              var label = hasBothSleeves.value ? 'Size ' + sz + ' — ' + sl + ' Sleeve' : 'Size ' + sz;
+              rows.push({ label: label, qty: q, rate: rate, total: q * rate });
+            }
+          }
+          return rows;
+        });
+
+        var step = computed(function() {
+          if (!selectedProduct.value) return 1;
+          if (!selectedDesign.value) return 2;
+          if (totalQty.value === 0) return 3;
+          return 4;
+        });
+
+        function selectProduct(p) {
+          selectedProduct.value = p;
+          selectedFabric.value = '';
+          selectedDesign.value = '';
+          Object.keys(quantities).forEach(function(k) { delete quantities[k]; });
+        }
+        function selectFabric(f) {
+          selectedFabric.value = f;
+        }
+        function selectDesign(d) { selectedDesign.value = d; }
+
+        function resetAll() {
+          selectedProduct.value = '';
+          selectedFabric.value = '';
+          selectedDesign.value = '';
+          ownDesignCount.value = 1;
+          shipping.value = 0;
+          Object.keys(quantities).forEach(function(k) { delete quantities[k]; });
+        }
+
+        function fmt(val) {
+          if (!val || val === 0) return '0';
+          var n = Number(val);
+          return n % 1 === 0 ? n.toLocaleString('en-IN') : n.toFixed(2);
+        }
+
+        function buildEstimationHTML() {
+          var today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+          var rs = '₹';
+          var c = '<\/td>';
+          var r = '<\/tr>';
+          var th = '<\/th>';
+
+          var bdRows = '';
+          for (var i = 0; i < breakdown.value.length; i++) {
+            var row = breakdown.value[i];
+            bdRows += '<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;">' + row.label + c
+              + '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' + row.qty + c
+              + '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' + rs + fmt(row.rate) + c
+              + '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' + rs + fmt(row.total) + c + r;
+          }
+          if (designCharge.value > 0) {
+            bdRows += '<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;">Design Charge — ' + selectedDesign.value + ' (per design)' + c
+              + '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' + ownDesignCount.value + c
+              + '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' + rs + fmt(designCharge.value) + c
+              + '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' + rs + fmt(designTotal.value) + c + r;
+          }
+          if (shipping.value > 0) {
+            bdRows += '<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;">Shipping &amp; Other' + c
+              + '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">—' + c
+              + '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">—' + c
+              + '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' + rs + fmt(shipping.value) + c + r;
+          }
+
+          return '<div style="font-family:Segoe UI,Arial,sans-serif;color:#1a1a2e;max-width:700px;margin:0 auto;padding:30px;">'
+            + '<div style="text-align:center;margin-bottom:28px;">'
+            + '<div style="font-family:Poppins,sans-serif;font-size:28px;font-weight:800;color:#2937cc;">Yoode<\/div>'
+            + '<p style="margin:4px 0 0;font-size:11px;letter-spacing:3px;color:#7b7fa0;text-transform:uppercase;">AOP Price Estimation<\/p>'
+            + '<p style="margin:8px 0 0;font-size:12px;color:#999;">Date: ' + today + '<\/p>'
+            + '<\/div>'
+            + '<table style="width:100%;border-collapse:collapse;margin-bottom:24px;border:1px solid #dde0f0;border-radius:8px;">'
+            + '<tr style="background:#f0f1f9;">'
+            + '<td style="padding:10px 14px;font-size:12px;color:#7b7fa0;font-weight:700;width:25%;">Customer Type' + c
+            + '<td style="padding:10px 14px;font-size:14px;font-weight:700;width:25%;">' + CUSTOMER_TYPE + c
+            + '<td style="padding:10px 14px;font-size:12px;color:#7b7fa0;font-weight:700;width:25%;">Product' + c
+            + '<td style="padding:10px 14px;font-size:14px;font-weight:700;width:25%;">' + selectedProduct.value + c + r
+            + '<tr>'
+            + '<td style="padding:10px 14px;font-size:12px;color:#7b7fa0;font-weight:700;">Fabric' + c
+            + '<td style="padding:10px 14px;font-size:14px;font-weight:700;">' + selectedFabric.value + c
+            + '<td style="padding:10px 14px;font-size:12px;color:#7b7fa0;font-weight:700;">Design' + c
+            + '<td style="padding:10px 14px;font-size:14px;font-weight:700;">' + selectedDesign.value + c + r
+            + '<\/table>'
+            + '<h3 style="margin:0 0 12px;font-size:14px;color:#2937cc;letter-spacing:1.5px;text-transform:uppercase;">Cost Breakdown<\/h3>'
+            + '<table style="width:100%;border-collapse:collapse;margin-bottom:24px;font-size:13px;">'
+            + '<thead><tr style="background:#f0f1f9;">'
+            + '<th style="padding:10px 12px;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Size / Sleeve' + th
+            + '<th style="padding:10px 12px;text-align:right;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Qty' + th
+            + '<th style="padding:10px 12px;text-align:right;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Rate (' + rs + ')' + th
+            + '<th style="padding:10px 12px;text-align:right;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Total (' + rs + ')' + th
+            + r + '<\/thead><tbody>'
+            + bdRows
+            + '<tr style="background:#fff1ec;font-weight:700;font-size:14px;color:#f65e21;">'
+            + '<td style="padding:12px;border-top:2px solid #f65e21;">Grand Total' + c
+            + '<td style="padding:12px;border-top:2px solid #f65e21;text-align:right;">' + totalQty.value + ' pcs' + c
+            + '<td style="padding:12px;border-top:2px solid #f65e21;text-align:right;">' + rs + fmt(ratePerPc.value) + '/pc' + c
+            + '<td style="padding:12px;border-top:2px solid #f65e21;text-align:right;">' + rs + fmt(grandTotal.value) + c
+            + r + '<\/tbody><\/table>'
+            + '<table style="width:100%;border-collapse:collapse;">'
+            + '<tr>'
+            + '<td style="width:50%;padding:16px;background:#2937cc;color:#fff;text-align:center;">'
+            + '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.7;margin-bottom:6px;">Rate Per Piece<\/div>'
+            + '<div style="font-size:28px;font-weight:800;">' + rs + fmt(ratePerPc.value) + '<\/div>' + c
+            + '<td style="width:50%;padding:16px;background:#f65e21;color:#fff;text-align:center;">'
+            + '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.7;margin-bottom:6px;">Grand Total<\/div>'
+            + '<div style="font-size:28px;font-weight:800;">' + rs + fmt(grandTotal.value) + '<\/div>' + c
+            + r + '<\/table>'
+            + '<p style="text-align:center;margin-top:30px;font-size:11px;color:#aaa;">Generated by Yoode AOP Price Estimator<\/p>'
+            + '<\/div>';
+        }
+
+        function exportPDF() {
+          var html = buildEstimationHTML();
+          var fullHTML = '<!DOCTYPE html><html><head><meta charset="utf-8">'
+            + '<meta name="viewport" content="width=device-width, initial-scale=1">'
+            + '<title>Yoode AOP Price Estimation<\/title>'
+            + '<style>@page{size:A4;margin:10mm}body{margin:0;background:#fff}'
+            + '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}<\/style>'
+            + '<\/head><body>' + html + '<\/body><\/html>';
+          var printWin = window.open('', '_blank');
+          if (printWin) {
+            printWin.document.open();
+            printWin.document.write(fullHTML);
+            printWin.document.close();
+            // Wait for content to render, then trigger print
+            setTimeout(function() {
+              printWin.focus();
+              printWin.print();
+            }, 600);
+          } else {
+            // Fallback if popup blocked: use blob URL
+            var blob = new Blob([fullHTML], { type: 'text/html' });
+            var url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+            setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+          }
+        }
+
+        function shareWhatsApp() {
+          var rs = '₹';
+          var today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+          var lines = [];
+          lines.push('*YOODE AOP Price Estimate* — ' + today);
+          lines.push('────────────────────');
+          lines.push('*Product:* ' + selectedProduct.value);
+          lines.push('*Fabric:* ' + selectedFabric.value);
+          lines.push('*Design:* ' + selectedDesign.value);
+          lines.push('*Customer Type:* ' + CUSTOMER_TYPE);
+          lines.push('*Total Pieces:* ' + totalQty.value + ' pcs');
+          if (breakdown.value.length > 0) {
+            lines.push('\n*Size Breakdown:*');
+            for (var i = 0; i < breakdown.value.length; i++) {
+              var row = breakdown.value[i];
+              lines.push('  • ' + row.label + ': ' + row.qty + ' pcs \xd7 ' + rs + fmt(row.rate) + ' = ' + rs + fmt(row.total));
+            }
+          }
+          if (designCharge.value > 0) lines.push('*Design Charge (' + selectedDesign.value + '):* ' + rs + fmt(designCharge.value) + ' \xd7 ' + ownDesignCount.value + ' design(s) = ' + rs + fmt(designTotal.value));
+          if (shipping.value > 0) lines.push('*Shipping & Other:* ' + rs + fmt(shipping.value));
+          lines.push('────────────────────');
+          lines.push('*Rate Per Piece:* ' + rs + fmt(ratePerPc.value));
+          lines.push('*Grand Total:* ' + rs + fmt(grandTotal.value));
+          lines.push('\n_Generated by Yoode AOP Price Estimator_');
+          window.open('https://wa.me/?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+        }
+
+        return {
+          PRODUCT_ORDER: PRODUCT_ORDER, selectedProduct: selectedProduct, selectProduct: selectProduct,
+          availableFabrics: availableFabrics, selectedFabric: selectedFabric, selectFabric: selectFabric,
+          DESIGNS: DESIGNS, selectedDesign: selectedDesign, selectDesign: selectDesign, designCharge: designCharge, designTotal: designTotal,
+          ownDesignCount: ownDesignCount, setOwnDesignCount: setOwnDesignCount,
+          availableSleeves: availableSleeves, hasBothSleeves: hasBothSleeves, sleeveBlocks: sleeveBlocks,
+          fabricTotal: fabricTotal, fabricEstimate: fabricEstimate,
+          getQty: getQty, setQty: setQty,
+          totalQty: totalQty, baseTotal: baseTotal, grandTotal: grandTotal, ratePerPc: ratePerPc,
+          breakdown: breakdown, shipping: shipping, step: step, fmt: fmt, resetAll: resetAll,
+          exportPDF: exportPDF, shareWhatsApp: shareWhatsApp
+        };
+      }
+    }).mount('#aop-calc-app');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "AOP Price Estimator",
+  "class": "aop-price-estimator-wrapper",
+  "settings": [],
+  "presets": [
+    {
+      "name": "AOP Price Estimator"
+    }
+  ]
+}
+{% endschema %}

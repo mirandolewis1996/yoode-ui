@@ -1,0 +1,35 @@
+<div class="container section-padding-bottom">
+  <!-- Render the iframe dynamically from the input link in settings -->
+  {% if section.settings.map_iframe_url %}
+    <iframe src="{{ section.settings.map_iframe_url }}"  style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  {% else %}
+    <p>Please set an iframe link in the settings.</p>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "YD Map",
+  "tag": "section",
+  "class": "yd-map-wrapper",
+  "disabled_on": {
+    "templates": ["password"],
+    "groups": ["*"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "map_iframe_url",
+      "label": "Map Iframe URL",
+      "default": "iframe url here"
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "YD Map",
+      "blocks": []
+    }
+  ]
+}
+{% endschema %}

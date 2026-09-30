@@ -1,0 +1,1350 @@
+
+
+/* =========================================================
+   CSS Variables
+   ========================================================= */
+.print-on-demand {
+    --clr-primary: rgb(246, 94, 33);
+    --clr-secondary: rgb(255, 172, 70);
+    --clr-dark: rgb(51, 51, 51);
+    --clr-dark-card: rgb(54, 53, 53);
+    --clr-footer-bg: rgb(38, 45, 51);
+
+    --clr-bg-hero: rgba(255, 240, 224, 0.5);
+    --clr-bg-section: rgba(255, 242, 230, 0.3);
+    --clr-faq-bg: rgba(242, 242, 242, 0.4);
+
+    --clr-white: rgb(255, 255, 255);
+
+    --clr-text-body: rgba(85, 83, 83, 0.8);
+    --clr-text-mid: rgba(76, 76, 76, 0.9);
+    --clr-text-light:  #919191;
+    --clr-text-muted: rgba(145, 145, 145, 0.65);
+    --clr-text-sub: #4C4C4C;
+
+    --clr-btn-dark: rgb(40, 40, 40);
+    --clr-nav-link: rgb(17, 17, 17);
+    --clr-footer-text: rgba(90, 90, 90, 0.7);
+
+    --font-family: "Inter", sans-serif;
+
+    --radius-sm: 15px;
+    --radius-md: 20px;
+    --radius-lg: 25px;
+    --radius-xl: 40px;
+
+    --section-v-pad: 80px;
+    --container-max: 1400px;
+}
+
+/* =========================================================
+   Reset & Base
+   ========================================================= */
+.print-on-demand *,
+.print-on-demand *::before,
+.print-on-demand *::after {
+    box-sizing: border-box;
+}
+
+.print-on-demand {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: var(--font-family);
+}
+
+/* =========================================================
+   Layout Containers
+   ========================================================= */
+.print-on-demand .nav-wrapper,
+.print-on-demand .container,
+.print-on-demand .card-padding {
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+
+.print-on-demand .section-padding {
+    padding-top: var(--section-v-pad);
+    padding-bottom: var(--section-v-pad);
+}
+
+/* =========================================================
+   Shared Typography Utilities
+   ========================================================= */
+
+/* Main section heading (large bold text) */
+.print-on-demand .topic {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 65px;
+    color: var(--clr-dark);
+    margin-bottom: 20px;
+    font-family: var(--font-heading-family, var(--font-family));
+}
+
+.print-on-demand .topic p {
+    margin: 0;
+}
+
+/* Card headings and feature labels */
+.print-on-demand .subtitle {
+    max-width:100%;
+    margin-bottom:5px;
+ 
+}
+.print-on-demand .subtitle p{
+    color: var(--clr-text-sub);
+         font-size: 24px;
+    font-weight: 700;
+    line-height: 35px;
+}
+
+/* Margin reset for paragraphs inside feature subtitle divs */
+.print-on-demand .feature-subtitle p {
+    margin-top: 0;
+    margin-bottom: 0px;
+}
+
+/* Muted body text */
+.print-on-demand .para {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 30px;
+    color: var(--clr-text-muted);
+}
+
+/* Orange italic tagline under section labels */
+.print-on-demand .section-tagline p{
+    color: var(--clr-primary);
+    font-size: 26px;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 65px;
+}
+
+.print-on-demand .section-tagline p {
+    margin: 0;
+    padding-left: 20px;
+}
+
+/* Testimonial section orange highlight */
+.print-on-demand .view-highlight p{
+    color: var(--clr-secondary);
+}
+
+/* Testimonial author/rating label */
+.print-on-demand .rating p {
+    color: var(--clr-white);
+}
+
+.print-on-demand .rating p {
+    margin-top: 0;
+}
+
+/* =========================================================
+   Section 1 — Hero
+   ========================================================= */
+ .print-on-demand .hero-wrapper .hero-content .description p,
+ .print-on-demand .hero-wrapper .hero-content .subtitle
+ {
+margin-bottom: 10px;
+   }
+.print-on-demand .hero-wrapper {
+    background-color: var(--clr-bg-hero);
+}
+
+.print-on-demand .hero-section {
+    gap: 75px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.print-on-demand .hero-content {
+    display: flex;
+    flex-direction: column;
+}
+@media (min-width: 1231px) {
+.print-on-demand .hero-content {
+        width: 70%;
+}
+}
+@media (min-width: 1500px) {
+.print-on-demand .hero-content {
+        width: 50%;
+}
+}
+
+.print-on-demand .title {
+    font-size: 70px;
+    font-weight: 800;
+    line-height: 70px;
+    color: var(--clr-dark);
+    font-family: var(--font-heading-family, var(--font-family));
+    margin-bottom:30px;
+    display:flex;
+    flex-direction:column;
+
+}
+
+.print-on-demand .title p {
+    margin: 0;
+}
+
+.print-on-demand .title .text-orange {
+    color: var(--clr-primary);
+}
+.print-on-demand .description {
+    max-width: 100%;
+    @media (min-width:1400px){
+    max-width: 80%;
+
+    }
+
+
+}
+
+
+.print-on-demand .description p {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 35px;
+    color: var(--clr-text-body);
+    font-style: italic;
+    margin-bottom: 25px;
+}
+
+.print-on-demand .cta-buttons a {
+    text-decoration: none;
+    font-size: 24px;
+    line-height: 35px;
+    padding: 15px 18px;
+    border-radius: 10px;
+    transition: opacity 0.3s ease;
+    font-weight:bold;
+}
+.print-on-demand .hero-wrapper .cta-buttons a{
+        margin-bottom: 20px;
+
+}
+
+.print-on-demand .cta-buttons a:hover {
+    opacity: 0.85;
+}
+
+.print-on-demand .btn-primary {
+    color: var(--clr-white);
+    background-color: var(--clr-primary);
+    margin-right: 10px;
+}
+
+.print-on-demand .btn-secondary {
+    color: var(--clr-white);
+    background-color: var(--clr-btn-dark);
+}
+
+.print-on-demand .hero-image-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+}
+
+.print-on-demand .thumbnails {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 15px;
+}
+
+.print-on-demand .thumbnail img {
+    border-radius: var(--radius-md);
+}
+
+/* =========================================================
+   Section 2 — Why Choose Yoode
+   ========================================================= */
+.print-on-demand .why-section {
+    gap: 100px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.print-on-demand .why-heading span {
+    color: var(--clr-primary);
+}
+
+.print-on-demand .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.print-on-demand .feature-description p {
+    margin: 0;
+    color:var(--clr-text-light);
+    font-size:20px;
+    line-height:30px;
+}
+
+.print-on-demand .why-image img {
+    background-color: rgba(255, 166, 0, 0.96);
+    border-radius: var(--radius-md);
+}
+
+/* =========================================================
+   Section 3 — Brand Stats
+   ========================================================= */
+.print-on-demand .stats-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.print-on-demand .dark-card-wrapper {
+    width: 90%;
+}
+
+.print-on-demand .stats-card,
+.print-on-demand .testimonial-card,
+.print-on-demand .cta-section {
+    background-color: var(--clr-dark-card);
+    border-radius: var(--radius-xl);
+}
+
+.print-on-demand .stats-title p {
+    color: var(--clr-white);
+    text-align: center;
+}
+
+.print-on-demand .stats-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.print-on-demand .stat-item {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height:80%;
+}
+
+.print-on-demand .stat-item:not(:last-child) {
+    border-right: 2px solid var(--clr-primary);
+}
+
+.print-on-demand .stat-item p {
+    color: var(--clr-white);
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 30px;
+    min-height: 75px;
+    display: flex;
+    align-items: start;
+}
+
+.print-on-demand .stat-number {
+    color: var(--clr-secondary);
+    font-size: 100px;
+    font-weight: 400;
+    line-height: 65px;
+    margin: 0;
+    margin-top: 30px;
+      min-height: 100px;
+    display: flex;
+    align-items: start;
+    
+}
+
+/* =========================================================
+   Section 4 — Product Categories
+   ========================================================= */
+.print-on-demand .products-wrapper {
+    background-color: var(--clr-bg-section);
+}
+
+/* Shared centred header row for sections 4, 5, 6, 7, 8 */
+.print-on-demand .products-header,
+.print-on-demand .design-header,
+.print-on-demand .testimonials-header,
+.print-on-demand .process-header,
+.print-on-demand .orders-header {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 25px;
+}
+
+/* The pipe "|" separator in section labels */
+.print-on-demand .section-label span {
+    font-size: 48px;
+    font-weight: 200;
+    line-height: 65px;
+    padding-left: 10px;
+}
+
+/* 4-column grids shared between sections 4 and 7 */
+.print-on-demand .products-grid,
+.print-on-demand .process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    width: 100%;
+    margin: auto;
+}
+
+.print-on-demand .product-card img,
+.print-on-demand .process-card img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.print-on-demand .product-card p,
+.print-on-demand .process-card p {
+    margin-top: 0;
+}
+
+.print-on-demand .product-card {
+    background: var(--clr-white);
+    border-radius: var(--radius-lg);
+    padding: 15px;
+    text-align: left;
+}
+
+/* =========================================================
+   Section 5 — Custom Design Support
+   ========================================================= */
+
+
+.print-on-demand .card-heading h3 {
+    margin-top: 0;
+    margin-bottom:20px;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 45px;
+    color: var(--clr-text-sub);
+}
+
+
+.print-on-demand .design-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 325px;
+}
+
+.print-on-demand .body-italic {
+    font-size: 24px;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 35px;
+    color: var(--clr-text-sub);
+}
+.print-on-demand .design-section .body-italic {
+    margin-bottom:30px;
+}
+
+.print-on-demand .body-italic p {
+    margin-top: 0;
+}
+
+.print-on-demand .design-image-wrapper {
+    position: relative;
+    width: 100%;
+    right: 120px;
+}
+
+.print-on-demand .design-image img {
+    width: 100%;
+    border-radius: var(--radius-md);
+    display: block;
+}
+
+.print-on-demand .floating-card {
+    position: absolute;
+    background: var(--clr-secondary);
+    padding: 18px;
+    border-radius: var(--radius-md);
+}
+
+.print-on-demand .floating-card img {
+    width: 120px;
+    display: block;
+}
+
+.print-on-demand .card-one {
+    top: 25px;
+    left: -118px;
+}
+
+.print-on-demand .card-two {
+    bottom: 30px;
+    right: -120px;
+}
+
+/* =========================================================
+   Section 6 — Testimonials
+   ========================================================= */
+   
+.print-on-demand .testimonials-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+        min-height: 613px;
+}
+.print-on-demand .testimonials-wrapper .section-label p{
+    color: #fff;
+
+}
+.print-on-demand .testimonials-wrapper .slider{
+     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+   
+
+}
+
+.print-on-demand .testimonials-wrapper .subtitle p{
+    text-align:center;
+}
+.print-on-demand .testimonial-arrows {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:10px;
+}
+.print-on-demand .testimonial-card{
+        height: 100%;
+}
+.print-on-demand .testimonials-wrapper .dark-card-wrapper {
+        height: 100%;
+}
+
+
+.print-on-demand .testimonial-quote p,
+.print-on-demand .rating {
+    color: var(--clr-white);
+}
+
+.print-on-demand .testimonial-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.print-on-demand .testimonial-quote p {
+    max-width: 940px;
+    text-align: center;
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 50px;
+    margin-bottom:30px;
+}
+
+.print-on-demand .stars {
+    margin-bottom: 50px;
+}
+
+/* =========================================================
+   Section 7 — How It Works (Process Steps)
+   ========================================================= */
+.print-on-demand .step-image-wrapper {
+    position: relative;
+}
+
+.print-on-demand .step-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.print-on-demand .step-icon {
+    position: absolute;
+    width: 45%;
+    left: 70%;
+    bottom: 26%;
+    transform: translateX(-50%);
+}
+
+/* Margin reset for step headings inside process cards */
+.print-on-demand .step-heading {
+    margin-bottom: 12px;
+}
+
+/* =========================================================
+   Section 8 — Bulk & Corporate Orders
+   ========================================================= */
+.print-on-demand .orders-wrapper {
+    background-color: var(--clr-bg-section);
+}
+.print-on-demand .orders-wrapper .offers ul{
+       list-style: disc;
+}
+
+.print-on-demand .orders-layout {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+.print-on-demand ul {
+    padding-left: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 45px;
+    margin: 10px 0;
+}
+
+.print-on-demand .offers {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 45px;
+    color: var(--clr-text-mid);
+}
+
+.print-on-demand .offers p {
+    margin: 0;
+}
+
+.print-on-demand .orders-media-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 100%;
+    margin: auto;
+}
+
+/* =========================================================
+   Section 9 — FAQ Accordion
+   ========================================================= */
+.print-on-demand .faq-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.print-on-demand .faq-title {
+    text-align: center;
+}
+
+.print-on-demand .faq-card {
+    display: flex;
+    justify-content: space-between;
+    color: var(--clr-text-mid);
+    background-color: var(--clr-faq-bg);
+    border-radius: var(--radius-md);
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px 35px;
+    cursor: pointer;
+   align-items:center;
+
+}
+
+
+.print-on-demand .faq-question-text {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 45px;
+    margin: 0;
+}
+
+.print-on-demand .faq-card p {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 35px;
+    margin: 0;
+}
+
+.print-on-demand .faq-answer {
+    display: none;
+}
+
+.print-on-demand .faq-card.active .faq-answer {
+    display: block;
+}
+
+.print-on-demand .icon-collapse {
+    display: none;
+}
+
+.print-on-demand .faq-card.active .icon-expand {
+    display: none;
+}
+
+.print-on-demand .faq-card.active .icon-collapse {
+    display: block;
+}
+
+/* =========================================================
+   Section 10 — CTA Banner
+   ========================================================= */
+.print-on-demand .cta-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: var(--section-v-pad);
+}
+
+.print-on-demand .cta-title p,
+.print-on-demand .cta-text-line {
+    color: var(--clr-white);
+}
+.print-on-demand .cta-text-line{
+    margin-bottom:20px;
+}
+
+.print-on-demand .cta-title span {
+    color: var(--clr-secondary);
+}
+
+.print-on-demand .cta-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 65px;
+}
+
+.print-on-demand .cta-text {
+    padding-bottom: 15px;
+    flex: 1;
+}
+
+.print-on-demand .cta-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.print-on-demand .cta-image img {
+    width: 100%;
+    max-width: 580px;
+    border-radius: var(--radius-md);
+}
+
+
+/* =========================================================
+   Responsive — 1400px
+   ========================================================= */
+@media (max-width: 1400px) {
+
+    .print-on-demand .nav-wrapper,
+    .print-on-demand .container,
+    .print-on-demand .card-padding {
+        width: 95%;
+        max-width: var(--container-max);
+    }
+
+    .print-on-demand .hero-section {
+        gap: 10px;
+    }
+
+    .print-on-demand .stat-number {
+        font-size: 70px;
+    }
+
+    .print-on-demand .design-layout {
+        gap: 250px;
+    }
+
+    .print-on-demand .orders-header {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 25px;
+    }
+}
+
+/* =========================================================
+   Responsive — 1230px
+   ========================================================= */
+@media (max-width: 1230px) {
+    .print-on-demand .hero-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 60px;
+    }
+
+    .print-on-demand .hero-content {
+        order: 2;
+    }
+
+    .print-on-demand .hero-images {
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .print-on-demand .hero-image-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 12px;
+        order: 1;
+    }
+
+    .print-on-demand .hero-image,
+    .print-on-demand .thumbnails {
+        height: 100%;
+    }
+
+    .print-on-demand .thumbnail {
+        height: auto;
+    }
+
+    .print-on-demand .hero-image img,
+    .print-on-demand .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+    }
+
+    .print-on-demand .why-section {
+        gap: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .print-on-demand .why-features {
+        order: 2;
+    }
+
+    .print-on-demand .why-image {
+        order: 1;
+    }
+
+    .print-on-demand .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+
+    .print-on-demand .stat-item {
+        text-align: left;
+        padding-bottom: 25px;
+        border-bottom: 2px solid var(--clr-primary);
+    }
+
+    .print-on-demand .stat-item:not(:last-child) {
+        border-right: none;
+    }
+
+    .print-on-demand .stat-number {
+        font-size: 70px;
+        margin-top: 10px;
+    }
+
+    .print-on-demand .topic {
+        margin-bottom: 0;
+    }
+
+    .print-on-demand .why-heading p {
+        padding-bottom: 35px;
+    }
+
+    .print-on-demand .products-header,
+    .print-on-demand .process-header {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 25px;
+    }
+
+    .print-on-demand .testimonials-header {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .print-on-demand .section-label span {
+        display: none;
+    }
+
+    .print-on-demand .section-tagline p {
+        padding: 0;
+        line-height: 35px;
+        padding-top: 5px;
+    }
+
+    .print-on-demand .products-grid,
+    .print-on-demand .process-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        width: 100%;
+        margin: auto;
+    }
+
+    .print-on-demand .design-header {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 25px;
+    }
+
+    .print-on-demand .design-layout {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 80px;
+    }
+
+    .print-on-demand .design-image-wrapper {
+        position: relative;
+        width: 65%;
+        right: 0;
+        order: 1;
+    }
+
+    .print-on-demand .design-text {
+        order: 2;
+    }
+
+    .print-on-demand .orders-layout {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 50px;
+    }
+
+    .print-on-demand .orders-images {
+        order: 1;
+    }
+
+    .print-on-demand .orders-text {
+        order: 2;
+    }
+
+    .print-on-demand .orders-media-grid img {
+        width: 100%;
+    }
+
+    .print-on-demand .faq-title p {
+        padding-bottom: 35px;
+    }
+
+    .print-on-demand .cta-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 35px;
+    }
+
+    .print-on-demand .cta-title p {
+        padding-bottom: 20px;
+    }
+
+    .print-on-demand .cta-image img {
+        max-width: 520px;
+    }
+
+    .print-on-demand .footer-columns {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 40px;
+    }
+
+    .print-on-demand .context:last-child {
+        grid-column: 1 / -1;
+        margin-top: 40px;
+    }
+
+    .print-on-demand .footer-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+/* =========================================================
+   Responsive — 992px
+   ========================================================= */
+@media (max-width: 992px) {
+    .print-on-demand .title {
+        font-size: 48px;
+        line-height: 55px;
+    }
+
+    .print-on-demand .hero-image-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+
+    .print-on-demand .hero-image {
+        aspect-ratio: 3 / 4;
+    }
+
+    .print-on-demand .thumbnails {
+        display: grid;
+        grid-template-rows: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .print-on-demand .thumbnail {
+        aspect-ratio: 1 / 1;
+    }
+
+    .print-on-demand .why-section {
+        gap: 40px;
+        align-items: center;
+    }
+
+    .print-on-demand .why-image img {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+    }
+
+    .print-on-demand .topic {
+        font-size: 40px;
+    }
+
+    .print-on-demand .feature-item {
+        gap: 25px;
+        margin-bottom: 25px;
+    }
+
+    .print-on-demand .para {
+        font-size: 18px;
+        line-height: 26px;
+    }
+
+    /* Accordion for footer columns on mobile */
+    .print-on-demand .footer-columns {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .print-on-demand .context {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+        padding: 18px 0;
+    }
+
+    .print-on-demand .context-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .print-on-demand .context a {
+        display: flex;
+    }
+
+    .print-on-demand .context:not(:last-child) .context-title::after {
+        content: "▼";
+        font-size: 14px;
+        transition: transform 0.3s ease;
+    }
+
+    .print-on-demand .context.active .context-title::after {
+        transform: rotate(180deg);
+    }
+
+    .print-on-demand .context-links {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.35s ease;
+    }
+
+    .print-on-demand .context.active .context-links {
+        max-height: 300px;
+    }
+
+    .print-on-demand .context:last-child {
+        border: none;
+    }
+}
+
+/* =========================================================
+   Responsive — 768px
+   ========================================================= */
+@media (max-width: 768px) {
+    .print-on-demand .nav-menu {
+        display: none;
+    }
+
+    .print-on-demand .hero-section {
+        gap: 40px;
+    }
+
+    .print-on-demand .hero-images {
+        max-width: 100%;
+    }
+
+    .print-on-demand .hero-image-grid {
+        grid-template-columns: 1.4fr 1fr;
+        gap: 10px;
+    }
+
+    .print-on-demand .hero-image {
+        aspect-ratio: 3.3 / 5;
+    }
+
+    .print-on-demand .thumbnails {
+        grid-template-rows: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .print-on-demand .thumbnail {
+        aspect-ratio: 1 / 1;
+    }
+
+    .print-on-demand .why-section {
+        gap: 35px;
+        text-align: center;
+    }
+
+    .print-on-demand .topic {
+        font-size: 38px;
+        line-height: 40px;
+    }
+
+    .print-on-demand .feature-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .print-on-demand .feature-item .feature-icon img {
+        width: 55px;
+        height: auto;
+    }
+
+    .print-on-demand .stats-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .print-on-demand .stat-item {
+        text-align: left;
+        border-right: none !important;
+        padding-bottom: 20px;
+    }
+
+    .print-on-demand .stat-number {
+        font-size: 55px;
+    }
+
+    .print-on-demand .products-grid,
+    .print-on-demand .process-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .print-on-demand .orders-media-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+/* =========================================================
+   Responsive — 576px
+   ========================================================= */
+@media (max-width: 650px) {
+    .print-on-demand .title {
+        font-size: 44px;
+        line-height: 42px;
+    }
+
+    .print-on-demand .subtitle {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .print-on-demand .description {
+        font-size: 14px;
+        line-height: 22px;
+    }
+
+    .print-on-demand .cta-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+
+    .print-on-demand .cta-buttons a {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px;
+        
+    }
+
+    .print-on-demand .hero-images {
+        width: 100%;
+    }
+
+    .print-on-demand .hero-image-grid {
+        grid-template-columns: 1.6fr;
+        gap: 8px;
+    }
+
+    .print-on-demand .hero-image {
+        aspect-ratio: 4 / 5;
+        overflow: hidden;
+    }
+
+    .print-on-demand .thumbnails {
+        display: none;
+    }
+
+    .print-on-demand .thumbnail {
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+    }
+
+    .print-on-demand .hero-image img,
+    .print-on-demand .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+    }
+
+    .print-on-demand .stat-number {
+        font-size: 42px;
+    }
+
+    .print-on-demand .floating-card img {
+        width: 80px;
+        display: block;
+    }
+
+    .print-on-demand .card-one {
+        top: 25px;
+        left: -75px;
+    }
+
+    .print-on-demand .card-two {
+        bottom: 30px;
+        right: -75px;
+    }
+}
+
+.print-on-demand .topic {
+ margin-bottom:40px;
+}
+
+@media (max-width:992px) {
+
+  .print-on-demand .testimonial-quote p {
+    font-size: 24px;
+  }
+
+  .print-on-demand .topic {
+    font-size: 34px;
+  }
+
+  .print-on-demand .section-tagline p {
+    font-size: 22px;
+  }
+
+  .print-on-demand .subtitle p {
+    font-size: 20px;
+  }
+}
+
+@media (max-width:768px) {
+ 
+
+  .print-on-demand .testimonial-quote p {
+    font-size: 24px;
+        line-height: 32px;
+  }
+
+  .print-on-demand .topic {
+    font-size: 30px;
+  }
+
+  .print-on-demand .section-tagline p, .print-on-demand .subtitle p {
+    font-size: 18px;
+  }
+  
+
+}
+
+@media (max-width:575px) {
+  .print-on-demand .cta-image {
+    display: none;
+  }
+
+  .print-on-demand .stat-number,
+  .print-on-demand .stat-item p {
+    min-height: auto;
+    text-align: center;
+  }
+
+  .print-on-demand .card-heading h3 {
+    font-size: 25px;
+    line-height: 30px
+  }
+
+  .print-on-demand .body-italic p {
+    font-size: 18px;
+    line-height: 30px
+  }
+
+  .print-on-demand .offers p {
+    font-size: 25px;
+    line-height: 30px;
+  }
+
+  .print-on-demand ul li {
+    font-size: 18px;
+    line-height: 30px;
+  }
+
+  .print-on-demand .faq-question-text {
+    font-size: 20px;
+    line-height: 30px;
+  }
+
+  .print-on-demand .faq-card p {
+    font-size: 18px;
+    line-height: 30px;
+    margin: 10px;
+  }
+
+  .print-on-demand .cta-title p {
+    padding-bottom: 0px;
+  }
+
+  .print-on-demand .topic {
+    line-height: 36px;
+    margin-bottom: 20px;
+
+  }
+
+  .print-on-demand .section-padding {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .print-on-demand .faq-card .faq-toggle img {
+    height: 40px
+  }
+}
+@media (max-width:460px) {
+
+  .print-on-demand .testimonial-quote p {
+    font-size: 18px;
+  }
+
+  .print-on-demand .topic {
+    font-size: 28px;
+  }
+
+  .print-on-demand .subtitle p {
+    font-size: 16px;
+  }
+  
+}

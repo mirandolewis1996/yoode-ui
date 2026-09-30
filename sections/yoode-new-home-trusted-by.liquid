@@ -1,0 +1,351 @@
+{%- liquid
+  assign bg_style = ''
+  assign bg = section.settings.background_color
+  assign row_count = section.settings.rows | default: '2' | plus: 0 | at_most: section.blocks.size | at_least: 1
+  assign logos_per_row = section.blocks.size | times: 1.0 | divided_by: row_count | ceil
+  if bg != blank and bg != 'rgba(0,0,0,0)'
+    if bg.alpha != 0
+      assign bg_style = '--yn-trusted-by-bg: ' | append: bg | append: ';'
+    endif
+  endif
+-%}
+
+<div
+  class="yn-section yn-trusted-by yn-trusted-by--{{ section.settings.logo_style }}{% if section.settings.enable_shadow %} yn-trusted-by--shadow{% endif %} color-{{ section.settings.color_scheme }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}
+    --yn-pt: {{ section.settings.padding_top }}px;
+    --yn-pb: {{ section.settings.padding_bottom }}px;
+    --yn-trusted-by-duration: {{ section.settings.speed }}s;
+    --yn-trusted-by-row-gap: {{ section.settings.row_gap | default: 48 }}px;
+    --yn-trusted-by-row-gap-mobile: {{ section.settings.row_gap_mobile | default: 32 }}px;
+    --yn-trusted-by-heading-width: {{ section.settings.heading_width | default: 640 }}px;
+    --yn-trusted-by-radius: {{ section.settings.corner_radius | default: 60 }}px;
+    --yn-trusted-by-radius-mobile: {{ section.settings.corner_radius_mobile | default: 40 }}px;
+    --yn-trusted-by-overlap: {{ section.settings.overlap | default: 56 }}px;
+    --yn-trusted-by-overlap-mobile: {{ section.settings.overlap_mobile | default: 42 }}px;
+    --yn-trusted-by-title-size: {{ section.settings.title_size | default: 42 }}px;
+    --yn-trusted-by-title-size-mobile: {{ section.settings.title_size_mobile | default: 26 }}px;
+    --yn-trusted-by-title-color: {{ section.settings.title_color | default: '#111827' }};
+    --yn-trusted-by-subtitle-color: {{ section.settings.subtitle_color | default: '#e53935' }};
+    --yn-trusted-by-heading-gap: {{ section.settings.heading_gap | default: 56 }}px;
+    --yn-trusted-by-heading-gap-mobile: {{ section.settings.heading_gap_mobile | default: 35 }}px;
+    --yn-trusted-by-logo-height: {{ section.settings.logo_height | default: 28 }}px;
+    --yn-trusted-by-logo-height-mobile: {{ section.settings.logo_height_mobile | default: 21 }}px;
+    --yn-trusted-by-logo-gap: {{ section.settings.logo_gap | default: 70 }}px;
+    --yn-trusted-by-logo-gap-mobile: {{ section.settings.logo_gap_mobile | default: 42 }}px;
+    --yn-trusted-by-edge-fade: {{ section.settings.fade_width | default: 168 }}px;
+    --yn-trusted-by-edge-fade-mobile: {{ section.settings.fade_width_mobile | default: 56 }}px;
+    --yn-trusted-by-pt-mobile: {{ section.settings.padding_top_mobile | default: 56 }}px;
+    --yn-trusted-by-pb-mobile: {{ section.settings.padding_bottom_mobile | default: 56 }}px;
+    {{ bg_style }}
+  "
+>
+  <div class="yn-container yn-trusted-by__header">
+    {%- if section.settings.subtitle != blank -%}
+      <p class="yn-trusted-by__subheading">{{ section.settings.subtitle | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="yn-trusted-by__title">{{ section.settings.title | escape | newline_to_br }}</h2>
+    {%- endif -%}
+    {%- if section.settings.description != blank -%}
+      <div class="yn-description">{{ section.settings.description }}</div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="yn-trusted-by__marquee">
+      {%- for row in (1..row_count) -%}
+        {%- assign row_offset = forloop.index0 | times: logos_per_row -%}
+      <div class="yn-trusted-by__row{% if row == 2 %} yn-trusted-by__row--reverse{% endif %}">
+        {%- for track in (1..2) -%}
+          <ul class="yn-trusted-by__track" {% if track == 2 %}aria-hidden="true"{% endif %}>
+            {%- for block in section.blocks limit: logos_per_row offset: row_offset -%}
+              {%- liquid
+                assign logo_alt = block.settings.name | default: block.settings.image.alt | escape
+                if track == 2
+                  assign logo_alt = ''
+                endif
+              -%}
+              <li class="yn-trusted-by__item" {% if track == 1 %}{{ block.shopify_attributes }}{% endif %}>
+                {%- if block.settings.image != blank -%}
+                  {{
+                    block.settings.image
+                    | image_url: width: 400
+                    | image_tag:
+                      class: 'yn-trusted-by__logo',
+                      loading: 'lazy',
+                      widths: '100, 200, 300, 400',
+                      sizes: '200px',
+                      alt: logo_alt
+                  }}
+                {%- elsif block.settings.fallback_url != blank -%}
+                  <img
+                    class="yn-trusted-by__logo"
+                    src="{{ block.settings.fallback_url }}"
+                    alt="{{ logo_alt }}"
+                    loading="lazy"
+                    width="112"
+                    height="28"
+                  >
+                {%- elsif block.settings.name != blank -%}
+                  <span class="yn-trusted-by__name">{{ block.settings.name | escape }}</span>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endfor -%}
+      </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "YN Trusted By",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Custom background",
+      "info": "Optional. Overrides the color scheme background (also used for the fading edges)."
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Trusted By"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "info": "Use a new line to control the heading line break.",
+      "default": "Leading brands and teams\nacross the country"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Heading style"
+    },
+    { "type": "range", "id": "title_size", "label": "Title size", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 42 },
+    { "type": "range", "id": "heading_width", "label": "Heading maximum width", "min": 320, "max": 960, "step": 10, "unit": "px", "default": 640 },
+    { "type": "range", "id": "title_size_mobile", "label": "Title size on mobile", "min": 16, "max": 48, "step": 1, "unit": "px", "default": 26 },
+    { "type": "color", "id": "title_color", "label": "Title color", "default": "#111827" },
+    { "type": "color", "id": "subtitle_color", "label": "Subtitle color", "default": "#e53935" },
+    { "type": "range", "id": "heading_gap", "label": "Space below heading", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 56 },
+    { "type": "range", "id": "heading_gap_mobile", "label": "Space below heading on mobile", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 35 },
+    { "type": "header", "content": "Logo sizing" },
+    { "type": "select", "id": "rows", "label": "Logo rows", "options": [{ "value": "1", "label": "One row" }, { "value": "2", "label": "Two rows" }], "default": "2", "info": "Logos are split evenly between the rows in block order." },
+    { "type": "range", "id": "row_gap", "label": "Space between rows", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 48 },
+    { "type": "range", "id": "row_gap_mobile", "label": "Space between rows on mobile", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 32 },
+    { "type": "range", "id": "logo_height", "label": "Logo height", "min": 12, "max": 100, "step": 1, "unit": "px", "default": 28 },
+    { "type": "range", "id": "logo_height_mobile", "label": "Logo height on mobile", "min": 12, "max": 80, "step": 1, "unit": "px", "default": 21 },
+    { "type": "range", "id": "logo_gap", "label": "Minimum space between logos", "min": 0, "max": 160, "step": 2, "unit": "px", "default": 70 },
+    { "type": "range", "id": "logo_gap_mobile", "label": "Minimum logo spacing on mobile", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 42 },
+    { "type": "range", "id": "fade_width", "label": "Edge fade width", "info": "Set to 0 to hide fading edges.", "min": 0, "max": 240, "step": 4, "unit": "px", "default": 168 },
+    { "type": "range", "id": "fade_width_mobile", "label": "Edge fade width on mobile", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 56 },
+    {
+      "type": "select",
+      "id": "logo_style",
+      "label": "Logo style",
+      "info": "Monochrome dark/light need transparent PNG or SVG logos — a logo with a background turns into a solid block. Use Grey or Original for JPGs.",
+      "options": [
+        { "value": "grey", "label": "Grey (works with any image)" },
+        { "value": "dark", "label": "Monochrome dark" },
+        { "value": "light", "label": "Monochrome light" },
+        { "value": "original", "label": "Original colors" }
+      ],
+      "default": "grey"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll duration",
+      "info": "Seconds for one full loop. Higher is slower.",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "s",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    { "type": "checkbox", "id": "enable_shadow", "label": "Show section shadow", "default": true },
+    { "type": "range", "id": "corner_radius", "label": "Top corner radius", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 60 },
+    { "type": "range", "id": "corner_radius_mobile", "label": "Top corner radius on mobile", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 40 },
+    { "type": "range", "id": "overlap", "label": "Overlap previous section", "info": "Set to 0 to disable overlap.", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 56 },
+    { "type": "range", "id": "overlap_mobile", "label": "Overlap on mobile", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 42 },
+    { "type": "range", "id": "padding_top_mobile", "label": "Top padding on mobile", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Bottom padding on mobile", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 84
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Logo image"
+        },
+        {
+          "type": "url",
+          "id": "fallback_url",
+          "label": "Fallback logo URL (external)",
+          "info": "Used when no image is uploaded."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Brand name",
+          "info": "Used as the image alt text, or shown as text when there is no logo."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Trusted By",
+      "settings": {
+        "background_color": "#faf9f6",
+        "title_size": 40,
+        "enable_shadow": false,
+        "corner_radius": 0,
+        "corner_radius_mobile": 0,
+        "overlap": 0,
+        "overlap_mobile": 0,
+        "padding_top": 24,
+        "padding_bottom": 60
+      },
+      "blocks": [
+        { "type": "logo", "settings": { "name": "Meta", "fallback_url": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" } },
+        { "type": "logo", "settings": { "name": "Google", "fallback_url": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" } },
+        { "type": "logo", "settings": { "name": "Amazon", "fallback_url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" } },
+        { "type": "logo", "settings": { "name": "Microsoft", "fallback_url": "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" } },
+        { "type": "logo", "settings": { "name": "Netflix", "fallback_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" } },
+        { "type": "logo", "settings": { "name": "Apple", "fallback_url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" } },
+        { "type": "logo", "settings": { "name": "eBay", "fallback_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/EBay_logo.svg" } },
+        { "type": "logo", "settings": { "name": "Spotify", "fallback_url": "https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

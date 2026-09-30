@@ -1,0 +1,731 @@
+{%- liquid
+  assign logo_width_2x = section.settings.logo_width | times: 2
+  assign logo_sizes = section.settings.logo_width | append: 'px'
+  assign form_id = 'YnFooterNewsletter-' | append: section.id
+
+  comment
+    Desktop grid: company column, one column per menu block (stacked blocks share a column), newsletter.
+  endcomment
+  assign grid_columns = '1.25fr'
+  assign has_menu = false
+  for block in section.blocks
+    if block.type == 'menu'
+      if has_menu == false or block.settings.stack_with_previous == false
+        assign grid_columns = grid_columns | append: ' 0.8fr'
+      endif
+      assign has_menu = true
+    endif
+  endfor
+  if section.settings.show_newsletter
+    assign grid_columns = grid_columns | append: ' 1.5fr'
+  endif
+
+  assign bottom_bg_style = ''
+  assign bottom_bg = section.settings.bottom_background
+  if bottom_bg != blank and bottom_bg != 'rgba(0,0,0,0)'
+    if bottom_bg.alpha != 0
+      assign bottom_bg_style = '--yn-footer-bottom-bg: ' | append: bottom_bg | append: ';'
+    endif
+  endif
+
+  assign legal_menu = linklists[section.settings.legal_menu]
+  assign legal_lines = section.settings.legal_links | newline_to_br | split: '<br />'
+-%}
+
+<div
+  class="yn-section yn-footer{% if section.settings.show_wave %} yn-footer--wave{% endif %}{% if section.settings.invert_logo %} yn-footer--invert-logo{% endif %} color-{{ section.settings.color_scheme }}"
+  style="--yn-pt: {{ section.settings.padding_top | divided_by: 10.0 }}rem; --yn-pb: {{ section.settings.padding_bottom | divided_by: 10.0 }}rem; --yn-footer-logo-w: {{ section.settings.logo_width | divided_by: 10.0 }}rem; --yn-footer-columns: {{ grid_columns }}; {{ bottom_bg_style }}"
+>
+  {%- if section.settings.show_wave -%}
+    <div class="yn-footer__wave" aria-hidden="true">
+      <svg class="yn-footer__wave-svg" viewBox="0 0 1440 120" preserveAspectRatio="none" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,120 L0,80 C120,95 240,40 360,50 C480,60 540,90 660,75 C780,60 840,20 960,30 C1080,40 1200,80 1320,70 C1380,65 1410,60 1440,55 L1440,120 Z" fill="currentColor"/>
+        <path d="M0,120 L0,90 C160,105 320,60 480,70 C640,80 720,100 880,85 C1040,70 1120,45 1280,55 C1360,60 1400,65 1440,60 L1440,120 Z" fill="currentColor" opacity="0.7"/>
+        <path d="M0,120 L0,100 C200,112 400,80 600,90 C800,100 900,110 1100,95 C1200,88 1300,80 1440,85 L1440,120 Z" fill="currentColor" opacity="0.4"/>
+      </svg>
+    </div>
+  {%- endif -%}
+
+  <div class="yn-container">
+    <div class="yn-footer__grid">
+      {%- comment -%} Column 1: company info, contact, social {%- endcomment -%}
+      <div class="yn-footer__company">
+        <a class="yn-footer__logo" href="{{ routes.root_url }}">
+          {%- if section.settings.logo != blank -%}
+            {{
+              section.settings.logo
+              | image_url: width: logo_width_2x
+              | image_tag:
+                class: 'yn-footer__logo-img',
+                widths: '100, 200, 300, 400, 600',
+                sizes: logo_sizes,
+                loading: 'lazy',
+                alt: shop.name
+            }}
+          {%- else -%}
+            <img
+              class="yn-footer__logo-img"
+              src="{{ 'yoode-new-home-img-logo-dark.webp' | asset_url }}"
+              alt="{{ shop.name | escape }}"
+              width="200"
+              height="40"
+              loading="lazy"
+            >
+          {%- endif -%}
+        </a>
+
+        {%- if section.settings.company_text != blank -%}
+          <p class="yn-footer__company-text">{{ section.settings.company_text | escape | newline_to_br }}</p>
+        {%- endif -%}
+
+        {%- liquid
+          assign contact_count = 0
+          assign social_count = 0
+          for block in section.blocks
+            if block.type == 'contact' and block.settings.text != blank
+              assign contact_count = contact_count | plus: 1
+            elsif block.type == 'social'
+              assign social_count = social_count | plus: 1
+            endif
+          endfor
+        -%}
+
+        {%- if contact_count > 0 -%}
+          <ul class="yn-footer__contact" role="list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'contact' and block.settings.text != blank -%}
+                {%- liquid
+                  assign contact_url = block.settings.link
+                  if contact_url == blank
+                    case block.settings.icon
+                      when 'phone'
+                        assign contact_url = 'tel:' | append: block.settings.text | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+                      when 'mail'
+                        assign contact_url = 'mailto:' | append: block.settings.text | strip
+                    endcase
+                  endif
+                -%}
+                <li class="yn-footer__contact-item" {{ block.shopify_attributes }}>
+                  {%- if contact_url != blank -%}
+                    <a class="yn-footer__contact-link" href="{{ contact_url }}">
+                  {%- else -%}
+                    <span class="yn-footer__contact-link">
+                  {%- endif -%}
+                  <span class="yn-footer__contact-icon">
+                    {%- render 'yoode-new-home-icon', icon: block.settings.icon -%}
+                  </span>
+                  <span>{{ block.settings.text | escape }}</span>
+                  {%- if contact_url != blank -%}
+                    </a>
+                  {%- else -%}
+                    </span>
+                  {%- endif -%}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if section.settings.contact_cta_text != blank and section.settings.contact_link != blank -%}
+          <a class="yn-footer__cta" href="{{ section.settings.contact_link }}">
+            {{- section.settings.contact_cta_text | escape -}}
+            <span class="yn-footer__cta-icon">{%- render 'yoode-new-home-icon', icon: 'arrow-up-right' -%}</span>
+          </a>
+        {%- endif -%}
+
+        {%- if social_count > 0 -%}
+          <ul class="yn-footer__social" role="list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'social' -%}
+                {%- liquid
+                  case block.settings.platform
+                    when 'facebook'
+                      assign platform_name = 'Facebook'
+                    when 'instagram'
+                      assign platform_name = 'Instagram'
+                    when 'linkedin'
+                      assign platform_name = 'LinkedIn'
+                    when 'youtube'
+                      assign platform_name = 'YouTube'
+                    when 'x'
+                      assign platform_name = 'X'
+                    when 'whatsapp'
+                      assign platform_name = 'WhatsApp'
+                  endcase
+                  assign social_icon = block.settings.platform
+                  if social_icon == 'whatsapp'
+                    assign social_icon = 'message-circle'
+                  endif
+                  assign social_label = block.settings.label | default: platform_name
+                -%}
+                <li {{ block.shopify_attributes }}>
+                  <a
+                    class="yn-footer__social-link"
+                    aria-label="{{ social_label | escape }}"
+                    {% if block.settings.url != blank %}
+                      href="{{ block.settings.url }}" target="_blank" rel="noopener"
+                    {% else %}
+                      role="link" aria-disabled="true"
+                    {% endif %}
+                  >
+                    {%- render 'yoode-new-home-icon', icon: social_icon -%}
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Menu columns: each "menu" block is a column; "stack" puts it under the previous one {%- endcomment -%}
+      {%- assign column_open = false -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'menu' -%}
+          {%- liquid
+            assign menu = linklists[block.settings.menu]
+            assign custom_lines = block.settings.custom_links | newline_to_br | split: '<br />'
+          -%}
+          {%- if column_open and block.settings.stack_with_previous -%}
+            {%- comment -%} same column {%- endcomment -%}
+          {%- else -%}
+            {%- if column_open -%}</div>{%- endif -%}
+            <div class="yn-footer__column">
+            {%- assign column_open = true -%}
+          {%- endif -%}
+
+          <div class="yn-footer__menu" {{ block.shopify_attributes }}>
+            {%- if block.settings.title != blank -%}
+              <h2 class="yn-footer__menu-title">{{ block.settings.title | escape }}</h2>
+            {%- endif -%}
+            <nav aria-label="{{ block.settings.title | default: 'Footer' | escape }}">
+              <ul class="yn-footer__links" role="list">
+                {%- if menu.links.size > 0 -%}
+                  {%- for link in menu.links -%}
+                    <li>
+                      <a
+                        class="yn-footer__link"
+                        href="{{ link.url }}"
+                        {% if link.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{- link.title | escape -}}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                {%- else -%}
+                  {%- for line in custom_lines -%}
+                    {%- assign parts = line | strip | split: '|' -%}
+                    {%- assign link_label = parts[0] | strip -%}
+                    {%- if link_label != blank -%}
+                      {%- assign link_url = parts[1] | strip | default: '#' -%}
+                      <li>
+                        <a class="yn-footer__link" href="{{ link_url | escape }}">{{ link_label | escape }}</a>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              </ul>
+            </nav>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if column_open -%}</div>{%- endif -%}
+
+      {%- comment -%} Newsletter {%- endcomment -%}
+      {%- if section.settings.show_newsletter -%}
+        <div class="yn-footer__newsletter">
+          {%- if section.settings.newsletter_title != blank -%}
+            <h2 class="yn-footer__newsletter-title">{{ section.settings.newsletter_title | escape }}</h2>
+          {%- endif -%}
+          {%- if section.settings.newsletter_text != blank -%}
+            <p class="yn-footer__newsletter-text">{{ section.settings.newsletter_text | escape }}</p>
+          {%- endif -%}
+
+          {%- form 'customer', id: form_id, class: 'yn-footer__form' -%}
+            <input type="hidden" name="contact[tags]" value="{{ section.settings.newsletter_tags | default: 'newsletter' | escape }}">
+
+            {%- if form.posted_successfully? -%}
+              <p class="yn-footer__form-message" role="status" tabindex="-1" autofocus>
+                {{- section.settings.newsletter_success | escape -}}
+              </p>
+            {%- elsif form.errors -%}
+              <p class="yn-footer__form-message yn-footer__form-message--error" role="alert" tabindex="-1" autofocus>
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email -}}
+              </p>
+            {%- endif -%}
+
+            <div class="yn-footer__form-row">
+              <label class="visually-hidden" for="{{ form_id }}-email">{{ section.settings.email_placeholder | escape }}</label>
+              <input
+                id="{{ form_id }}-email"
+                class="yn-footer__input"
+                type="email"
+                name="contact[email]"
+                value="{{ form.email }}"
+                placeholder="{{ section.settings.email_placeholder | escape }}"
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                required
+                {% if form.errors %}
+                  aria-invalid="true"
+                {% endif %}
+              >
+            </div>
+            <div class="yn-footer__form-row">
+              {%- if section.settings.show_first_name -%}
+                <label class="visually-hidden" for="{{ form_id }}-first-name">{{ section.settings.first_name_placeholder | escape }}</label>
+                <input
+                  id="{{ form_id }}-first-name"
+                  class="yn-footer__input"
+                  type="text"
+                  name="contact[first_name]"
+                  placeholder="{{ section.settings.first_name_placeholder | escape }}"
+                  autocomplete="given-name"
+                >
+              {%- endif -%}
+              <button type="submit" class="yn-footer__submit">
+                {{- section.settings.newsletter_button | escape -}}
+              </button>
+            </div>
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} Bottom bar {%- endcomment -%}
+  <div class="yn-footer__bottom">
+    <div class="yn-container yn-footer__bottom-inner">
+      <p class="yn-footer__copyright">
+        &copy; {{ 'now' | date: '%Y' }}
+        {{ shop.name | escape }}.
+        {{ section.settings.copyright_text | escape }}
+      </p>
+
+      {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        <ul class="yn-footer__payments" role="list">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'yn-footer__payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <ul class="yn-footer__bottom-links" role="list">
+        {%- if legal_menu.links.size > 0 -%}
+          {%- for link in legal_menu.links -%}
+            <li><a class="yn-footer__bottom-link" href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for line in legal_lines -%}
+            {%- assign parts = line | strip | split: '|' -%}
+            {%- assign link_label = parts[0] | strip -%}
+            {%- if link_label != blank -%}
+              {%- assign link_url = parts[1] | strip | default: '#' -%}
+              <li><a class="yn-footer__bottom-link" href="{{ link_url | escape }}">{{ link_label | escape }}</a></li>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YN Footer",
+  "tag": "footer",
+  "class": "yoode-new-home-section",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-3"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wave",
+      "label": "Show wave on top edge",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Company"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Falls back to the Yoode logo when empty."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 50,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "checkbox",
+      "id": "invert_logo",
+      "label": "Show logo in white",
+      "info": "Use on dark color schemes with a dark logo.",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "company_text",
+      "label": "Company text",
+      "default": "Yoode Promotions Pvt. Ltd.\nCreating meaningful brand experiences\nthrough premium custom products."
+    },
+    {
+      "type": "text",
+      "id": "contact_cta_text",
+      "label": "Contact link label",
+      "default": "Send Us A Message"
+    },
+    {
+      "type": "url",
+      "id": "contact_link",
+      "label": "Contact link",
+      "info": "The contact link is shown only when a link is set."
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Title",
+      "default": "Get Updates"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_text",
+      "label": "Description",
+      "default": "Subscribe to receive updates on new products, exclusive offers and special announcements."
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "*Email"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_first_name",
+      "label": "Ask for first name",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "first_name_placeholder",
+      "label": "First name placeholder",
+      "default": "*First Name"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_button",
+      "label": "Button label",
+      "default": "SIGN UP"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_tags",
+      "label": "Customer tags",
+      "info": "Comma separated tags added to new subscribers.",
+      "default": "newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_success",
+      "label": "Success message",
+      "default": "Thanks for subscribing!"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "info": "Shown after \"© year store name.\"",
+      "default": "All Rights Reserved."
+    },
+    {
+      "type": "link_list",
+      "id": "legal_menu",
+      "label": "Legal menu"
+    },
+    {
+      "type": "textarea",
+      "id": "legal_links",
+      "label": "Legal links (used when no menu is selected)",
+      "info": "One per line: Label|URL",
+      "default": "Privacy Policy|/policies/privacy-policy\nTerms of Service|/policies/terms-of-service"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bottom_background",
+      "label": "Bottom bar background",
+      "info": "Leave transparent to use a darker shade of the section background."
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Explore"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_links",
+          "label": "Links (used when no menu is selected)",
+          "info": "One per line: Label|URL"
+        },
+        {
+          "type": "checkbox",
+          "id": "stack_with_previous",
+          "label": "Stack under the previous menu column",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Contact item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "value": "mail",
+              "label": "Email"
+            },
+            {
+              "value": "map-pin",
+              "label": "Location"
+            },
+            {
+              "value": "clock",
+              "label": "Hours"
+            },
+            {
+              "value": "message-circle",
+              "label": "Chat"
+            }
+          ],
+          "default": "phone"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "+91 8069 750 293"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Phone and email items link automatically when empty."
+        }
+      ]
+    },
+    {
+      "type": "social",
+      "name": "Social link",
+      "settings": [
+        {
+          "type": "select",
+          "id": "platform",
+          "label": "Platform",
+          "options": [
+            {
+              "value": "facebook",
+              "label": "Facebook"
+            },
+            {
+              "value": "instagram",
+              "label": "Instagram"
+            },
+            {
+              "value": "linkedin",
+              "label": "LinkedIn"
+            },
+            {
+              "value": "youtube",
+              "label": "YouTube"
+            },
+            {
+              "value": "x",
+              "label": "X (Twitter)"
+            },
+            {
+              "value": "whatsapp",
+              "label": "WhatsApp"
+            }
+          ],
+          "default": "facebook"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "URL"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Accessible label",
+          "info": "Defaults to the platform name."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Footer",
+      "blocks": [
+        {
+          "type": "contact",
+          "settings": {
+            "icon": "phone",
+            "text": "+91 8069 750 293"
+          }
+        },
+        {
+          "type": "contact",
+          "settings": {
+            "icon": "mail",
+            "text": "info@yoode.com"
+          }
+        },
+        {
+          "type": "social",
+          "settings": {
+            "platform": "facebook"
+          }
+        },
+        {
+          "type": "social",
+          "settings": {
+            "platform": "instagram"
+          }
+        },
+        {
+          "type": "social",
+          "settings": {
+            "platform": "linkedin"
+          }
+        },
+        {
+          "type": "menu",
+          "settings": {
+            "title": "Explore",
+            "custom_links": "Corporate|#\nSportswear|#\nTrendz|#\nAccessories|#",
+            "stack_with_previous": false
+          }
+        },
+        {
+          "type": "menu",
+          "settings": {
+            "title": "Company",
+            "custom_links": "About Us|#\nExperience Centers|#\nDesign Studio|#\nBulk Ordering|#",
+            "stack_with_previous": false
+          }
+        },
+        {
+          "type": "menu",
+          "settings": {
+            "title": "Case Studies",
+            "custom_links": "Bitsnpixs|#\niDynamics|#",
+            "stack_with_previous": true
+          }
+        }
+      ],
+      "settings": {
+        "color_scheme": "background-3",
+        "show_wave": true,
+        "logo_width": 120,
+        "invert_logo": true,
+        "company_text": "Yoode Promotions Pvt. Ltd.\nCreating meaningful brand experiences\nthrough premium custom products.",
+        "contact_cta_text": "Send Us A Message",
+        "show_newsletter": true,
+        "newsletter_title": "Get Updates",
+        "newsletter_text": "Subscribe to receive updates on new products, exclusive offers and special announcements.",
+        "email_placeholder": "*Email",
+        "show_first_name": true,
+        "first_name_placeholder": "*First Name",
+        "newsletter_button": "SIGN UP",
+        "newsletter_tags": "newsletter",
+        "newsletter_success": "Thanks for subscribing!",
+        "copyright_text": "All Rights Reserved.",
+        "legal_links": "Privacy Policy|/policies/privacy-policy\nTerms of Service|/policies/terms-of-service",
+        "show_payment_icons": false,
+        "padding_top": 48,
+        "padding_bottom": 0
+      }
+    }
+  ]
+}
+{% endschema %}

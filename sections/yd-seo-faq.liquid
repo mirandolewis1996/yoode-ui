@@ -1,0 +1,422 @@
+<section
+  class="yd-seo-section yd-seo-faq"
+  aria-labelledby="yd-seo-faq-title-{{ section.id }}"
+  style="
+    --yd-seo-faq-copy-w:clamp(256px,26vw,{{ section.settings.copy_width }}px);
+    --yd-seo-faq-bg:{{ section.settings.item_colour }};
+    --yd-seo-faq-bg-open:{{ section.settings.item_open_colour }};
+    --yd-seo-faq-icon-colour:{{ section.settings.icon_colour }};
+    {% if section.settings.icon != blank %}--yd-seo-faq-icon-art:url({{ section.settings.icon | image_url: width: 96 }});{% endif %}
+  "
+>
+  <div class="yd-seo-container">
+
+    {%- if section.blocks.size == 0 and request.design_mode -%}
+      <p class="yd-seo-editor-hint">
+        {{ section.settings.empty_hint }}
+      </p>
+    {%- endif -%}
+
+    <div class="yd-seo-head yd-seo-reveal">
+
+      {%- if section.settings.heading != blank -%}
+        <h2
+          class="yd-seo-title"
+          id="yd-seo-faq-title-{{ section.id }}"
+        >
+          {{ section.settings.heading }}
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.subheading != blank -%}
+        <p class="yd-seo-subtitle">
+          {{ section.settings.subheading }}
+        </p>
+      {%- endif -%}
+
+    </div>
+
+    <div class="yd-seo-faq-stage">
+
+      <div class="yd-seo-faq-intro yd-seo-reveal">
+
+        {%- for block in section.blocks -%}
+
+          {%- if block.type == 'copy' -%}
+
+            <div
+              class="yd-seo-faq-copy"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.text }}
+            </div>
+
+          {%- endif -%}
+
+        {%- endfor -%}
+
+      </div>
+
+      <div
+        class="yd-seo-faq-panel yd-seo-reveal"
+        style="--yd-seo-i:1"
+      >
+
+        {%- if section.settings.faq_title != blank -%}
+          <h3 class="yd-seo-faq-subtitle">
+            {{ section.settings.faq_title }}
+          </h3>
+        {%- endif -%}
+
+        <ul class="yd-seo-faq-list">
+
+          {%- assign q_index = 0 -%}
+
+          {%- for block in section.blocks -%}
+
+            {%- if block.type == 'question' -%}
+
+              {%- assign q_index = q_index | plus: 1 -%}
+
+              <li
+                class="yd-seo-faq-item{% if q_index == 1 %} is-open{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+
+                <h4 class="yd-seo-faq-heading">
+
+                  <button
+                    class="yd-seo-faq-btn"
+                    type="button"
+                    aria-expanded="{% if q_index == 1 %}true{% else %}false{% endif %}"
+                    aria-controls="yd-seo-faq-a-{{ block.id }}"
+                  >
+
+                    <span class="yd-seo-faq-label">
+                      {{ block.settings.question }}
+                    </span>
+
+                    <span
+                      class="yd-seo-faq-icon"
+                      aria-hidden="true"
+                    ></span>
+
+                  </button>
+
+                </h4>
+
+                <div
+                  class="yd-seo-faq-answer"
+                  id="yd-seo-faq-a-{{ block.id }}"
+                  role="region"
+                >
+
+                  <div>
+                    <p class="yd-seo-faq-text">
+                      {{ block.settings.answer }}
+                    </p>
+                  </div>
+
+                </div>
+
+              </li>
+
+            {%- endif -%}
+
+          {%- endfor -%}
+
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+{%- comment -%}
+  FAQPage structured data, built from the same blocks so it can never drift
+  out of step with what is on the page.
+{%- endcomment -%}
+
+{%- if section.settings.enable_schema_markup -%}
+
+  {%- capture faq_json -%}
+
+    {%- assign q_index = 0 -%}
+
+    {%- for block in section.blocks -%}
+
+      {%- if block.type == 'question' and block.settings.question != blank -%}
+
+        {%- assign q_index = q_index | plus: 1 -%}
+
+        {%- if q_index > 1 -%},{%- endif -%}
+
+        {
+          "@type": "Question",
+          "name": {{ block.settings.question | strip_html | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ block.settings.answer | strip_html | json }}
+          }
+        }
+
+      {%- endif -%}
+
+    {%- endfor -%}
+
+  {%- endcapture -%}
+
+  {%- if faq_json != blank -%}
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{{ faq_json }}]
+      }
+    </script>
+
+  {%- endif -%}
+
+{%- endif -%}
+
+
+{% schema %}
+
+{
+  "name": "YD SEO Faq",
+  "tag": "section",
+  "class": "yd-seo-shopify-section",
+
+  "settings": [
+
+    {
+      "type": "text",
+      "id": "empty_hint",
+      "label": "Empty-state hint (theme editor only)",
+      "default": "Add blocks to fill this section."
+    },
+
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Custom Jersey Manufacturer In India"
+    },
+
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+
+    {
+      "type": "text",
+      "id": "faq_title",
+      "label": "FAQ list title",
+      "default": "Custom Jersey FAQs"
+    },
+
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+
+    {
+      "type": "range",
+      "id": "copy_width",
+      "min": 200,
+      "max": 520,
+      "step": 10,
+      "unit": "px",
+      "label": "Copy column width",
+      "default": 350
+    },
+
+    {
+      "type": "color",
+      "id": "item_colour",
+      "label": "Question background",
+      "default": "#f2f2f2"
+    },
+
+    {
+      "type": "color",
+      "id": "item_open_colour",
+      "label": "Open question background",
+      "default": "#ededed"
+    },
+
+    {
+      "type": "color",
+      "id": "icon_colour",
+      "label": "Arrow colour",
+      "default": "#363535"
+    },
+
+    {
+      "type": "image_picker",
+      "id": "icon",
+      "label": "Arrow icon",
+      "info": "A circled arrow pointing up. It is rotated automatically for the closed state and recoloured from the setting above."
+    },
+
+    {
+      "type": "header",
+      "content": "SEO"
+    },
+
+    {
+      "type": "checkbox",
+      "id": "enable_schema_markup",
+      "label": "Add FAQ structured data",
+      "default": true,
+      "info": "Outputs FAQPage JSON-LD from the questions below, making them eligible for rich results. Use on one section per page only."
+    }
+
+  ],
+
+  "blocks": [
+
+    {
+      "type": "copy",
+      "name": "Copy paragraph",
+      "limit": 10,
+
+      "settings": [
+
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Paragraph",
+          "default": "<p>Yoode makes custom jerseys for clubs, schools, colleges and companies across India.</p>"
+        }
+
+      ]
+    },
+
+    {
+      "type": "question",
+      "name": "Question",
+      "limit": 20,
+
+      "settings": [
+
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What is the minimum order for custom jerseys?"
+        },
+
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "There isn't a high minimum. You can order a single custom jersey or a few hundred — the print process is the same either way."
+        }
+
+      ]
+    }
+
+  ],
+
+  "presets": [
+
+    {
+      "name": "YD SEO Faq",
+
+      "blocks": [
+
+        {
+          "type": "copy",
+          "settings": {
+            "text": "<p>Yoode makes custom jerseys for clubs, schools, colleges and companies across India. Because production runs through our own Tirupur facility, we control the fabric, the print and the timeline — which means no high minimum order, a free design mockup, and full-sublimation printing with your names, numbers and sponsor logos from Rs.460 a piece.</p>"
+          }
+        },
+
+        {
+          "type": "copy",
+          "settings": {
+            "text": "<p>Whether it's a corporate sports day, a college fest, a cricket or football club or a school team, we handle the kit end to end: consultation, design, in-house production and delivery. Collect from any of our four Experience Centres in Bangalore, Chennai, Trivandrum and Marthandam, or have the order shipped anywhere in the country.</p>"
+          }
+        },
+
+        {
+          "type": "copy",
+          "settings": {
+            "text": "<p>Beyond sublimation we also run DTG printing, machine embroidery, Coloreel embroidery and UV printing, so the same team that builds your jerseys can also handle training tees, tracksuits, caps and the rest of the kit bag.</p>"
+          }
+        },
+
+        {
+          "type": "question",
+          "settings": {
+            "question": "What is the minimum order for custom jerseys?",
+            "answer": "There isn't a high minimum. You can order a single custom jersey or a few hundred — the print process is the same either way. Per-piece pricing does improve once you cross about 11 pieces."
+          }
+        },
+
+        {
+          "type": "question",
+          "settings": {
+            "question": "How much does a custom jersey cost?",
+            "answer": "Junior jerseys start at Rs.460 and adult jerseys at Rs.650, with full-sleeve and raglan styles from Rs.750. The final quote depends on fabric, sleeve length, print coverage and quantity, and names and numbers are already included."
+          }
+        },
+
+        {
+          "type": "question",
+          "settings": {
+            "question": "Can you design the jersey if I don't have artwork?",
+            "answer": "Yes. Tell our design team what the club stands for, share a colour or a rough sketch, and they will build the kit around it. You see a full mockup before anything is printed, and revisions don't cost extra."
+          }
+        },
+
+        {
+          "type": "question",
+          "settings": {
+            "question": "Which sports do you make jerseys for?",
+            "answer": "Cricket, football, basketball, badminton, volleyball, cycling, running and esports, plus corporate and school kit. If your sport isn't listed, send us the fit you need and we will pattern it."
+          }
+        },
+
+        {
+          "type": "question",
+          "settings": {
+            "question": "How long does an order take?",
+            "answer": "You will have a mockup within a day of sending your brief. Production is scheduled once you approve it, and the timeline depends on quantity — we run 1,000+ units a day at our Tirupur unit."
+          }
+        },
+
+        {
+          "type": "question",
+          "settings": {
+            "question": "Do you deliver outside your store cities?",
+            "answer": "Yes. We ship anywhere in India, to one address or several. You can also collect from any of our Experience Centres in Bangalore, Chennai, Trivandrum or Marthandam."
+          }
+        },
+
+        {
+          "type": "question",
+          "settings": {
+            "question": "Will the print fade or peel?",
+            "answer": "No. Full sublimation prints the design into the fabric rather than sitting on top of it, so there is nothing to crack or peel in the wash."
+          }
+        }
+
+      ]
+    }
+
+  ]
+}
+
+{% endschema %}

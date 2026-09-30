@@ -1,0 +1,81 @@
+{{ 'yd-technology-cards.css' | asset_url | stylesheet_tag }}
+
+<div class="bg-black section-padding">
+	<div class="container">
+		<div class="yd-technology">
+			<h2 class="title">Technologies That Define Us</h2>
+			<p class="para">
+				We use advanced printing and embroidery techniques to make sure your merchandise stands out. Our cutting edge methods ensure precision, durability, and a premium look for every product.
+			</p>
+			<div class="content">
+				<div class="card">
+                    <img class="card-image" src="{{ "about-technology-dtg.webp" | asset_url }}" alt="" width="auto" height="auto"  loading="lazy">
+					<div class="card-content">
+                        <!-- <a href="#" class="btn">Direct-to-Garment (DTG)</a> -->
+						<h3 class="sub-title">
+							DTG Printing
+						</h3>
+						<p class="card-para">
+							Brilliant, high-resolution prints directly on fabric ideal for detailed designs and small batch orders.
+						</p>
+					</div>
+				</div>
+				<div class="card">
+                   <img class="card-image" src="{{ "about-technology-sublimation.webp" | asset_url }}" alt="" width="auto" height="auto" loading="lazy">
+					<div class="card-content">
+							<!-- <a href="#" class="btn">Sublimation Printing</a> -->
+						<h3 class="sub-title">Sublimation Printing</h3>
+						<p class="card-para">
+							Full-coverage, fade-resistant prints that bring vibrant designs to life, perfect for apparel and accessories.
+						</p>
+					</div>
+				</div>
+				<div class="card">
+                   <img class="card-image" src="{{ "about-technology-embroidery.webp" | asset_url }}" alt="" width="auto" height="auto" loading="lazy">
+					<div class="card-content">
+							<!-- <a href="#" class="btn">Embroidery</a> -->
+						<h3 class="sub-title">Machine Embroidery</h3>
+						<p class="card-para">Classic, high-quality embroidery for a professional and lasting finish on workwear, caps, and more.
+						</p>
+					</div>
+				</div>
+				<div class="card">
+                   <img class="card-image" src="{{ "about-technology-coloreel.webp" | asset_url }}" alt="" width="auto" height="auto" loading="lazy">
+					<div class="card-content">
+						<!-- <a href="#" class="btn">Coloreel Embroidery</a> -->
+						<h3 class="sub-title">
+							Coloreel Embroidery
+						</h3>
+						<p class="card-para">A revolutionary technique that allows for on-demand thread coloring, creating seamless multi-color embroidery.
+						</p>
+					</div>
+				</div>
+				<div class="card">
+                    <img class="card-image"  src="{{ "about-technology-uv-printing.webp" | asset_url }}" alt="" width="auto" height="auto" loading="lazy">
+					<div class="card-content">
+						<!-- <a href="#" class="btn">UV Printing</a> -->
+						<h3 class="sub-title">UV Printing</h3>
+						<p class="card-para">
+							Long-lasting, high-definition prints on corporate gifts and accessories, ensuring a sleek and professional look.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% schema %}
+{
+  "name": "YD Technology Cards",
+  "disabled_on": {
+    "templates": ["password"],
+    "groups": ["*"]
+  },
+  "presets": [
+    {
+      "name": "YD Technology Cards"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,392 @@
+{% doc %}
+  @prompt
+    add a snow falling effect to home page only use tsParticles. main theme is Christmas 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-snow-container-{{ ai_gen_id }} {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: {{ block.settings.z_index }};
+    display: block;
+  }
+
+  #ai-tsparticles-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+  }
+{% endstyle %}
+
+{% if template.name == 'index' %}
+  <div class="ai-snow-container-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+    <div id="ai-tsparticles-{{ ai_gen_id }}"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+
+  <script>
+    (function() {
+      class ChristmasSnow{{ ai_gen_id }} extends HTMLElement {
+        constructor() {
+          super();
+          this.particlesLoaded = false;
+        }
+
+        connectedCallback() {
+          this.initSnowfall();
+        }
+
+        async initSnowfall() {
+          if (typeof tsParticles === 'undefined') {
+            setTimeout(() => this.initSnowfall(), 100);
+            return;
+          }
+
+          if (this.particlesLoaded) return;
+          this.particlesLoaded = true;
+
+          await tsParticles.load('ai-tsparticles-{{ ai_gen_id }}', {
+            fullScreen: {
+              enable: false,
+              zIndex: 0
+            },
+            particles: {
+              number: {
+                value: {{ block.settings.particle_count }},
+                density: {
+                  enable: true,
+                  area: 800
+                }
+              },
+              color: {
+                value: '{{ block.settings.snow_color }}'
+              },
+              shape: {
+                type: '{{ block.settings.particle_shape }}'
+              },
+              opacity: {
+                value: {{ block.settings.opacity }},
+                random: {{ block.settings.random_opacity }},
+                animation: {
+                  enable: {{ block.settings.opacity_animation }},
+                  speed: 0.5,
+                  minimumValue: 0.3,
+                  sync: false
+                }
+              },
+              size: {
+                value: {{ block.settings.particle_size }},
+                random: {
+                  enable: true,
+                  minimumValue: {{ block.settings.min_particle_size }}
+                },
+                animation: {
+                  enable: {{ block.settings.size_animation }},
+                  speed: 2,
+                  minimumValue: {{ block.settings.min_particle_size }},
+                  sync: false
+                }
+              },
+              move: {
+                enable: true,
+                speed: {{ block.settings.fall_speed }},
+                direction: 'bottom',
+                random: {{ block.settings.random_movement }},
+                straight: false,
+                outModes: {
+                  default: 'out',
+                  bottom: 'out',
+                  left: 'out',
+                  right: 'out',
+                  top: 'out'
+                },
+                attract: {
+                  enable: false
+                },
+                {% if block.settings.wind_effect %}
+                drift: {{ block.settings.wind_strength }},
+                {% endif %}
+                warp: false
+              },
+              wobble: {
+                enable: {{ block.settings.wobble_effect }},
+                distance: {{ block.settings.wobble_distance }},
+                speed: {{ block.settings.wobble_speed }}
+              },
+              rotate: {
+                value: 0,
+                random: true,
+                direction: 'random',
+                animation: {
+                  enable: {{ block.settings.rotation_animation }},
+                  speed: 5,
+                  sync: false
+                }
+              }
+            },
+            interactivity: {
+              detectsOn: 'canvas',
+              events: {
+                onHover: {
+                  enable: {{ block.settings.hover_interaction }},
+                  mode: '{{ block.settings.hover_mode }}'
+                },
+                resize: true
+              },
+              modes: {
+                repulse: {
+                  distance: 100,
+                  duration: 0.4
+                },
+                bubble: {
+                  distance: 200,
+                  size: {{ block.settings.particle_size | times: 1.5 }},
+                  duration: 2,
+                  opacity: 1
+                }
+              }
+            },
+            detectRetina: true,
+            background: {
+              color: 'transparent'
+            }
+          });
+        }
+
+        disconnectedCallback() {
+          if (typeof tsParticles !== 'undefined') {
+            tsParticles.destroy('ai-tsparticles-{{ ai_gen_id }}');
+          }
+        }
+      }
+
+      customElements.define('christmas-snow-{{ ai_gen_id }}', ChristmasSnow{{ ai_gen_id }});
+    })();
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Christmas snow effect",
+  "tag": null,
+  "class": "christmas-snow-block",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Snow particles"
+    },
+    {
+      "type": "range",
+      "id": "particle_count",
+      "min": 20,
+      "max": 200,
+      "step": 10,
+      "label": "Number of snowflakes",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "particle_shape",
+      "label": "Snowflake shape",
+      "options": [
+        {
+          "value": "circle",
+          "label": "Circle"
+        },
+        {
+          "value": "edge",
+          "label": "Edge"
+        },
+        {
+          "value": "triangle",
+          "label": "Triangle"
+        },
+        {
+          "value": "polygon",
+          "label": "Polygon"
+        },
+        {
+          "value": "star",
+          "label": "Star"
+        }
+      ],
+      "default": "circle"
+    },
+    {
+      "type": "color",
+      "id": "snow_color",
+      "label": "Snow color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "particle_size",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Maximum size",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "min_particle_size",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Minimum size",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Movement"
+    },
+    {
+      "type": "range",
+      "id": "fall_speed",
+      "min": 0.5,
+      "max": 5,
+      "step": 0.5,
+      "label": "Fall speed",
+      "default": 1.5
+    },
+    {
+      "type": "checkbox",
+      "id": "random_movement",
+      "label": "Random movement",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "wind_effect",
+      "label": "Enable wind effect",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "wind_strength",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "label": "Wind strength",
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "wobble_effect",
+      "label": "Enable wobble effect",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "wobble_distance",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Wobble distance",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "wobble_speed",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "label": "Wobble speed",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "range",
+      "id": "opacity",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.1,
+      "label": "Opacity",
+      "default": 0.8
+    },
+    {
+      "type": "checkbox",
+      "id": "random_opacity",
+      "label": "Random opacity",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "opacity_animation",
+      "label": "Opacity animation",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "size_animation",
+      "label": "Size animation",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "rotation_animation",
+      "label": "Rotation animation",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Interaction"
+    },
+    {
+      "type": "checkbox",
+      "id": "hover_interaction",
+      "label": "Enable hover interaction",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "hover_mode",
+      "label": "Hover effect",
+      "options": [
+        {
+          "value": "repulse",
+          "label": "Repulse"
+        },
+        {
+          "value": "bubble",
+          "label": "Bubble"
+        },
+        {
+          "value": "grab",
+          "label": "Grab"
+        }
+      ],
+      "default": "repulse"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "range",
+      "id": "z_index",
+      "min": 100,
+      "max": 9900,
+      "step": 100,
+      "label": "Z-index",
+      "default": 9900
+    }
+  ],
+  "presets": [
+    {
+      "name": "Christmas snow effect"
+    }
+  ]
+}
+{% endschema %}

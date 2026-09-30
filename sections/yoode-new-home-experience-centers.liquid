@@ -1,0 +1,417 @@
+{%- liquid
+  assign half_size = section.blocks.size | divided_by: 2.0 | ceil
+-%}
+
+<div
+  class="yn-section yn-source yn-source--experience-centers yn-experience color-{{ section.settings.color_scheme }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-source-background: {{ section.settings.source_background | default: '#faf9f6' }}; --yn-pt: {{ section.settings.padding_top | divided_by: 10.0 }}rem; --yn-pb: {{ section.settings.padding_bottom | divided_by: 10.0 }}rem; --yn-experience-highlight: {{ section.settings.highlight_color }}; --yn-experience-open: {{ section.settings.open_color }}; --yn-experience-soon: {{ section.settings.soon_color }};"
+>
+  <div class="yn-container yn-container--narrow">
+    {% render 'yoode-new-home-heading',
+      subtitle: section.settings.subtitle,
+      title: section.settings.title,
+      description: section.settings.description,
+      align: 'center'
+    %}
+
+    {%- if section.blocks.size > 0 -%}
+      <yoode-new-home-experience-centers class="yn-experience__layout">
+        <div class="yn-experience__side yn-experience__side--left">
+          {%- for block in section.blocks limit: half_size -%}
+            {%- assign is_bottom = false -%}
+            {%- assign position = forloop.index0 | modulo: 2 -%}
+            {%- if position == 1 -%}{%- assign is_bottom = true -%}{%- endif -%}
+            {% render 'yoode-new-home-experience-card',
+              block: block,
+              is_bottom: is_bottom,
+              open_label: section.settings.open_label,
+              soon_label: section.settings.soon_label
+            %}
+          {%- endfor -%}
+        </div>
+
+        <div class="yn-experience__map">
+          {%- capture map_lines -%}
+            {%- for block in section.blocks -%}
+              {%- liquid
+                assign start_x = block.settings.map_x | default: 0 | times: 1
+                assign start_y = block.settings.map_y | default: 0 | times: 1
+                if forloop.index0 < half_size
+                  assign end_x = 0
+                  assign cp1_x = start_x | minus: 100
+                  assign cp2_x = end_x | plus: 100
+                else
+                  assign end_x = 612
+                  assign cp1_x = start_x | plus: 100
+                  assign cp2_x = end_x | minus: 100
+                endif
+                assign position = forloop.index0 | modulo: 2
+                if position == 0
+                  assign end_y = 150
+                else
+                  assign end_y = 550
+                endif
+              -%}
+              <path
+                class="yn-experience__line"
+                d="M {{ start_x }} {{ start_y }} C {{ cp1_x }} {{ start_y }}, {{ cp2_x }} {{ end_y }}, {{ end_x }} {{ end_y }}"
+                data-yn-experience-line="{{ block.id }}"
+              />
+            {%- endfor -%}
+          {%- endcapture -%}
+
+          {% render 'yoode-new-home-india-map', svg_content: map_lines %}
+
+          <div class="yn-experience__pins">
+            {%- for block in section.blocks -%}
+              {%- liquid
+                assign pin_x = block.settings.map_x | default: 0 | times: 100.0 | divided_by: 612
+                assign pin_y = block.settings.map_y | default: 0 | times: 100.0 | divided_by: 696
+              -%}
+              <button
+                type="button"
+                class="yn-experience__pin{% if block.settings.coming_soon %} yn-experience__pin--soon{% endif %}"
+                style="--yn-x: {{ pin_x }}%; --yn-y: {{ pin_y }}%;"
+                data-yn-experience-pin="{{ block.id }}"
+                aria-label="{{ block.settings.title | escape }}"
+              >
+                <span class="yn-experience__pin-ping" aria-hidden="true"></span>
+                {%- if block.settings.coming_soon -%}
+                  <span class="yn-experience__pin-dot yn-experience__pin-dot--soon" aria-hidden="true">
+                    {%- render 'yoode-new-home-icon', icon: 'hard-hat' -%}
+                  </span>
+                {%- else -%}
+                  <span class="yn-experience__pin-dot" aria-hidden="true"></span>
+                {%- endif -%}
+                {%- if block.settings.title != blank -%}
+                  <span class="yn-experience__tooltip" aria-hidden="true">{{ block.settings.title | escape }}</span>
+                {%- endif -%}
+              </button>
+            {%- endfor -%}
+          </div>
+        </div>
+
+        <div class="yn-experience__side yn-experience__side--right">
+          {%- for block in section.blocks offset: half_size -%}
+            {%- assign is_bottom = false -%}
+            {%- assign position = forloop.index0 | modulo: 2 -%}
+            {%- if position == 1 -%}{%- assign is_bottom = true -%}{%- endif -%}
+            {% render 'yoode-new-home-experience-card',
+              block: block,
+              is_bottom: is_bottom,
+              open_label: section.settings.open_label,
+              soon_label: section.settings.soon_label
+            %}
+          {%- endfor -%}
+        </div>
+      </yoode-new-home-experience-centers>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YN Experience Centers",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Our Locations"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "We work for you. We care about quality. We're all over India."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>See it. Touch it. Make it yours. Visit our physical design labs for reliable solutions, ongoing support, and real results.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Cards"
+    },
+    {
+      "type": "text",
+      "id": "open_label",
+      "label": "Badge text for open locations",
+      "default": "Open Now"
+    },
+    {
+      "type": "text",
+      "id": "soon_label",
+      "label": "Badge text for upcoming locations",
+      "default": "Coming Soon"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight color",
+      "info": "Active card border, title, map pin and connecting line.",
+      "default": "#2563eb"
+    },
+    {
+      "type": "color",
+      "id": "open_color",
+      "label": "Open badge color",
+      "default": "#15803d"
+    },
+    {
+      "type": "color",
+      "id": "soon_color",
+      "label": "Coming soon color",
+      "info": "Badge and map pin of upcoming locations.",
+      "default": "#f59e0b"
+    },
+    {
+      "type": "paragraph",
+      "content": "The first half of the locations is shown left of the map, the rest on the right."
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "color",
+      "id": "source_background",
+      "label": "Section background",
+      "default": "#faf9f6"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "location",
+      "name": "Location",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "info": "Also shown as the map pin label.",
+          "default": "City"
+        },
+        {
+          "type": "text",
+          "id": "region",
+          "label": "Region",
+          "default": "State"
+        },
+        {
+          "type": "textarea",
+          "id": "address",
+          "label": "Address"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Card link",
+          "info": "Choose a page or paste a URL to make the entire location card clickable."
+        },
+        {
+          "type": "checkbox",
+          "id": "coming_soon",
+          "label": "Coming soon",
+          "info": "Hides the address and uses the coming soon badge and pin.",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Shown when the card is hovered or selected. 800×530px recommended."
+        },
+        {
+          "type": "text",
+          "id": "fallback_image",
+          "label": "Demo image file (used when no image is uploaded)"
+        },
+        {
+          "type": "header",
+          "content": "Map pin"
+        },
+        {
+          "type": "number",
+          "id": "map_x",
+          "label": "Horizontal position",
+          "info": "Map units from the left edge, 0 to 612.",
+          "default": 190
+        },
+        {
+          "type": "number",
+          "id": "map_y",
+          "label": "Vertical position",
+          "info": "Map units from the top edge, 0 to 696.",
+          "default": 520
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Experience Centers",
+      "blocks": [
+        {
+          "type": "location",
+          "settings": {
+            "title": "Bangalore",
+            "region": "Karnataka",
+            "address": "Ground Floor, #68 Transpade Tower, Jyoti Nivas College Rd, Koramangala 5th Block, Bengaluru, Karnataka 560095",
+            "fallback_image": "yoode-new-home-img-bangalore-store.webp",
+            "map_x": 190,
+            "map_y": 520
+          }
+        },
+        {
+          "type": "location",
+          "settings": {
+            "title": "Trivandrum",
+            "region": "Kerala",
+            "address": "Ground Floor, CloudQ Towers, Service Rd, near Technopark Campus Phase 1, Kazhakkoottam, Kerala 695582",
+            "fallback_image": "yoode-new-home-img-trivandrum-store.webp",
+            "map_x": 175,
+            "map_y": 650
+          }
+        },
+        {
+          "type": "location",
+          "settings": {
+            "title": "Chennai",
+            "region": "Tamil Nadu",
+            "address": "Coming Soon",
+            "coming_soon": true,
+            "map_x": 260,
+            "map_y": 580
+          }
+        },
+        {
+          "type": "location",
+          "settings": {
+            "title": "Marthandam",
+            "region": "Tamil Nadu",
+            "address": "1st Floor, Adhesh Tower, Eraviputhoorkadai, Marthandam, Tamil Nadu 629155",
+            "fallback_image": "yoode-new-home-img-marthandam-store.webp",
+            "map_x": 195,
+            "map_y": 670
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

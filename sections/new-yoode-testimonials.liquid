@@ -1,0 +1,274 @@
+{% style %}
+  {% render 'section-margin' %}
+  {% render 'section-padding' %}
+{% endstyle %}
+
+<!-- Testimonials Section -->
+<div class="yoode-testimonials-section section-{{ section.id }}-padding section-padding">
+  <div class="yoode-container">
+    {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+      <header class="yoode-testimonials-header">
+        {% if section.settings.heading != blank %}
+          <h2 class="yoode-testimonials-title">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="yoode-testimonials-subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </header>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="yoode-testimonials-grid">
+        {% for block in section.blocks %}
+          {% if block.settings.quote != blank %}
+            <article class="yoode-testimonial-card">
+              <blockquote class="yoode-testimonial-text">
+                "{{ block.settings.quote }}"
+              </blockquote>
+
+              <div class="yoode-testimonial-author">
+                <div class="yoode-author-avatar">
+                  {% if block.settings.author_image %}
+                    {{ block.settings.author_image | image_url: width: 112 | image_tag: alt: block.settings.author_name, class: "yoode-author-image" }}
+                  {% endif %}
+                </div>
+                <div class="yoode-author-info">
+                  {% if block.settings.author_name != blank %}
+                    <h3 class="yoode-author-name">{{ block.settings.author_name }}</h3>
+                  {% endif %}
+                  {% if block.settings.author_role != blank %}
+                    <p class="yoode-author-role">{{ block.settings.author_role }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "New Yoode Testimonials",
+  "class": "yoode-testimonials-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "What our customers say",
+      "label": "Heading Text"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "default": "Real teams. Real orders. Real results.",
+      "label": "Subtitle Text"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "testimonals",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "default": "The quality exceeded expectations.",
+          "label": "Testimonial Quote"
+        },
+        {
+          "type": "image_picker",
+          "id": "author_image",
+          "label": "Author Image"
+        },
+        {
+          "type": "text",
+          "id": "author_name",
+          "default": "Customer Name",
+          "label": "Author Name"
+        },
+        {
+          "type": "text",
+          "id": "author_role",
+          "default": "Client type",
+          "label": "Author Role/Title"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Yoode Testimonials",
+      "settings": {
+        "heading": "What our customers say",
+        "subtitle": "Real teams. Real orders. Real results.",
+        "padding_bottom": "xl"
+      },
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The quality of the onboarding kits exceeded expectations. Our new hires were genuinely impressed.",
+            "author_name": "HR Manager",
+            "author_role": "Corporate client"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Delivered our cricket team jerseys in 5 days. Every name, number and logo exactly right.",
+            "author_name": "Cricket Club Admin",
+            "author_role": "Sports & Teams client"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Ordered just 3 custom tees for a birthday gift. The process was simple and the quality was incredible.",
+            "author_name": "Individual customer",
+            "author_role": "Personalised order"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

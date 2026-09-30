@@ -1,0 +1,17 @@
+<div class="container-fluid section-padding">
+    <div id='judgeme_product_reviews' class='jdgm-widget jdgm-review-widget' data-id='{{ product.id }}'>
+        {{ product.metafields.judgeme.widget }}
+    </div>
+</div>
+{% schema %}
+  {
+    "name": "YD Judgme Review Widget",
+    "settings": [],
+      "presets": [
+    {
+      "name": "YD Judgme Review Widget",
+      "blocks": []
+    }
+  ]
+  }
+{% endschema %}

@@ -1,0 +1,2342 @@
+{%- comment -%}
+  yd-new-gift-expo
+  --------------------------------------------------------------------------
+  QR landing page for expo stalls. Ported from a standalone HTML page.
+
+  Styles live in assets/yd-new-gift-expo.css and are loaded here rather than in
+  theme.liquid, so pages without this section do not pay for them.
+
+  The form is a real Shopify contact form, so submissions are emailed to the
+  address in Settings → Notifications → "Customer service email". Extra hidden
+  fields ride along so the email says where the enquiry came from:
+    contact[Source]      — the page label set in the section settings
+    contact[Page URL]    — the actual URL that was submitted from
+    contact[Captured on] — the date, so leads can be sorted by show day
+    contact[Website]     — honeypot; always empty for a human
+
+  The product checkboxes are generated from the same blocks as the panels
+  above them, so their labels and colours can never drift apart.
+
+  Every outbound link — the four panels, both Experience Centre buttons and
+  both WhatsApp links — comes from a setting. Nothing is hardcoded in markup.
+{%- endcomment -%}
+
+{{ 'yd-new-gift-expo.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Fonts are linked here rather than @import-ed from inside the CSS. An @import
+  inside a stylesheet cannot start until that stylesheet has downloaded and
+  parsed, which chains two round trips before any text can paint. A <link>
+  starts immediately, and the preconnects warm the TLS handshake.
+{%- endcomment -%}
+{% comment %}theme-check-disable RemoteAsset{% endcomment %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  media="print"
+  onload="this.media='all'"
+>
+<noscript>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  >
+</noscript>
+{% comment %}theme-check-enable RemoteAsset{% endcomment %}
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id | replace: '_', '-'
+
+  # Panels and store cards are both blocks on this section, so every loop has to
+  # filter by type. This matters most in the form: without it a store card would
+  # turn up as a product checkbox next to Polos and Shirts.
+  assign panel_blocks = section.blocks | where: 'type', 'panel'
+  assign store_blocks = section.blocks | where: 'type', 'store'
+
+  assign wa_number = s.whatsapp_number | remove: '+' | remove: ' ' | remove: '-'
+  assign wa_text = s.whatsapp_message | url_encode
+  assign bar_text = s.bar_wa_message | url_encode
+-%}
+
+{%- assign yd_posted = false -%}
+{%- assign yd_failed = false -%}
+
+<div
+  class="yd-new-expo-outer"
+  {% if s.outer_bg != blank %}
+    style="--yn-outer-bg: {{ s.outer_bg }};"
+  {% endif %}
+>
+  {%- comment -%}
+    The check URL rides on the root rather than on the form, because the script
+    reads it before it knows whether the form is even on the page.
+  {%- endcomment -%}
+  <div
+    class="yd-new-expo"
+    id="yd-new-{{ uid }}"
+    {% if s.check_url != blank %}
+      data-yd-new-check-url="{{ s.check_url | escape }}"
+    {% endif %}
+  >
+    {%- comment -%} ===================== HERO ===================== {%- endcomment -%}
+    <section class="yd-new-hero">
+      {%- comment -%}
+        Two columns from 900px up — the pitch on the left, the sample-box card on
+        the right. Below that the card stacks under the stats, which on a phone
+        is still within the first screenful, where the QR traffic lands.
+      {%- endcomment -%}
+      <div class="yd-new-hero-grid">
+        <div class="yd-new-hero-main">
+          {%- if s.eyebrow != blank -%}
+            <div class="yd-new-tag">
+              {%- if s.show_pulse -%}
+                <span class="yd-new-pulse" aria-hidden="true"></span>
+              {%- endif -%}
+              <span class="yd-new-mono">{{ s.eyebrow }}</span>
+            </div>
+          {%- endif -%}
+
+          {%- if s.heading != blank or s.heading_highlight != blank -%}
+            <h1>
+              {{- s.heading | escape | newline_to_br -}}
+              {%- if s.heading_highlight != blank -%}
+                {%- if s.heading != blank -%}<br>{%- endif -%}
+                <span>{{ s.heading_highlight }}</span>
+              {%- endif -%}
+            </h1>
+          {%- endif -%}
+
+          {%- if s.intro != blank -%}
+            <p>{{ s.intro }}</p>
+          {%- endif -%}
+
+          {%- if s.stat_1 != blank or s.stat_2 != blank or s.stat_3 != blank -%}
+            <div class="yd-new-stats">
+              {%- if s.stat_1 != blank -%}
+                <span class="yd-new-stat">{{ s.stat_1 }}</span>
+              {%- endif -%}
+              {%- if s.stat_2 != blank -%}
+                <span class="yd-new-stat">{{ s.stat_2 }}</span>
+              {%- endif -%}
+              {%- if s.stat_3 != blank -%}
+                <span class="yd-new-stat">{{ s.stat_3 }}</span>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%}
+          ---------------- SAMPLE BOX CARD ----------------
+          The pile of boxes is a real, finite thing on the stall table, so the
+          number has to be able to go down. Shopify's contact form gives the
+          theme no server-side counter, so the figure shown is:
+
+            what staff have entered as already claimed  +  what THIS device has
+                                                           registered
+
+          The device half is kept in localStorage, so a reload or a second visit
+          does not put the box back on the pile. Staff move the "already claimed"
+          number in the theme editor as the day goes on, which is also the only
+          thing every other visitor's phone will see.
+        {%- endcomment -%}
+        {%- if s.show_register -%}
+          {%- liquid
+            # Clamped before any arithmetic. A stray number in the theme editor
+            # would otherwise render "-4 boxes left" or push the bar past 100%.
+            assign reg_total = s.register_total | default: 0 | at_least: 0
+            assign reg_claimed = s.register_claimed | default: 0 | at_least: 0
+            if reg_claimed > reg_total
+              assign reg_claimed = reg_total
+            endif
+            assign reg_left = reg_total | minus: reg_claimed
+            # Guarded: divided_by with a zero divisor is a Liquid error, not a 0.
+            assign reg_pct = 0
+            if reg_total > 0
+              assign reg_pct = reg_claimed | times: 100.0 | divided_by: reg_total | round: 2
+            endif
+          -%}
+          <aside
+            class="yd-new-reg{% if reg_left <= 0 %} is-out{% endif %}"
+            data-yd-new-reg
+            data-yd-new-total="{{ reg_total }}"
+            data-yd-new-claimed="{{ reg_claimed }}"
+            data-yd-new-soldout-label="{{ s.register_soldout_label | escape }}"
+          >
+            {%- if s.register_title != blank -%}
+              <b class="yd-new-reg-title">{{ s.register_title }}</b>
+            {%- endif -%}
+            {%- if s.register_text != blank -%}
+              <p class="yd-new-reg-text">{{ s.register_text }}</p>
+            {%- endif -%}
+
+            {%- comment -%}
+              Server-rendered numbers and bar width, so the card is already
+              correct before the script runs and stays correct with JS off.
+            {%- endcomment -%}
+            <div
+              class="yd-new-reg-meter"
+              role="progressbar"
+              aria-valuemin="0"
+              aria-valuemax="{{ reg_total }}"
+              aria-valuenow="{{ reg_claimed }}"
+              aria-label="{{ s.register_title | escape }}"
+            >
+              <div class="yd-new-reg-row">
+                <span class="yd-new-reg-count">
+                  <b data-yd-new-reg-left>{{ reg_left }}</b>
+                  {%- if s.register_left_label != blank -%}
+                    <span>{{ s.register_left_label | replace: '[total]', reg_total }}</span>
+                  {%- endif -%}
+                </span>
+                {%- if s.register_claimed_label != blank -%}
+                  <span class="yd-new-reg-claimed">
+                    <b data-yd-new-reg-claimed>{{ reg_claimed }}</b>
+                    {{ s.register_claimed_label }}
+                  </span>
+                {%- endif -%}
+              </div>
+
+              <span class="yd-new-reg-track">
+                <span class="yd-new-reg-fill" data-yd-new-reg-fill style="width: {{ reg_pct }}%;"></span>
+              </span>
+            </div>
+
+            {%- if s.register_button_label != blank -%}
+              {%- comment -%}
+                The button is the form. Registering IS submitting the enquiry
+                below, which is what takes a box off the pile — so this is an
+                anchor to the form, not a second thing to fill in.
+              {%- endcomment -%}
+              <a
+                class="yd-new-reg-btn"
+                href="#yd-new-form-{{ uid }}"
+                data-yd-new-reg-btn
+                {% if reg_left <= 0 %}
+                  aria-disabled="true"
+                {% endif %}
+              >
+                {%- if reg_left <= 0 -%}
+                  {{- s.register_soldout_label -}}
+                {%- else -%}
+                  {{- s.register_button_label -}}
+                {%- endif -%}
+              </a>
+            {%- endif -%}
+          </aside>
+        {%- endif -%}
+      </div>
+    </section>
+
+    {%- comment -%} ===================== DESTINATIONS ===================== {%- endcomment -%}
+    {%- if panel_blocks.size > 0 -%}
+      <section class="yd-new-block">
+        <div class="yd-new-block-head">
+          {%- if s.panels_eyebrow != blank -%}
+            <div class="yd-new-mono">{{ s.panels_eyebrow }}</div>
+          {%- endif -%}
+          {%- if s.panels_heading != blank -%}
+            <h2>{{ s.panels_heading }}</h2>
+          {%- endif -%}
+          {%- if s.panels_text != blank -%}
+            <p>{{ s.panels_text }}</p>
+          {%- endif -%}
+        </div>
+
+        <div class="yd-new-panels">
+          {%- for block in panel_blocks -%}
+            {%- liquid
+              # Whatever the merchant typed always wins. The fallback below only
+              # fires when the field is empty, which happens for blocks that were
+              # created before this setting existed — presets only apply when a
+              # section is first added, so those blocks would otherwise render
+              # with no destination at all.
+              assign panel_link = block.settings.link
+              if panel_link == blank
+                assign panel_key = block.settings.title | downcase | strip
+                case panel_key
+                  when 'mars polo'
+                    assign panel_link = 'https://marspolo.com/'
+                  when 'edoy shirts'
+                    assign panel_link = 'https://bitsnpixs.github.io/edoy/'
+                  when 'sports jerseys'
+                    assign panel_link = 'https://yoode.com/collections/sportswear'
+                  when 'corporate gifting'
+                    assign panel_link = 'https://yoode.com/pages/corporate-gifting-company-in-bangalore'
+                endcase
+              endif
+            -%}
+            <a
+              class="yd-new-panel"
+              style="--yn-a: {{ block.settings.color_a }}; --yn-b: {{ block.settings.color_b }};"
+              {% if panel_link != blank %}
+                href="{{ panel_link | escape }}"
+                {% if block.settings.open_new_tab %}
+                  target="_blank"
+                  rel="noopener"
+                {% endif %}
+              {% endif %}
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.ghost != blank -%}
+                <span class="yd-new-ghost" aria-hidden="true">{{ block.settings.ghost }}</span>
+              {%- endif -%}
+              <h3>
+                {{ block.settings.title }}
+                <i aria-hidden="true">&rarr;</i>
+              </h3>
+              {%- if block.settings.text != blank -%}
+                <p>{{ block.settings.text }}</p>
+              {%- endif -%}
+              {%- if block.settings.spec != blank -%}
+                <div class="yd-new-spec">{{ block.settings.spec }}</div>
+              {%- endif -%}
+            </a>
+          {%- endfor -%}
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- comment -%} ===================== ACTIONS + FORM ===================== {%- endcomment -%}
+    <section class="yd-new-ask-sec" id="yd-new-ask-{{ uid }}">
+      {%- if s.form_eyebrow != blank -%}
+        <div class="yd-new-mono">{{ s.form_eyebrow }}</div>
+      {%- endif -%}
+      {%- if s.form_heading != blank -%}
+        <h2>{{ s.form_heading }}</h2>
+      {%- endif -%}
+      {%- if s.form_text != blank -%}
+        <p class="yd-new-lead">{{ s.form_text }}</p>
+      {%- endif -%}
+
+      <div class="yd-new-asks">
+        {%- for i in (1..4) -%}
+          {%- liquid
+            case i
+              when 1
+                assign ask_title = s.ask_1_title
+                assign ask_text = s.ask_1_text
+              when 2
+                assign ask_title = s.ask_2_title
+                assign ask_text = s.ask_2_text
+              when 3
+                assign ask_title = s.ask_3_title
+                assign ask_text = s.ask_3_text
+              when 4
+                assign ask_title = s.ask_4_title
+                assign ask_text = s.ask_4_text
+            endcase
+          -%}
+          {%- if ask_title != blank -%}
+            <a
+              class="yd-new-ask"
+              href="#yd-new-form-{{ uid }}"
+              data-yd-new-ask="{{ ask_title | escape }}"
+            >
+              <b>{{ ask_title }}</b>
+              {%- if ask_text != blank -%}
+                <small>{{ ask_text }}</small>
+              {%- endif -%}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="yd-new-form" id="yd-new-form-{{ uid }}">
+        {%- form 'contact', id: 'yd-new-contact-form', class: 'yd-new-contact-form' -%}
+          {%- comment -%}
+            form.* only exists inside this block, so the outcome is captured
+            here and rendered as a popup further down, outside the form.
+
+            Only the outcome. Which box is wrong is not the popup's job — every
+            field-level message is rendered against the input it belongs to,
+            below, in the same place the browser puts its own "please fill in
+            this field". The popup says whether the submit landed, nothing more.
+
+            A 'form' error is the exception: it belongs to no field, so it is
+            the one message that still has to be spoken by the popup.
+          {%- endcomment -%}
+          {%- liquid
+            assign yd_posted = form.posted_successfully?
+            if form.errors
+              assign yd_failed = true
+              assign yd_form_error = form.errors.messages['form']
+            endif
+          -%}
+
+          {%- comment -%}
+            Where this enquiry came from. All three land in the notification
+            email next to the visitor's answers.
+          {%- endcomment -%}
+          <input type="hidden" name="contact[Source]" value="{{ s.form_page_label | escape }}">
+          <input type="hidden" name="contact[Page URL]" value="{{ canonical_url }}">
+          {%- if s.stamp_date -%}
+            <input type="hidden" name="contact[Captured on]" value="" data-yd-new-day>
+          {%- endif -%}
+
+          {%- comment -%}
+            Honeypot. Off-screen, tab-skipped and autocomplete-off, so a person
+            never fills it; a bot that fills every field trips it and the submit
+            is blocked in JS below.
+          {%- endcomment -%}
+          <div class="yd-new-hp" aria-hidden="true">
+            <label for="yd-new-hp-{{ uid }}">Leave this field empty</label>
+            <input
+              type="text"
+              id="yd-new-hp-{{ uid }}"
+              name="contact[Website]"
+              tabindex="-1"
+              autocomplete="off"
+            >
+          </div>
+
+          {%- if panel_blocks.size > 0 -%}
+            <fieldset class="yd-new-f">
+              <legend class="yd-new-fl">{{ s.products_label }}</legend>
+              <div class="yd-new-chips yd-new-multi" data-yd-new-products>
+                {%- for block in panel_blocks -%}
+                  {%- comment -%}
+                    Radios, not checkboxes — one product per enquiry. They all
+                    share the single name contact[Product], which is what makes
+                    the browser enforce the one-of rule, and it lands in the
+                    email as one clean line instead of four "Yes" fields.
+
+                    The first is selected on load so the form is valid the moment
+                    it opens. Keyed off forloop.first rather than a per-block
+                    setting on purpose: block settings only pick up a new default
+                    when a section is first added, so a section already on a page
+                    would have carried on with nothing selected. Reorder the
+                    panels and whichever is first gets it.
+                  {%- endcomment -%}
+                  <input
+                    type="radio"
+                    id="yd-new-p-{{ uid }}-{{ forloop.index }}"
+                    name="contact[Product]"
+                    value="{{ block.settings.title | escape }}"
+                    {% if s.preselect_first_product and forloop.first %}
+                      checked
+                    {% endif %}
+                  >
+                  <label
+                    for="yd-new-p-{{ uid }}-{{ forloop.index }}"
+                    style="--yn-dot: {{ block.settings.color_a }};"
+                  >
+                    {{- block.settings.title -}}
+                  </label>
+                {%- endfor -%}
+              </div>
+              <p class="yd-new-hint" data-yd-new-hint>{{ s.products_hint }}</p>
+            </fieldset>
+          {%- endif -%}
+
+          <fieldset class="yd-new-f">
+            <legend class="yd-new-fl">{{ s.request_label }}</legend>
+            <div class="yd-new-chips">
+              {%- assign requests = s.request_options | split: ',' -%}
+              {%- for option in requests -%}
+                {%- assign opt = option | strip -%}
+                {%- if opt != blank -%}
+                  <input
+                    type="radio"
+                    id="yd-new-r-{{ uid }}-{{ forloop.index }}"
+                    name="contact[Request]"
+                    value="{{ opt | escape }}"
+                    {% if forloop.first %}
+                      checked
+                    {% endif %}
+                  >
+                  <label for="yd-new-r-{{ uid }}-{{ forloop.index }}">{{ opt }}</label>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </fieldset>
+
+          <div class="yd-new-two">
+            <div class="yd-new-f">
+              <label class="yd-new-fl" for="yd-new-name-{{ uid }}">{{ s.label_name }}</label>
+              <input
+                id="yd-new-name-{{ uid }}"
+                type="text"
+                name="contact[name]"
+                autocomplete="name"
+                value="{{ form.name }}"
+                required
+              >
+            </div>
+            <div class="yd-new-f">
+              <label class="yd-new-fl" for="yd-new-phone-{{ uid }}">{{ s.label_phone }}</label>
+              <input
+                id="yd-new-phone-{{ uid }}"
+                type="tel"
+                name="contact[phone]"
+                autocomplete="tel"
+                inputmode="numeric"
+                pattern="[0-9+ ]{10,15}"
+                placeholder="{{ s.phone_placeholder | escape }}"
+                value="{{ form.phone }}"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="yd-new-two">
+            <div class="yd-new-f">
+              <label class="yd-new-fl" for="yd-new-email-{{ uid }}">{{ s.label_email }}</label>
+              {%- comment -%}
+                Required outright, not behind a setting. Shopify's contact form
+                rejects a blank email server-side regardless, so a switch that
+                turned this off could not make the field optional — it would
+                only trade the browser's instant "fill in this field" for a
+                failed round trip that comes back with the form emptied.
+              {%- endcomment -%}
+              <input
+                id="yd-new-email-{{ uid }}"
+                type="email"
+                name="contact[email]"
+                autocomplete="email"
+                value="{{ form.email }}"
+                required
+              >
+            </div>
+            <div class="yd-new-f">
+              <label class="yd-new-fl" for="yd-new-co-{{ uid }}">{{ s.label_company }}</label>
+              <input
+                id="yd-new-co-{{ uid }}"
+                type="text"
+                name="contact[Company]"
+                autocomplete="organization"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="yd-new-f">
+            <label class="yd-new-fl" for="yd-new-body-{{ uid }}">{{ s.label_body }}</label>
+            <textarea
+              id="yd-new-body-{{ uid }}"
+              name="contact[body]"
+              placeholder="{{ s.placeholder_body | escape }}"
+              required
+            >{{ form.body }}</textarea>
+          </div>
+          <div class="yd-new-submit-wrap">
+            <button type="submit" class="yd-new-submit">{{ s.submit_label }}</button>
+          </div>
+          {%- comment -%}
+            Under the button, where it is read last — after the visitor has
+            decided to send and while they are looking at what they just typed.
+            The setting and its styling both existed from the start; only the
+            markup was missing, so the line never appeared on the page.
+          {%- endcomment -%}
+        {%- endform -%}
+      </div>
+    </section>
+
+    {%- comment -%} ===================== EXPERIENCE CENTRE ===================== {%- endcomment -%}
+    {%- comment -%}
+      ===================== EXPERIENCE CENTRES =====================
+      Driven by 'store' blocks when there are any. When there are none the four
+      centres below are used instead — presets only fire when a section is first
+      added, so a section already sitting on a page would otherwise show nothing
+      here. Add a store block and it takes over completely.
+
+      Rows are §-separated, fields |-separated, address line breaks are ~:
+        city | name | address | hours | map url | 2nd button label | 2nd button url
+    {%- endcomment -%}
+    {%- liquid
+      assign use_fallback = false
+      if store_blocks.size == 0
+        assign use_fallback = true
+      endif
+    -%}
+    {%- capture yd_default_stores -%}
+Bengaluru|Yoode Experience Centre, Bengaluru|Ground floor #68, Transpade Tower, Jyoti Nivas College Rd,~Koramangala Industrial Layout, 5th Block, Koramangala,~Bengaluru, Karnataka 560095|Mon to Sat: 10am to 8pm|https://maps.app.goo.gl/Rht24a7jsJ5GbsF47|See the center|https://yoode.com/pages/store-bangalore§Thiruvananthapuram|Yoode Experience Centre, Thiruvananthapuram|Ground Floor, CloudQ Towers, 223/18-1, Service Rd,~near Technopark Campus, Phase 1, Kazhakkoottam,~Thiruvananthapuram, Kerala 695582|Mon to Sat: 10am to 8pm|https://maps.app.goo.gl/Ff598xTPCJdaXchw9|See the center|https://yoode.com/pages/store-trivandrum§Marthandam|Yoode Experience Centre, Marthandam|Eraviputhoorkadai, 1st Floor, Adhesh Tower,~near AB.AB & CO, Marthandam,~Tamil Nadu 629155|Mon to Sat: 10am to 8pm|https://maps.app.goo.gl/N4kzrhG7698fGCJM8|See the center|https://yoode.com/pages/store-marthandam§Chennai|Yoode Experience Centre, Chennai|First Floor, City Centre Complex, No.6, 66/39,~Thirumalai Pillai Rd, T. Nagar,~Chennai, Tamil Nadu 600017|Mon to Sat: 10am to 8pm|https://maps.app.goo.gl/Dyw5h7agWJAZbNkG7|See the center|https://yoode.com/pages/store-chennai
+    {%- endcapture -%}
+    {%- liquid
+      if use_fallback
+        assign store_items = yd_default_stores | strip | split: '§'
+      else
+        assign store_items = store_blocks
+      endif
+    -%}
+
+    {%- if s.show_store and store_items.size > 0 -%}
+      <section class="yd-new-store">
+        {%- if s.store_eyebrow != blank -%}
+          <div class="yd-new-mono">{{ s.store_eyebrow }}</div>
+        {%- endif -%}
+        {%- if s.store_heading != blank -%}
+          <h2>{{ s.store_heading }}</h2>
+        {%- endif -%}
+        <p class="yd-store-card para">
+          Walk in, feel the fabric, check the stitching and finalise your design with our team. No appointment needed.
+        </p>
+
+        <div class="yd-new-store-slider" data-yd-new-store-slider>
+          <div class="yd-new-store-track" data-yd-new-store-track>
+            {%- for item in store_items -%}
+              {%- liquid
+                if use_fallback
+                  assign f = item | split: '|'
+                  assign st_city = f[0]
+                  assign st_name = f[1]
+                  # Escaped first, so the ~ swap cannot inject markup.
+                  assign st_address = f[2] | escape | replace: '~', '<br>'
+                  assign st_hours = f[3]
+                  assign st_map = f[4]
+                  assign st_page_label = f[5]
+                  assign st_page_url = f[6]
+                  assign st_attrs = ''
+                  assign st_address_plain = f[2] | replace: '~', ' '
+                else
+                  assign st_city = item.settings.city
+                  assign st_name = item.settings.name
+                  assign st_address = item.settings.address | escape | newline_to_br
+                  assign st_hours = item.settings.hours
+                  assign st_map = item.settings.map_url
+                  assign st_page_label = item.settings.page_label
+                  assign st_page_url = item.settings.page_url
+                  assign st_attrs = item.shopify_attributes
+                  assign st_address_plain = item.settings.address | strip_newlines
+                endif
+
+                # Only Bengaluru has a short Maps link on file. Rather than ship
+                # dead buttons on the other three, or invent /pages/store-<city>
+                # URLs that might 404 on a printed QR code, both buttons fall
+                # back to Google's documented Maps URL schemes, which work for
+                # any address. The two are deliberately different actions:
+                #   Get directions -> dir/?destination=   routes you there
+                #   See the center -> search/?query=      opens the place itself
+                #                                         (photos, hours, reviews)
+                assign st_query = ''
+                if st_address_plain != blank
+                  assign st_query = st_address_plain | url_encode
+                endif
+
+                if st_map == blank and st_query != blank
+                  assign st_map = 'https://www.google.com/maps/dir/?api=1&destination=' | append: st_query
+                endif
+              -%}
+              <div class="yd-new-store-slide" {{ st_attrs }}>
+                <div class="yd-new-store-card">
+                  {%- if st_city != blank -%}
+                    <span class="yd-new-store-city">{{ st_city }}</span>
+                  {%- endif -%}
+                  {%- if st_name != blank -%}
+                    <b>{{ st_name }}</b>
+                  {%- endif -%}
+                  {%- if st_address != blank -%}
+                    <address>{{ st_address }}</address>
+                  {%- endif -%}
+                  {%- if st_hours != blank -%}
+                    <p class="yd-new-store-hours">{{ st_hours }}</p>
+                  {%- endif -%}
+
+                  {%- liquid
+                    # "See the center" resolves in three steps, so every card
+                    # gets a working button: the centre's own page if it has one,
+                    # otherwise the section-level link, otherwise that centre on
+                    # Google Maps. Only Bengaluru currently has a real page.
+                    if st_page_url == blank
+                      assign st_page_url = s.store_page_fallback_url
+                    endif
+                    if st_page_url == blank and st_query != blank
+                      assign st_page_url = 'https://www.google.com/maps/search/?api=1&query=' | append: st_query
+                    endif
+                    if st_page_label == blank
+                      assign st_page_label = s.store_page_label
+                    endif
+                  -%}
+                  {%- if st_map != blank or st_page_url != blank -%}
+                    <div class="yd-new-store-links">
+                      {%- if st_map != blank -%}
+                        <a href="{{ st_map }}" target="_blank" rel="noopener">
+                          {{- s.store_directions_label -}}
+                        </a>
+                      {%- endif -%}
+                      {%- if st_page_url != blank and st_page_label != blank -%}
+                        <a href="{{ st_page_url }}" target="_blank" rel="noopener">
+                          {{- st_page_label -}}
+                        </a>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+
+          {%- if store_items.size > 1 -%}
+            <div class="yd-new-store-nav">
+              <button
+                type="button"
+                class="yd-new-store-arrow"
+                data-yd-new-store-prev
+                aria-label="{{ s.store_prev_label | escape }}"
+              >
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="M15 18 9 12l6-6"/>
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="yd-new-store-arrow"
+                data-yd-new-store-next
+                aria-label="{{ s.store_next_label | escape }}"
+              >
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+            <div class="yd-new-store-dots" data-yd-new-store-dots></div>
+          {%- endif -%}
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- comment -%} ===================== WHATSAPP ===================== {%- endcomment -%}
+    {%- if wa_number != blank -%}
+      <a
+        class="yd-new-wa"
+        href="https://wa.me/{{ wa_number }}{% if wa_text != blank %}?text={{ wa_text }}{% endif %}"
+        target="_blank"
+        rel="noopener"
+      >
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" aria-hidden="true" focusable="false">
+          <path d="M12.04 2A9.9 9.9 0 0 0 2.1 11.9c0 1.75.46 3.45 1.33 4.95L2 22l5.3-1.38a9.9 9.9 0 0 0 4.74 1.2h.01a9.9 9.9 0 0 0 9.9-9.9A9.9 9.9 0 0 0 12.04 2Zm0 18.05h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.81.83-3.04-.2-.31a8.2 8.2 0 1 1 6.99 3.87Zm4.51-6.15c-.25-.12-1.46-.72-1.69-.8-.22-.09-.39-.13-.55.12s-.63.8-.77.96c-.14.17-.28.19-.53.06a6.7 6.7 0 0 1-1.97-1.21 7.4 7.4 0 0 1-1.36-1.7c-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.44.12-.15.16-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.55-1.34-.76-1.83-.2-.48-.4-.42-.55-.43h-.47c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.17 1.71 2.62 4.15 3.67.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.46-.6 1.66-1.17.21-.58.21-1.07.15-1.17-.06-.11-.22-.17-.47-.29Z"/>
+        </svg>
+        <span>
+          <b>{{ s.whatsapp_title }}</b>
+          {%- if s.whatsapp_text != blank -%}
+            <small>{{ s.whatsapp_text }}</small>
+          {%- endif -%}
+        </span>
+        <span class="yd-new-go" aria-hidden="true">&rarr;</span>
+      </a>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ============ STICKY BAR (mobile only) ============ {%- endcomment -%}
+  {%- if s.show_bar -%}
+    <nav class="yd-new-bar" aria-label="Quick actions" data-yd-new-bar>
+      {%- if wa_number != blank and s.bar_wa_label != blank -%}
+        <a
+          class="yd-new-bar-wa"
+          href="https://wa.me/{{ wa_number }}{% if bar_text != blank %}?text={{ bar_text }}{% endif %}"
+          target="_blank"
+          rel="noopener"
+        >
+          {{- s.bar_wa_label -}}
+        </a>
+      {%- endif -%}
+      {%- if s.bar_form_label != blank -%}
+        <a class="yd-new-bar-form" href="#yd-new-form-{{ uid }}">{{ s.bar_form_label }}</a>
+      {%- endif -%}
+    </nav>
+  {%- endif -%}
+
+  {%- comment -%}
+    ============ RESULT POPUP ============
+    One component, two outcomes. Success auto-closes; an error popup never does,
+    because the visitor has to read what went wrong. Both close controls are real
+    links to the clean URL, so the popup is still dismissable with JS off.
+  {%- endcomment -%}
+  {%- if yd_posted or yd_failed -%}
+    {%- liquid
+      if yd_posted
+        assign modal_kind = 'ok'
+        assign modal_wait = s.success_autoclose
+      else
+        assign modal_kind = 'err'
+        assign modal_wait = 0
+      endif
+    -%}
+    <div
+      class="yd-new-modal yd-new-modal--{{ modal_kind }}"
+      data-yd-new-modal
+      data-yd-new-modal-kind="{{ modal_kind }}"
+      data-yd-new-autoclose="{{ modal_wait }}"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="yd-new-modal-title-{{ uid }}"
+    >
+      <div class="yd-new-modal-backdrop" data-yd-new-modal-close></div>
+      <div class="yd-new-modal-card">
+        <a
+          class="yd-new-modal-x"
+          href="{{ canonical_url }}"
+          data-yd-new-modal-close
+          aria-label="{{ s.success_close_label | escape }}"
+          ><span aria-hidden="true">&times;</span></a
+        >
+
+        <span class="yd-new-modal-icon" aria-hidden="true">
+          {%- if yd_posted -%}
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              focusable="false"
+            >
+              <path d="M20 6 9 17l-5-5"/>
+            </svg>
+          {%- else -%}
+            <svg
+              width="26"
+              height="26"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              focusable="false"
+            >
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          {%- endif -%}
+        </span>
+
+        {%- if yd_posted -%}
+          <b id="yd-new-modal-title-{{ uid }}">{{ s.success_heading }}</b>
+          <p>{{ s.success_text }}</p>
+        {%- else -%}
+          <b id="yd-new-modal-title-{{ uid }}">{{ s.error_heading }}</b>
+          {%- comment -%}
+            Whether it sent, not which box is wrong. The field messages are
+            already sitting against their inputs behind this popup, so closing
+            it lands the visitor on the answer rather than on a second list of
+            the same complaints.
+          {%- endcomment -%}
+          <p>{{ yd_form_error | default: s.error_text }}</p>
+        {%- endif -%}
+
+        <a class="yd-new-modal-btn" href="{{ canonical_url }}" data-yd-new-modal-close>
+          {%- if yd_posted -%}{{ s.success_button_label }}{%- else -%}{{ s.error_button_label }}{%- endif -%}
+        </a>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%}
+    ============ ALREADY REGISTERED POPUP ============
+    The same component as the result popup, with one difference that matters:
+    this one is raised by the script BEFORE anything is posted, so its controls
+    are buttons, not links to the clean URL. There is nothing to navigate back
+    from — the visitor is still standing in the form.
+
+    Rendered hidden on every load and only ever shown by JS, which also means a
+    visitor with JS off never sees it and never gets the check. That is the
+    honest limit of a guard that lives in the browser.
+  {%- endcomment -%}
+  {%- comment -%}
+    Rendered for either guard — the on-device list or the customer-tag lookup.
+    They raise the same popup, so switching the device check off while a check
+    URL is set must not take the popup away with it.
+  {%- endcomment -%}
+  {%- if s.dedupe_email or s.check_url != blank -%}
+    <div
+      class="yd-new-modal yd-new-modal--dupe"
+      data-yd-new-dupe
+      data-yd-new-modal-kind="dupe"
+      data-yd-new-dupe-template="{{ s.dupe_text | escape }}"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="yd-new-dupe-title-{{ uid }}"
+      hidden
+    >
+      <div class="yd-new-modal-backdrop" data-yd-new-modal-close></div>
+      <div class="yd-new-modal-card">
+        <button
+          type="button"
+          class="yd-new-modal-x"
+          data-yd-new-modal-close
+          aria-label="{{ s.success_close_label | escape }}"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <span class="yd-new-modal-icon" aria-hidden="true">
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            focusable="false"
+          >
+            <circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.1"/>
+          </svg>
+        </span>
+
+        <b id="yd-new-dupe-title-{{ uid }}">{{ s.dupe_heading }}</b>
+        {%- if s.dupe_text != blank -%}
+          {%- comment -%}
+            [email] is still in the text here. The script swaps it for the
+            address the visitor typed every time it opens the popup, and the
+            popup cannot open any other way, so this copy is never read.
+          {%- endcomment -%}
+          <p data-yd-new-dupe-text>{{ s.dupe_text }}</p>
+        {%- endif -%}
+
+        <button type="button" class="yd-new-modal-btn" data-yd-new-modal-close>
+          {{- s.dupe_button_label -}}
+        </button>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%}
+    ============ CUSTOMER TAG FORM ============
+    What writes the tag the check above reads back.
+
+    Shopify's contact form emails the enquiry and nothing else — it creates no
+    customer, so there would be nothing in Customers to tag or to look up next
+    time. Its customer form does create one, and accepts contact[tags], but a
+    single request can only be one form_type. So both are on the page and the
+    script posts this one in the background.
+
+    It sits out here because forms cannot nest, and off-screen in .yd-new-hp
+    because nobody fills it in — the script copies the address and name across
+    from the real form. With JS off it is never posted, which is the same limit
+    the lookup has: no script, no tag, and the enquiry email still arrives.
+
+    Posted at submit time, over keepalive, while the page is already navigating
+    to Shopify's own handler. It used to wait until the enquiry came back
+    confirmed, which read better and worked worse: waiting meant carrying the
+    address across a navigation in localStorage, and a post that returned on a
+    different origin — a theme preview landing on the canonical domain — found
+    an empty bucket and tagged nobody, with no error anywhere to show for it.
+  {%- endcomment -%}
+  {%- if s.tag_customer and s.customer_tag != blank -%}
+    <div class="yd-new-hp" aria-hidden="true" data-yd-new-tag-box>
+      {%- form 'customer' -%}
+        <input type="hidden" name="contact[tags]" value="{{ s.customer_tag | escape }}">
+        <input type="hidden" name="contact[email]" value="" data-yd-new-tag-email>
+        <input type="hidden" name="contact[first_name]" value="" data-yd-new-tag-first>
+        <input type="hidden" name="contact[last_name]" value="" data-yd-new-tag-last>
+      {%- endform -%}
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+  (function () {
+    var root = document.getElementById('yd-new-{{ uid }}');
+    if (!root) return;
+
+    var outer = root.closest('.yd-new-expo-outer');
+
+    // Whether the load we are on is the one Shopify redirected back after a
+    // successful post. Read by the box counter, which takes a box off the pile,
+    // and by the result popup, which strips the query param behind itself. The
+    // two guards no longer read it — both commit at submit time.
+    var postedOk = !!(outer && outer.querySelector('[data-yd-new-modal-kind="ok"]'));
+
+    // ---- popups ----
+    // Two of them share this plumbing: the result popup Liquid renders after a
+    // post, and the already-registered popup the script raises before one. Only
+    // one can ever be open, so the open state is a single set of variables
+    // rather than something attached per modal.
+    var openEl = null;
+    var openTimer = null;
+    var openReturn = null;
+    var openAfter = null;
+
+    var onKey = function (event) {
+      if (event.key === 'Escape' || event.key === 'Esc') closeModal();
+    };
+
+    var closeModal = function (event) {
+      if (event) event.preventDefault();
+      if (!openEl) return;
+      if (openTimer) {
+        clearTimeout(openTimer);
+        openTimer = null;
+      }
+      openEl.hidden = true;
+      openEl = null;
+      if (outer) outer.classList.remove('is-modal-open');
+      document.removeEventListener('keydown', onKey);
+
+      var back = openReturn;
+      var after = openAfter;
+      openReturn = null;
+      openAfter = null;
+      if (back && back.focus) back.focus();
+      if (after) after();
+    };
+
+    var showModal = function (el, wait, after) {
+      if (!el || !outer) return;
+      openEl = el;
+      openReturn = document.activeElement;
+      openAfter = after || null;
+      el.hidden = false;
+      outer.classList.add('is-modal-open');
+      document.addEventListener('keydown', onKey);
+
+      var btn = el.querySelector('.yd-new-modal-btn');
+      if (btn) btn.focus({ preventScroll: true });
+      if (wait > 0) openTimer = setTimeout(closeModal, wait * 1000);
+    };
+
+    // Bound once for every popup in the section. The result popup's controls are
+    // real links to the clean URL so the message is still dismissable with JS
+    // off; the preventDefault above is what stops that navigation when JS is on.
+    if (outer) {
+      outer.querySelectorAll('[data-yd-new-modal-close]').forEach(function (el) {
+        el.addEventListener('click', closeModal);
+      });
+    }
+
+    // The three shortcut cards just preselect the matching "what do you need"
+    // radio before the anchor jumps down to the form.
+    root.querySelectorAll('[data-yd-new-ask]').forEach(function (card) {
+      card.addEventListener('click', function () {
+        var want = card.getAttribute('data-yd-new-ask');
+        root.querySelectorAll('input[name="contact[Request]"]').forEach(function (radio) {
+          if (radio.value === want) radio.checked = true;
+        });
+      });
+    });
+
+    // Stamp the day so leads can be sorted by show day once they are in the inbox.
+    var day = root.querySelector('[data-yd-new-day]');
+    if (day) {
+      try {
+        day.value = new Date().toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        });
+      } catch (e) {
+        day.value = new Date().toDateString();
+      }
+    }
+
+    var products = root.querySelector('[data-yd-new-products]');
+    var hint = root.querySelector('[data-yd-new-hint]');
+    var honeypot = root.querySelector('input[name="contact[Website]"]');
+    var form = root.querySelector('form');
+
+    // ---- one registration per email address ----
+    // Kept on the visitor's own device. Shopify's contact form gives the theme
+    // no way to ask whether an address has been submitted before, so this stops
+    // the same person registering twice from the same phone — which at a stall
+    // is the case that actually comes up — and nothing beyond that.
+    var emailField = root.querySelector('input[type="email"]');
+    var dupeModal = outer && outer.querySelector('[data-yd-new-dupe]');
+    var mailKey = 'yd-new-mails-{{ section.id }}';
+    var pendKey = 'yd-new-mail-pending-{{ section.id }}';
+
+    var mailNorm = function (value) {
+      // Addresses are case-insensitive in practice, and a trailing space left
+      // by a phone keyboard's autocomplete is not a different person.
+      return (value || '').replace(/^\s+/, '').replace(/\s+$/, '').toLowerCase();
+    };
+
+    var mailList = function () {
+      try {
+        var raw = window.localStorage.getItem(mailKey);
+        var list = raw ? JSON.parse(raw) : [];
+        // Anything that is not an array means something else wrote the key.
+        // Treating that as empty is safer than letting indexOf throw.
+        return Object.prototype.toString.call(list) === '[object Array]' ? list : [];
+      } catch (e) {
+        return [];
+      }
+    };
+
+    var mailStore = function (list) {
+      try {
+        // Capped. localStorage is a fixed budget per origin, and a shared demo
+        // phone on the stall table would otherwise grow this key all day.
+        window.localStorage.setItem(mailKey, JSON.stringify(list.slice(-50)));
+      } catch (e) {}
+    };
+
+    // ---- one registration per customer, store-wide ----
+    // The device list above only knows about this phone. The tag knows about
+    // everybody: it is written onto the Shopify customer by the off-screen
+    // customer form, and read back by the lookup, so a second registration is
+    // caught whichever phone it comes from — including the stall's own.
+    var checkUrl = root.getAttribute('data-yd-new-check-url') || '';
+    var tagBox = outer && outer.querySelector('[data-yd-new-tag-box]');
+    var tagForm = tagBox && tagBox.querySelector('form');
+    var nameField = root.querySelector('input[name="contact[name]"]');
+    // Sweeps the two keys the old deferred path wrote — the pending address and
+    // the pending lead. Nothing writes either any more, but a phone that
+    // submitted before this change still carries them, and localStorage is a
+    // fixed budget the device list is already capped against.
+    var sweepLegacy = function () {
+      try {
+        window.localStorage.removeItem(pendKey);
+        window.localStorage.removeItem('yd-new-lead-{{ section.id }}');
+      } catch (e) {}
+    };
+
+    // Fire and forget. Shopify answers this with a redirect the page has no use
+    // for, and a tag that fails to write costs one duplicate row in admin the
+    // next time that person registers — the same price every other guard here
+    // pays for failing open. So nothing is read back and nothing is retried.
+    //
+    // Sent at submit time, which means the page is navigating away underneath
+    // it. keepalive is what lets the request outlive the page: without it the
+    // browser cancels every in-flight fetch at unload and the tag is lost.
+    var tagCustomer = function (address, name) {
+      if (!tagForm || !address || !window.fetch) return;
+
+      // Shopify wants the name in two fields; the form asks for it in one.
+      var whole = (name || '').replace(/\s+/g, ' ').replace(/^ /, '').replace(/ $/, '');
+      var cut = whole.indexOf(' ');
+      var field = function (selector, value) {
+        var el = tagForm.querySelector(selector);
+        if (el) el.value = value;
+      };
+
+      field('[data-yd-new-tag-email]', address);
+      field('[data-yd-new-tag-first]', cut === -1 ? whole : whole.slice(0, cut));
+      field('[data-yd-new-tag-last]', cut === -1 ? '' : whole.slice(cut + 1));
+
+      fetch(tagForm.getAttribute('action') || '/contact', {
+        method: 'POST',
+        body: new FormData(tagForm),
+        credentials: 'same-origin',
+        keepalive: true,
+      }).catch(function () {});
+    };
+
+    // Asks the lookup whether this address already carries the tag.
+    //
+    // Fails OPEN in every direction — no URL set, no fetch, a network error, a
+    // reply that is late or not the shape expected — all answer "not
+    // registered" and let the submit through. The two ways to be wrong do not
+    // cost the same: turning away someone who never registered loses a customer
+    // standing at the table, while letting a repeat through leaves a duplicate
+    // row in admin. Two seconds is the entire budget for the same reason.
+    var remoteCheck = function (address) {
+      var url = checkUrl + (checkUrl.indexOf('?') === -1 ? '?' : '&') + 'email=' + encodeURIComponent(address);
+      var ctrl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () {
+        if (ctrl) ctrl.abort();
+      }, 2000);
+
+      return fetch(url, {
+        method: 'GET',
+        // The reply is about one person's address. Nothing here needs the
+        // visitor's session, so none is sent.
+        credentials: 'omit',
+        signal: ctrl ? ctrl.signal : undefined,
+      })
+        .then(function (res) {
+          return res.ok ? res.json() : null;
+        })
+        .then(function (data) {
+          return !!(data && data.registered);
+        })
+        .catch(function () {
+          return false;
+        })
+        .then(function (registered) {
+          clearTimeout(timer);
+          return registered;
+        });
+    };
+
+    // The lookup is a network round trip, so the button has to say the submit
+    // was heard. Capped at the same two seconds as the request itself.
+    var submitBtn = form && form.querySelector('.yd-new-submit');
+    var busyLabel = {{ s.checking_label | json }};
+    var idleLabel = submitBtn ? submitBtn.textContent : '';
+
+    var setBusy = function (on) {
+      if (!submitBtn) return;
+      submitBtn.disabled = on;
+      submitBtn.setAttribute('aria-busy', on ? 'true' : 'false');
+      if (busyLabel) submitBtn.textContent = on ? busyLabel : idleLabel;
+    };
+
+    // Both guards are committed in the submit handler now, so nothing is read
+    // back on the way in. This only clears what the old deferred path left
+    // behind on phones that submitted before the change.
+    sweepLegacy();
+
+    var showDupe = function (address) {
+      if (!dupeModal) return;
+      var body = dupeModal.querySelector('[data-yd-new-dupe-text]');
+      var template = dupeModal.getAttribute('data-yd-new-dupe-template') || '';
+      // split/join rather than a regex, so an address with a dot or a plus in
+      // it cannot be read as a pattern.
+      if (body && template) body.textContent = template.split('[email]').join(address);
+
+      showModal(dupeModal, 0, function () {
+        // The button was disabled to stop a second attempt landing while the
+        // popup was up. The popup is gone, so it comes back — otherwise a
+        // visitor who closes it to try a different address finds a dead form.
+        if (submitBtn) submitBtn.disabled = false;
+        // Back to the field on close, selected, so a visitor who meant to use a
+        // different address can type straight over the one already there.
+        if (emailField) {
+          emailField.focus();
+          if (emailField.select) emailField.select();
+        }
+      });
+    };
+
+    // Commits both guards for an address that is about to be submitted. Both
+    // land NOW, before the page goes anywhere.
+    //
+    // Both used to be deferred to the load after the post, so that an enquiry
+    // which never arrived left nothing behind. It cost more than it saved: the
+    // deferral meant carrying the address across a navigation in localStorage,
+    // and every load that came back on a different origin — a preview posting to
+    // /contact and landing on the canonical domain — read an empty bucket. The
+    // address then never entered the list, so the next submit found nothing and
+    // went through, which is the duplicate this guard exists to stop.
+    //
+    // The cost of committing early is one address listed against an enquiry that
+    // failed to send. That visitor sees the already-registered popup on a retry,
+    // which is wrong but visible and recoverable. The old failure was silent and
+    // total.
+    //
+    // An empty address commits nothing, which is what skips both guards.
+    var stash = function (address) {
+      if (!address) return;
+      if (dupeModal) {
+        var mails = mailList();
+        if (mails.indexOf(address) === -1) {
+          mails.push(address);
+          mailStore(mails);
+        }
+      }
+      tagCustomer(address, nameField ? nameField.value : '');
+    };
+
+    if (form) {
+      // Only fires once the browser's own required and pattern checks have
+      // passed, so by the end of this handler the form really is about to post.
+      form.addEventListener('submit', function (event) {
+        // Anything that filled the off-screen field is not a person.
+        if (honeypot && honeypot.value !== '') {
+          event.preventDefault();
+          return;
+        }
+
+        // A product must be picked. The radios carry no `required`, because
+        // marking one radio required marks the whole group required and Shopify
+        // would then block submission with a native bubble the styling cannot
+        // reach — so it is enforced here instead. Only reachable when the
+        // pre-select setting is switched off.
+        if (products && hint && products.querySelectorAll('input:checked').length === 0) {
+          event.preventDefault();
+          hint.classList.add('is-on');
+          products.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+
+        var typed = mailNorm(emailField && emailField.value);
+
+        // ---- the tag decides ----
+        // Whenever the lookup is reachable it is the ONLY authority, and the
+        // device list below is not consulted at all. The tag on the customer is
+        // the real record; the list is a guess about one phone, and the two can
+        // disagree honestly — the same phone handed to a colleague, a tag pulled
+        // off in admin, a stall device that registered someone yesterday. When
+        // they disagree the tag is right, so an address sitting in the list
+        // still goes through if the customer is not tagged.
+        if (checkUrl && typed && window.fetch && window.Promise) {
+          // The answer is a round trip away, so the native submit has to be
+          // held. Everything the browser validates has already passed — the
+          // submit event does not fire otherwise — which is why the form can be
+          // posted straight back with .submit() below. That skips this handler
+          // rather than re-entering it, so there is no second pass to guard.
+          event.preventDefault();
+          setBusy(true);
+
+          remoteCheck(typed).then(function (registered) {
+            setBusy(false);
+
+            // Tagged already. One registration per address, so nothing is sent.
+            if (registered) {
+              showDupe(typed);
+              return;
+            }
+
+            // No tag — whether or not a customer exists on this address, and
+            // whether or not this phone has seen it before. The tag goes out
+            // first, then the enquiry.
+            stash(typed);
+            form.submit();
+          });
+          return;
+        }
+
+        // ---- no lookup configured ----
+        // Nothing can read the tag from here, so the list of what this device
+        // has registered is the only record the page has. It is weaker than the
+        // tag in every way — it knows one phone and nothing else — which is why
+        // it is only ever reached when there is no lookup to ask.
+        if (dupeModal && typed && mailList().indexOf(typed) !== -1) {
+          // preventDefault alone only cancels the browser's own submit. It does
+          // nothing about another submit listener on this same form, and a
+          // listener that calls form.submit() cannot be cancelled at all once it
+          // runs — so the other listeners are stopped from running rather than
+          // argued with afterwards.
+          event.preventDefault();
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          // Belt and braces for the same reason: a disabled submit button cannot
+          // be the source of a second attempt while the popup is up. Re-enabled
+          // when the popup closes, below.
+          if (submitBtn) submitBtn.disabled = true;
+          showDupe(typed);
+          return false;
+        }
+
+        // First time on this device. The tag is sent from here and the submit
+        // continues natively underneath it.
+        stash(typed);
+      });
+    }
+
+    if (products && hint) {
+      products.addEventListener('change', function () {
+        hint.classList.remove('is-on');
+      });
+    }
+
+    // ---- experience centre slider ----
+    var track = root.querySelector('[data-yd-new-store-track]');
+    if (track) {
+      var prevBtn = root.querySelector('[data-yd-new-store-prev]');
+      var nextBtn = root.querySelector('[data-yd-new-store-next]');
+      var dotsBox = root.querySelector('[data-yd-new-store-dots]');
+      var slides = Array.prototype.slice.call(track.children);
+
+      // Measured, never assumed — slide width is a percentage that changes at
+      // every breakpoint, so a hardcoded step would drift.
+      var step = function () {
+        if (slides.length < 2) return track.clientWidth;
+        return slides[1].offsetLeft - slides[0].offsetLeft;
+      };
+
+      if (dotsBox) {
+        slides.forEach(function (slide, i) {
+          var dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'yd-new-store-dot';
+          dot.setAttribute('aria-label', 'Go to location ' + (i + 1));
+          dot.addEventListener('click', function () {
+            track.scrollTo({ left: step() * i, behavior: 'smooth' });
+          });
+          dotsBox.appendChild(dot);
+        });
+      }
+
+      var nav = root.querySelector('.yd-new-store-nav');
+
+      var sync = function () {
+        var s = step();
+        var i = s ? Math.round(track.scrollLeft / s) : 0;
+
+        // With only one or two centres there is nothing to scroll, and the
+        // controls would sit there permanently dead. Hide the chrome rather
+        // than show buttons that cannot do anything.
+        var scrollable = track.scrollWidth > track.clientWidth + 1;
+        if (nav) nav.hidden = !scrollable;
+        if (dotsBox) dotsBox.hidden = !scrollable;
+
+        // Sub-pixel track widths leave scrollLeft a fraction short of the true
+        // maximum, so allow a pixel of slack before calling it the end.
+        if (prevBtn) prevBtn.disabled = track.scrollLeft <= 1;
+        if (nextBtn) nextBtn.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+        if (dotsBox) {
+          Array.prototype.forEach.call(dotsBox.children, function (dot, di) {
+            dot.classList.toggle('is-active', di === i);
+          });
+        }
+      };
+
+      if (prevBtn)
+        prevBtn.addEventListener('click', function () {
+          track.scrollBy({ left: -step(), behavior: 'smooth' });
+        });
+      if (nextBtn)
+        nextBtn.addEventListener('click', function () {
+          track.scrollBy({ left: step(), behavior: 'smooth' });
+        });
+
+      // ---- drag to scroll ----
+      // Touch already scrolls natively, so this is mouse and pen only; hooking
+      // touch here would fight the browser's own momentum scrolling.
+      var dragging = false;
+      var dragStartX = 0;
+      var dragStartScroll = 0;
+      var dragMoved = false;
+
+      track.addEventListener('pointerdown', function (event) {
+        if (event.pointerType === 'touch' || event.button !== 0) return;
+        dragging = true;
+        dragMoved = false;
+        dragStartX = event.clientX;
+        dragStartScroll = track.scrollLeft;
+      });
+
+      track.addEventListener('pointermove', function (event) {
+        if (!dragging) return;
+        // The pointer is only captured once a real drag starts, so a button let
+        // go off the track never reaches endDrag. Catch it here instead, or the
+        // track would follow the mouse again with no button held.
+        if (event.buttons === 0) {
+          endDrag(event);
+          return;
+        }
+        var dx = event.clientX - dragStartX;
+        if (!dragMoved) {
+          // Below the threshold this is still a plain click, and it has to stay
+          // one. Capturing the pointer on the track retargets the click to the
+          // track, and .is-dragging takes pointer-events off the anchors, so
+          // doing either on pointerdown stops the store buttons navigating at
+          // all. Both wait until the pointer has actually travelled.
+          if (Math.abs(dx) <= 4) return;
+          dragMoved = true;
+          // Capture so the drag keeps working past the edge of the track.
+          if (track.setPointerCapture) {
+            try {
+              track.setPointerCapture(event.pointerId);
+            } catch (e) {}
+          }
+          // Snap and smooth-scroll both fight a finger-follow, so they come off
+          // for the duration of the drag and go back on when it ends.
+          track.classList.add('is-dragging');
+        }
+        track.scrollLeft = dragStartScroll - dx;
+      });
+
+      var endDrag = function (event) {
+        if (!dragging) return;
+        dragging = false;
+        track.classList.remove('is-dragging');
+        if (track.releasePointerCapture && event && event.pointerId != null) {
+          try {
+            track.releasePointerCapture(event.pointerId);
+          } catch (e) {}
+        }
+        // Snapping is back on but the browser will not re-snap on its own after
+        // a programmatic scroll, so nudge it to the nearest slide.
+        if (dragMoved) {
+          var s = step();
+          if (s) track.scrollTo({ left: Math.round(track.scrollLeft / s) * s, behavior: 'smooth' });
+        }
+        sync();
+      };
+
+      track.addEventListener('pointerup', endDrag);
+      track.addEventListener('pointercancel', endDrag);
+
+      // A drag that finishes on top of a card must not also follow its link.
+      track.addEventListener(
+        'click',
+        function (event) {
+          if (dragMoved) {
+            event.preventDefault();
+            event.stopPropagation();
+            dragMoved = false;
+          }
+        },
+        true
+      );
+
+      var ticking = false;
+      track.addEventListener(
+        'scroll',
+        function () {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(function () {
+            sync();
+            ticking = false;
+          });
+        },
+        { passive: true }
+      );
+
+      window.addEventListener('resize', sync, { passive: true });
+      sync();
+    }
+
+    // ---- sample box counter ----
+    // Displayed count = the number staff typed into the theme editor + however
+    // many boxes THIS device has registered. The device half lives in
+    // localStorage so a reload, a Back press or a second visit does not put the
+    // box back on the pile.
+    var reg = root.querySelector('[data-yd-new-reg]');
+    if (reg) {
+      var regTotal = parseInt(reg.getAttribute('data-yd-new-total'), 10) || 0;
+      var regBase = parseInt(reg.getAttribute('data-yd-new-claimed'), 10) || 0;
+      var regOutLabel = reg.getAttribute('data-yd-new-soldout-label') || '';
+      var regLeftEl = reg.querySelector('[data-yd-new-reg-left]');
+      var regClaimedEl = reg.querySelector('[data-yd-new-reg-claimed]');
+      var regFill = reg.querySelector('[data-yd-new-reg-fill]');
+      var regMeter = reg.querySelector('.yd-new-reg-meter');
+      var regBtn = reg.querySelector('[data-yd-new-reg-btn]');
+      var regKey = 'yd-new-reg-{{ section.id }}';
+
+      // Storage throws outright in Safari private mode and wherever cookies are
+      // blocked, so every touch of it is wrapped. A device that cannot store
+      // simply sees the number staff set, which is the honest fallback.
+      var regMine = function () {
+        try {
+          return parseInt(window.localStorage.getItem(regKey), 10) || 0;
+        } catch (e) {
+          return 0;
+        }
+      };
+
+      var regPaint = function () {
+        var claimed = Math.min(regTotal, regBase + regMine());
+        var left = Math.max(0, regTotal - claimed);
+
+        if (regLeftEl) regLeftEl.textContent = left;
+        if (regClaimedEl) regClaimedEl.textContent = claimed;
+        if (regMeter) regMeter.setAttribute('aria-valuenow', claimed);
+        // Animates from the server-rendered width, so the bar visibly moves the
+        // moment a visitor comes back from a successful submit.
+        if (regFill) regFill.style.width = (regTotal ? (claimed / regTotal) * 100 : 0) + '%';
+
+        if (left <= 0) {
+          reg.classList.add('is-out');
+          if (regBtn) {
+            if (regOutLabel) regBtn.textContent = regOutLabel;
+            regBtn.setAttribute('aria-disabled', 'true');
+          }
+        }
+      };
+
+      // One box off the pile per successful submit. The success popup is the
+      // signal, because form.posted_successfully? is only readable further down
+      // the page than this card — Liquid could not have marked the card itself.
+      // The popup script strips ?contact_posted=true from the URL straight
+      // after, so a refresh cannot land here twice for the same registration.
+      if (postedOk) {
+        try {
+          window.localStorage.setItem(regKey, String(regMine() + 1));
+        } catch (e) {}
+      }
+
+      regPaint();
+
+      // href is kept even when sold out, so the anchor stays focusable and the
+      // label is still read out; the jump itself is what gets blocked.
+      if (regBtn) {
+        regBtn.addEventListener('click', function (event) {
+          if (regBtn.getAttribute('aria-disabled') === 'true') event.preventDefault();
+        });
+      }
+    }
+
+    // ---- result popup ----
+    var modal = outer && outer.querySelector('[data-yd-new-modal]');
+
+    if (modal) {
+      // Shopify lands here on ?contact_posted=true. Strip it immediately so a
+      // refresh or a Back press cannot pop the message a second time — it should
+      // be seen once and never again. Errors carry no query param, so this only
+      // applies to the success case.
+      if (postedOk && window.history && history.replaceState) {
+        history.replaceState({}, document.title, location.pathname + location.hash);
+      }
+
+      showModal(modal, parseInt(modal.getAttribute('data-yd-new-autoclose'), 10));
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "YD Expo QR Landing",
+  "tag": "section",
+  "class": "yd-new-gift-expo-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Gifts World Expo Bengaluru · Stall 65"
+    },
+       {
+      "type": "header",
+      "content": "Left out"
+    },
+     {
+      "type": "number",
+      "id": "register_total",
+      "label": "Boxes at the stall",
+      "default": 100
+    },
+    {
+      "type": "number",
+      "id": "register_claimed",
+      "label": "Boxes already claimed",
+      "info": "The starting figure every visitor sees. Raise it through the day to keep the card honest.",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pulse",
+      "label": "Show live dot",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Each new line becomes a new line on the page.",
+      "default": "Welcome.\nOur whole stall,"
+    },
+    {
+      "type": "text",
+      "id": "heading_highlight",
+      "label": "Highlighted last line",
+      "default": "in one link."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Polos, shirts, jerseys and gifting — one manufacturer, one team, one point of contact. Tap what you came for."
+    },
+    {
+      "type": "text",
+      "id": "stat_1",
+      "label": "Stat 1",
+      "info": "Only claim numbers you can back up if a buyer asks.",
+      "default": "10 lakh+ pieces delivered"
+    },
+    {
+      "type": "text",
+      "id": "stat_2",
+      "label": "Stat 2",
+      "default": "500+ business clients"
+    },
+    {
+      "type": "text",
+      "id": "stat_3",
+      "label": "Stat 3",
+      "default": "Pan-India delivery"
+    },
+    {
+      "type": "header",
+      "content": "Sample box card"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shows beside the heading. The count is the number below plus anything registered on the visitor's own device — Shopify cannot count contact-form submissions for you, so move \"Boxes already claimed\" as the day goes on."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_register",
+      "label": "Show the sample box card",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "register_title",
+      "label": "Title",
+      "default": "Register to get a sample gift box"
+    },
+    {
+      "type": "textarea",
+      "id": "register_text",
+      "label": "Text",
+      "default": "Only 100 boxes at the stall. One per company."
+    },
+    {
+      "type": "text",
+      "id": "register_left_label",
+      "label": "Counter text",
+      "info": "Follows the big number. [total] is replaced by the box count above.",
+      "default": "of [total] boxes left"
+    },
+    {
+      "type": "text",
+      "id": "register_claimed_label",
+      "label": "Claimed label",
+      "default": "claimed"
+    },
+    {
+      "type": "text",
+      "id": "register_button_label",
+      "label": "Button label",
+      "default": "Register now"
+    },
+    {
+      "type": "text",
+      "id": "register_soldout_label",
+      "label": "Button label when none are left",
+      "default": "All boxes claimed"
+    },
+    {
+      "type": "header",
+      "content": "Category panels"
+    },
+    {
+      "type": "text",
+      "id": "panels_eyebrow",
+      "label": "Eyebrow",
+      "default": "Choose your category"
+    },
+    {
+      "type": "text",
+      "id": "panels_heading",
+      "label": "Heading",
+      "default": "Four ranges, one supplier"
+    },
+    {
+      "type": "textarea",
+      "id": "panels_text",
+      "label": "Text",
+      "default": "Every link opens the full range — fabrics, colours, sizes and bulk pricing."
+    },
+    {
+      "type": "header",
+      "content": "Form"
+    },
+    {
+      "type": "text",
+      "id": "form_eyebrow",
+      "label": "Eyebrow",
+      "default": "Before you leave the hall"
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Heading",
+      "default": "Take a catalogue, a sample or a quote"
+    },
+    {
+      "type": "textarea",
+      "id": "form_text",
+      "label": "Text",
+      "default": "Pick one and leave your number. We'll send it to your WhatsApp the same day."
+    },
+    {
+      "type": "text",
+      "id": "form_page_label",
+      "label": "Source label sent in the email",
+      "info": "Added to the notification email as \"Source\", so you can tell which landing page the enquiry came from.",
+      "default": "QR — Gifts World Expo Bengaluru 2026"
+    },
+    {
+      "type": "checkbox",
+      "id": "stamp_date",
+      "label": "Add the capture date to the email",
+      "info": "Lets you sort leads by show day.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "ask_1_title",
+      "label": "Shortcut 1 title",
+      "default": "Catalogue"
+    },
+    {
+      "type": "text",
+      "id": "ask_1_text",
+      "label": "Shortcut 1 text",
+      "default": "Full range as a PDF — sent today"
+    },
+    {
+      "type": "text",
+      "id": "ask_2_title",
+      "label": "Shortcut 2 title",
+      "default": "Gift Box"
+    },
+    {
+      "type": "text",
+      "id": "ask_2_text",
+      "label": "Shortcut 2 text",
+      "default": "One box per company — while they last"
+    },
+    {
+      "type": "text",
+      "id": "ask_3_title",
+      "label": "Shortcut 3 title",
+      "default": "Sample"
+    },
+    {
+      "type": "text",
+      "id": "ask_3_text",
+      "label": "Shortcut 3 text",
+      "default": "Feel the fabric first"
+    },
+    {
+      "type": "text",
+      "id": "ask_4_title",
+      "label": "Shortcut 4 title",
+      "default": "Quotation"
+    },
+    {
+      "type": "text",
+      "id": "ask_4_text",
+      "label": "Shortcut 4 text",
+      "default": "Priced for your quantity"
+    },
+    {
+      "type": "text",
+      "id": "products_label",
+      "label": "Products field label",
+      "default": "Which product (pick one)"
+    },
+    {
+      "type": "text",
+      "id": "products_hint",
+      "label": "Products validation message",
+      "default": "Pick one so we send you the right catalogue."
+    },
+    {
+      "type": "checkbox",
+      "id": "preselect_first_product",
+      "label": "Select the first product by default",
+      "info": "The form cannot be sent with none selected, so this saves a tap for the most common enquiry.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "request_label",
+      "label": "Request field label",
+      "default": "What would you like from us"
+    },
+    {
+      "type": "text",
+      "id": "request_options",
+      "label": "Request options",
+      "info": "Comma separated. The first one is preselected. Keep an option matching each shortcut title above, or tapping that shortcut selects nothing.",
+      "default": "Catalogue, Gift Box, Sample, Quotation, Call back"
+    },
+    {
+      "type": "text",
+      "id": "label_name",
+      "label": "Name label",
+      "default": "Your name"
+    },
+    {
+      "type": "text",
+      "id": "label_phone",
+      "label": "Phone label",
+      "default": "Mobile / WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "phone_placeholder",
+      "label": "Phone placeholder",
+      "default": "10-digit mobile number"
+    },
+    {
+      "type": "text",
+      "id": "label_email",
+      "label": "Email label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "label_company",
+      "label": "Company label",
+      "default": "Company"
+    },
+    {
+      "type": "text",
+      "id": "label_body",
+      "label": "Message label",
+      "default": "Tell us what you need"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_body",
+      "label": "Message placeholder",
+      "default": "e.g. 300 navy polos with chest embroidery, needed by the 15th"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button",
+      "default": "Submit my details"
+    },
+    {
+      "type": "text",
+      "id": "success_heading",
+      "label": "Success heading",
+      "default": "Got it — thank you."
+    },
+    {
+      "type": "textarea",
+      "id": "success_text",
+      "label": "Success text",
+      "default": "Your details are with our team and we'll be in touch shortly."
+    },
+    {
+      "type": "text",
+      "id": "success_button_label",
+      "label": "Success popup button",
+      "default": "Done"
+    },
+    {
+      "type": "text",
+      "id": "success_close_label",
+      "label": "Popup close label",
+      "info": "Read out by screen readers on the X button.",
+      "default": "Close"
+    },
+    {
+      "type": "range",
+      "id": "success_autoclose",
+      "label": "Close the success popup after",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "s",
+      "info": "Set to 0 to leave it open until the visitor closes it. Error popups never auto-close.",
+      "default": 6
+    },
+    {
+      "type": "text",
+      "id": "error_heading",
+      "label": "Error popup heading",
+      "default": "That didn't send."
+    },
+    {
+      "type": "textarea",
+      "id": "error_text",
+      "label": "Error popup text",
+      "info": "Shown only when Shopify reports no specific field errors.",
+      "default": "Something went wrong. Please check your details and try again."
+    },
+    {
+      "type": "text",
+      "id": "error_button_label",
+      "label": "Error popup button",
+      "default": "Try again"
+    },
+    {
+      "type": "checkbox",
+      "id": "dedupe_email",
+      "label": "One registration per email address",
+      "info": "The fallback for when no lookup URL is set below — it can only remember what this one phone registered. With a lookup URL set this is ignored entirely and the customer tag decides.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "tag_customer",
+      "label": "Create the customer and tag them",
+      "info": "Every confirmed registration creates a Shopify customer, or updates the one already on that address, and adds the tag below. Filter Customers on the tag for your list of everyone who registered.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "customer_tag",
+      "label": "Customer tag",
+      "info": "Must match EXPO_TAG on the lookup exactly, spaces and case included.",
+      "default": "yoode gift expo"
+    },
+    {
+      "type": "text",
+      "id": "check_url",
+      "label": "Already-registered check URL",
+      "info": "Turns the check above into a store-wide one — the address is looked up against the tag, so a repeat is caught from any phone. Needs the expo-tag-check endpoint (see tools\/expo-tag-check). Leave empty and registrations are still tagged, just not checked; if the endpoint is slow or down the submit is allowed through rather than blocked."
+    },
+    {
+      "type": "text",
+      "id": "checking_label",
+      "label": "Submit button label while checking",
+      "default": "Checking…"
+    },
+    {
+      "type": "text",
+      "id": "dupe_heading",
+      "label": "Already-registered heading",
+      "default": "You're already registered."
+    },
+    {
+      "type": "textarea",
+      "id": "dupe_text",
+      "label": "Already-registered text",
+      "info": "[email] is replaced by the address they typed.",
+      "default": "We already have your details against [email] — one sample box per company. Our team will be in touch."
+    },
+    {
+      "type": "text",
+      "id": "dupe_button_label",
+      "label": "Already-registered button",
+      "default": "Got it"
+    },
+    {
+      "type": "header",
+      "content": "Experience centre"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_store",
+      "label": "Show this block",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "store_eyebrow",
+      "label": "Eyebrow",
+      "default": "After the show"
+    },
+    {
+      "type": "text",
+      "id": "store_heading",
+      "label": "Heading",
+      "default": "Come see the fabric in person"
+    },
+    {
+      "type": "text",
+      "id": "store_directions_label",
+      "label": "Directions button label",
+      "default": "Get directions"
+    },
+    {
+      "type": "text",
+      "id": "store_page_label",
+      "label": "Second button label",
+      "info": "Used when a centre has no label of its own.",
+      "default": "See the center"
+    },
+    {
+      "type": "text",
+      "id": "store_page_fallback_url",
+      "label": "Second button link (all centres)",
+      "info": "Used for any centre without its own link. Leave empty to hide the button on those cards."
+    },
+    {
+      "type": "text",
+      "id": "store_prev_label",
+      "label": "Slider previous label",
+      "info": "Read out by screen readers.",
+      "default": "Previous location"
+    },
+    {
+      "type": "text",
+      "id": "store_next_label",
+      "label": "Slider next label",
+      "info": "Read out by screen readers.",
+      "default": "Next location"
+    },
+    {
+      "type": "header",
+      "content": "WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "WhatsApp number",
+      "info": "Country code first, no plus or spaces. Leave empty to hide the banner and the bar button.",
+      "default": "918069750293"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_title",
+      "label": "Banner title",
+      "default": "Message us on WhatsApp"
+    },
+    {
+      "type": "textarea",
+      "id": "whatsapp_text",
+      "label": "Banner text",
+      "default": "Send a photo or a spec — we'll reply while you're still here."
+    },
+    {
+      "type": "textarea",
+      "id": "whatsapp_message",
+      "label": "Banner prefilled message",
+      "default": "Hi Yoode, I scanned the QR at Stall 65, Gifts World Expo Bengaluru."
+    },
+    {
+      "type": "header",
+      "content": "Sticky bar (mobile)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bar",
+      "label": "Show the sticky bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "bar_wa_label",
+      "label": "WhatsApp button label",
+      "default": "WhatsApp us"
+    },
+    {
+      "type": "textarea",
+      "id": "bar_wa_message",
+      "label": "WhatsApp button prefilled message",
+      "default": "Hi Yoode, I'm at Stall 65, Gifts World Expo Bengaluru."
+    },
+    {
+      "type": "text",
+      "id": "bar_form_label",
+      "label": "Form button label",
+      "default": "Get catalogue"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "outer_bg",
+      "label": "Page background",
+      "default": "#EDECF2"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "Category panel",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Mars Polo"
+        },
+        {
+          "type": "text",
+          "id": "ghost",
+          "label": "Watermark word",
+          "info": "Large faded word behind the panel.",
+          "default": "POLO"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Bulk polos, crew necks and golf shirts in our own Mars Polo fabric."
+        },
+        {
+          "type": "text",
+          "id": "spec",
+          "label": "Spec line",
+          "default": "200 GSM · 50+ colours · Embroidery ready"
+        },
+        {
+          "type": "text",
+          "id": "link",
+          "label": "Link",
+          "info": "Full URL, including https://. Leave empty and the four standard panels fall back to their usual destination."
+        },
+        {
+          "type": "checkbox",
+          "id": "open_new_tab",
+          "label": "Open in a new tab",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "color_a",
+          "label": "Gradient start",
+          "default": "#2B3B6B"
+        },
+        {
+          "type": "color",
+          "id": "color_b",
+          "label": "Gradient end",
+          "default": "#111A33"
+        }
+      ]
+    },
+    {
+      "type": "store",
+      "name": "Experience centre",
+      "settings": [
+        {
+          "type": "text",
+          "id": "city",
+          "label": "City"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Centre name",
+          "default": "Yoode Experience Centre"
+        },
+        {
+          "type": "textarea",
+          "id": "address",
+          "label": "Address",
+          "info": "Each new line becomes a new line on the card."
+        },
+        {
+          "type": "text",
+          "id": "hours",
+          "label": "Opening hours",
+          "default": "Mon to Sat: 10am to 8pm"
+        },
+        {
+          "type": "text",
+          "id": "map_url",
+          "label": "Directions link",
+          "info": "Full Google Maps URL. Leave empty and a Maps search is built from the address."
+        },
+        {
+          "type": "text",
+          "id": "page_label",
+          "label": "Second button label",
+          "default": "See the center",
+          "info": "Leave empty to use the section-level label."
+        },
+        {
+          "type": "text",
+          "id": "page_url",
+          "label": "Second button link",
+          "info": "Full URL. Leave empty to hide the button."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Expo QR Landing",
+      "blocks": [
+        {
+          "type": "panel",
+          "settings": {
+            "title": "Mars Polo",
+            "ghost": "POLO",
+            "text": "Bulk polos, crew necks and golf shirts in our own Mars Polo fabric.",
+            "spec": "200 GSM · 50+ colours · Embroidery ready",
+            "link": "https://marspolo.com/",
+            "color_a": "#2B3B6B",
+            "color_b": "#111A33"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "EDOY Shirts",
+            "ghost": "SHIRT",
+            "text": "Our shirting label — formal, casual and uniform shirts, cut to your spec.",
+            "spec": "Shirting only · Corporate & hospitality",
+            "link": "https://bitsnpixs.github.io/edoy/",
+            "color_a": "#1D6379",
+            "color_b": "#0E3A49"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "Sports Jerseys",
+            "ghost": "KIT",
+            "text": "Cricket, football, marathon and tournament kits with names, numbers and sponsor logos.",
+            "spec": "Sublimated · Team kits · Fanwear",
+            "link": "https://yoode.com/collections/sportswear",
+            "color_a": "#B4173A",
+            "color_b": "#6E0C22"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "Corporate Gifting",
+            "ghost": "GIFT",
+            "text": "Onboarding kits, conference merch, festive hampers and client gifts.",
+            "spec": "5,000+ products · Packed & delivered",
+            "link": "https://yoode.com/pages/corporate-gifting-company-in-bangalore",
+            "color_a": "#B07C1C",
+            "color_b": "#6E4C0E"
+          }
+        },
+        {
+          "type": "store",
+          "settings": {
+            "city": "Bengaluru",
+            "name": "Yoode Experience Centre, Bengaluru",
+            "address": "Ground floor #68, Transpade Tower, Jyoti Nivas College Rd,\nKoramangala Industrial Layout, 5th Block, Koramangala,\nBengaluru, Karnataka 560095",
+            "hours": "Mon to Sat: 10am to 8pm",
+            "map_url": "https://maps.app.goo.gl/Rht24a7jsJ5GbsF47",
+            "page_url": "https://yoode.com/pages/store-bangalore",
+            "page_label": "See the center"
+          }
+        },
+        {
+          "type": "store",
+          "settings": {
+            "city": "Thiruvananthapuram",
+            "name": "Yoode Experience Centre, Thiruvananthapuram",
+            "address": "Ground Floor, CloudQ Towers, 223/18-1, Service Rd,\nnear Technopark Campus, Phase 1, Kazhakkoottam,\nThiruvananthapuram, Kerala 695582",
+            "hours": "Mon to Sat: 10am to 8pm",
+            "map_url": "https://maps.app.goo.gl/Ff598xTPCJdaXchw9",
+            "page_url": "https://yoode.com/pages/store-trivandrum",
+            "page_label": "See the center"
+          }
+        },
+        {
+          "type": "store",
+          "settings": {
+            "city": "Marthandam",
+            "name": "Yoode Experience Centre, Marthandam",
+            "address": "Eraviputhoorkadai, 1st Floor, Adhesh Tower,\nnear AB.AB & CO, Marthandam,\nTamil Nadu 629155",
+            "hours": "Mon to Sat: 10am to 8pm",
+            "map_url": "https://maps.app.goo.gl/N4kzrhG7698fGCJM8",
+            "page_url": "https://yoode.com/pages/store-marthandam",
+            "page_label": "See the center"
+          }
+        },
+        {
+          "type": "store",
+          "settings": {
+            "city": "Chennai",
+            "name": "Yoode Experience Centre, Chennai",
+            "address": "First Floor, City Centre Complex, No.6, 66/39,\nThirumalai Pillai Rd, T. Nagar,\nChennai, Tamil Nadu 600017",
+            "hours": "Mon to Sat: 10am to 8pm",
+            "map_url": "https://maps.app.goo.gl/Dyw5h7agWJAZbNkG7",
+            "page_url": "https://yoode.com/pages/store-chennai",
+            "page_label": "See the center"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

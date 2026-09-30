@@ -1,0 +1,755 @@
+{% doc %}
+  @prompt
+    add a horizontal scroll section where  diff category with image are displaye. when user scroll that section to scroll horizontally using gsap. first display 3 category and reminding ans be displayed when scrolled
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-horizontal-scroll-{{ ai_gen_id }} {
+    width: 100%;
+    overflow: hidden;
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+    display: block;
+  }
+
+  .ai-horizontal-scroll-container-{{ ai_gen_id }} {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-horizontal-scroll-header-{{ ai_gen_id }} {
+    margin-bottom: 30px;
+    text-align: {{ block.settings.heading_alignment }};
+  }
+
+  .ai-horizontal-scroll-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0;
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+  }
+
+  .ai-horizontal-scroll-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+    cursor: grab;
+  }
+
+  .ai-horizontal-scroll-wrapper-{{ ai_gen_id }}:active {
+    cursor: grabbing;
+  }
+
+  .ai-horizontal-scroll-track-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.gap }}px;
+    will-change: transform;
+  }
+
+  .ai-horizontal-scroll-item-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: {{ block.settings.card_width }}px;
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-horizontal-scroll-item-{{ ai_gen_id }}:hover {
+    transform: translateY(-5px);
+  }
+
+  .ai-horizontal-scroll-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    overflow: hidden;
+    background-color: #f4f4f4;
+  }
+
+  .ai-horizontal-scroll-image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-horizontal-scroll-image-wrapper-{{ ai_gen_id }} svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-horizontal-scroll-content-{{ ai_gen_id }} {
+    padding: {{ block.settings.card_padding }}px;
+  }
+
+  .ai-horizontal-scroll-category-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.category_title_size }}px;
+    color: {{ block.settings.category_title_color }};
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+
+  .ai-horizontal-scroll-category-desc-{{ ai_gen_id }} {
+    font-size: {{ block.settings.category_desc_size }}px;
+    color: {{ block.settings.category_desc_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .ai-horizontal-scroll-link-{{ ai_gen_id }} {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-horizontal-scroll-item-{{ ai_gen_id }} {
+      width: {{ block.settings.card_width | times: 0.8 }}px;
+    }
+
+    .ai-horizontal-scroll-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}
+
+<horizontal-scroll-{{ ai_gen_id }}
+  class="ai-horizontal-scroll-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+  data-scroll-speed="{{ block.settings.scroll_speed }}"
+>
+  <div class="ai-horizontal-scroll-container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <div class="ai-horizontal-scroll-header-{{ ai_gen_id }}">
+        <h2 class="ai-horizontal-scroll-title-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      </div>
+    {% endif %}
+
+    <div class="ai-horizontal-scroll-wrapper-{{ ai_gen_id }}">
+      <div class="ai-horizontal-scroll-track-{{ ai_gen_id }}">
+        {% for i in (1..8) %}
+          {% liquid
+            assign category_enabled_key = 'category_' | append: i | append: '_enabled'
+            assign category_title_key = 'category_' | append: i | append: '_title'
+            assign category_desc_key = 'category_' | append: i | append: '_description'
+            assign category_image_key = 'category_' | append: i | append: '_image'
+            assign category_link_key = 'category_' | append: i | append: '_link'
+
+            assign category_enabled = block.settings[category_enabled_key]
+            assign category_title = block.settings[category_title_key]
+            assign category_desc = block.settings[category_desc_key]
+            assign category_image = block.settings[category_image_key]
+            assign category_link = block.settings[category_link_key]
+          %}
+
+          {% if category_enabled %}
+            <div class="ai-horizontal-scroll-item-{{ ai_gen_id }}">
+              {% if category_link != blank %}
+                <a href="{{ category_link }}" class="ai-horizontal-scroll-link-{{ ai_gen_id }}">
+              {% endif %}
+                <div class="ai-horizontal-scroll-image-wrapper-{{ ai_gen_id }}">
+                  {% if category_image %}
+                    <img
+                      src="{{ category_image | image_url: width: 600 }}"
+                      alt="{{ category_title | escape }}"
+                      loading="lazy"
+                      width="600"
+                      height="600"
+                      class="ai-horizontal-scroll-image-{{ ai_gen_id }}"
+                    >
+                  {% else %}
+                    {{ 'collection-apparel-1' | placeholder_svg_tag }}
+                  {% endif %}
+                </div>
+                <div class="ai-horizontal-scroll-content-{{ ai_gen_id }}">
+                  {% if category_title != blank %}
+                    <h3 class="ai-horizontal-scroll-category-title-{{ ai_gen_id }}">{{ category_title }}</h3>
+                  {% endif %}
+                  {% if category_desc != blank %}
+                    <p class="ai-horizontal-scroll-category-desc-{{ ai_gen_id }}">{{ category_desc }}</p>
+                  {% endif %}
+                </div>
+              {% if category_link != blank %}
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</horizontal-scroll-{{ ai_gen_id }}>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+  (function() {
+    class HorizontalScroll{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.wrapper = null;
+        this.track = null;
+        this.scrollSpeed = 1;
+        this.isDragging = false;
+        this.startX = 0;
+        this.scrollLeft = 0;
+      }
+
+      connectedCallback() {
+        this.wrapper = this.querySelector('.ai-horizontal-scroll-wrapper-{{ ai_gen_id }}');
+        this.track = this.querySelector('.ai-horizontal-scroll-track-{{ ai_gen_id }}');
+        this.scrollSpeed = parseFloat(this.dataset.scrollSpeed) || 1;
+
+        if (!this.wrapper || !this.track) return;
+
+        this.initGSAP();
+        this.initDragScroll();
+      }
+
+      initGSAP() {
+        const items = this.track.querySelectorAll('.ai-horizontal-scroll-item-{{ ai_gen_id }}');
+        if (items.length === 0) return;
+
+        const trackWidth = this.track.scrollWidth;
+        const wrapperWidth = this.wrapper.offsetWidth;
+        const scrollDistance = trackWidth - wrapperWidth;
+
+        if (scrollDistance <= 0) return;
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.to(this.track, {
+          x: -scrollDistance,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: this.wrapper,
+            start: 'top center',
+            end: () => '+=' + (scrollDistance * this.scrollSpeed),
+            scrub: 1,
+            pin: false,
+            invalidateOnRefresh: true
+          }
+        });
+      }
+
+      initDragScroll() {
+        this.wrapper.addEventListener('mousedown', this.handleMouseDown.bind(this));
+        this.wrapper.addEventListener('mouseleave', this.handleMouseUp.bind(this));
+        this.wrapper.addEventListener('mouseup', this.handleMouseUp.bind(this));
+        this.wrapper.addEventListener('mousemove', this.handleMouseMove.bind(this));
+
+        this.wrapper.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
+        this.wrapper.addEventListener('touchend', this.handleTouchEnd.bind(this));
+        this.wrapper.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: true });
+      }
+
+      handleMouseDown(e) {
+        this.isDragging = true;
+        this.startX = e.pageX - this.wrapper.offsetLeft;
+        const transform = window.getComputedStyle(this.track).transform;
+        if (transform !== 'none') {
+          const matrix = new DOMMatrix(transform);
+          this.scrollLeft = -matrix.m41;
+        } else {
+          this.scrollLeft = 0;
+        }
+      }
+
+      handleMouseUp() {
+        this.isDragging = false;
+      }
+
+      handleMouseMove(e) {
+        if (!this.isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - this.wrapper.offsetLeft;
+        const walk = (x - this.startX) * 2;
+        const newX = this.scrollLeft - walk;
+        const maxScroll = this.track.scrollWidth - this.wrapper.offsetWidth;
+        const clampedX = Math.max(0, Math.min(newX, maxScroll));
+        gsap.to(this.track, { x: -clampedX, duration: 0.3, overwrite: true });
+      }
+
+      handleTouchStart(e) {
+        this.isDragging = true;
+        this.startX = e.touches[0].pageX - this.wrapper.offsetLeft;
+        const transform = window.getComputedStyle(this.track).transform;
+        if (transform !== 'none') {
+          const matrix = new DOMMatrix(transform);
+          this.scrollLeft = -matrix.m41;
+        } else {
+          this.scrollLeft = 0;
+        }
+      }
+
+      handleTouchEnd() {
+        this.isDragging = false;
+      }
+
+      handleTouchMove(e) {
+        if (!this.isDragging) return;
+        const x = e.touches[0].pageX - this.wrapper.offsetLeft;
+        const walk = (x - this.startX) * 2;
+        const newX = this.scrollLeft - walk;
+        const maxScroll = this.track.scrollWidth - this.wrapper.offsetWidth;
+        const clampedX = Math.max(0, Math.min(newX, maxScroll));
+        gsap.to(this.track, { x: -clampedX, duration: 0.3, overwrite: true });
+      }
+    }
+
+    customElements.define('horizontal-scroll-{{ ai_gen_id }}', HorizontalScroll{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Horizontal categories",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by category"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "inter_n4"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#262d33"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Scroll settings"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll speed",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.5,
+      "default": 1.5
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "label": "Card width",
+      "min": 200,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between cards",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#f2f1ef"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "category_title_size",
+      "label": "Title size",
+      "min": 14,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "category_title_color",
+      "label": "Title color",
+      "default": "#262d33"
+    },
+    {
+      "type": "range",
+      "id": "category_desc_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "category_desc_color",
+      "label": "Description color",
+      "default": "#676c70"
+    },
+    {
+      "type": "header",
+      "content": "Category 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "category_1_enabled",
+      "label": "Enable category 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "category_1_title",
+      "label": "Title",
+      "default": "T-Shirts"
+    },
+    {
+      "type": "textarea",
+      "id": "category_1_description",
+      "label": "Description",
+      "default": "Explore our collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "category_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "category_1_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Category 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "category_2_enabled",
+      "label": "Enable category 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "category_2_title",
+      "label": "Title",
+      "default": "Hoodies"
+    },
+    {
+      "type": "textarea",
+      "id": "category_2_description",
+      "label": "Description",
+      "default": "Stay warm in style"
+    },
+    {
+      "type": "image_picker",
+      "id": "category_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "category_2_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Category 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "category_3_enabled",
+      "label": "Enable category 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "category_3_title",
+      "label": "Title",
+      "default": "Jackets"
+    },
+    {
+      "type": "textarea",
+      "id": "category_3_description",
+      "label": "Description",
+      "default": "Premium outerwear"
+    },
+    {
+      "type": "image_picker",
+      "id": "category_3_image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "category_3_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Category 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "category_4_enabled",
+      "label": "Enable category 4",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "category_4_title",
+      "label": "Title",
+      "default": "Pants"
+    },
+    {
+      "type": "textarea",
+      "id": "category_4_description",
+      "label": "Description",
+      "default": "Comfortable fits"
+    },
+    {
+      "type": "image_picker",
+      "id": "category_4_image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "category_4_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Category 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "category_5_enabled",
+      "label": "Enable category 5",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "category_5_title",
+      "label": "Title",
+      "default": "Accessories"
+    },
+    {
+      "type": "textarea",
+      "id": "category_5_description",
+      "label": "Description",
+      "default": "Complete your look"
+    },
+    {
+      "type": "image_picker",
+      "id": "category_5_image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "category_5_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Category 6"
+    },
+    {
+      "type": "checkbox",
+      "id": "category_6_enabled",
+      "label": "Enable category 6",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "category_6_title",
+      "label": "Title",
+      "default": "Shoes"
+    },
+    {
+      "type": "textarea",
+      "id": "category_6_description",
+      "label": "Description",
+      "default": "Step in comfort"
+    },
+    {
+      "type": "image_picker",
+      "id": "category_6_image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "category_6_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Category 7"
+    },
+    {
+      "type": "checkbox",
+      "id": "category_7_enabled",
+      "label": "Enable category 7",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "category_7_title",
+      "label": "Title",
+      "default": "Bags"
+    },
+    {
+      "type": "textarea",
+      "id": "category_7_description",
+      "label": "Description",
+      "default": "Carry with style"
+    },
+    {
+      "type": "image_picker",
+      "id": "category_7_image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "category_7_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Category 8"
+    },
+    {
+      "type": "checkbox",
+      "id": "category_8_enabled",
+      "label": "Enable category 8",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "category_8_title",
+      "label": "Title",
+      "default": "Hats"
+    },
+    {
+      "type": "textarea",
+      "id": "category_8_description",
+      "label": "Description",
+      "default": "Top it off"
+    },
+    {
+      "type": "image_picker",
+      "id": "category_8_image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "category_8_link",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Horizontal categories"
+    }
+  ]
+}
+{% endschema %}

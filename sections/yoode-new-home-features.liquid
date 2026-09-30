@@ -1,0 +1,443 @@
+{%- liquid
+  assign columns = section.settings.columns_desktop | default: 3
+  assign group_size = columns | times: 2
+-%}
+<div class="color-{{ section.settings.color_scheme }} yn-source yn-source--features yn-src-why-choose-section"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-feature-cols: {{ columns }}; --yn-feature-height: {{ section.settings.grid_height | default: 850 }}px; --yn-feature-gap: {{ section.settings.card_gap | default: 20 }}px; --yn-feature-radius: {{ section.settings.card_radius | default: 32 }}px; --yn-feature-card-bg: {{ section.settings.card_background | default: '#ebebeb' }}; --yn-source-background: {{ section.settings.source_background | default: '#ffffff' }}; --yn-pt: {{ section.settings.padding_top }}px; --yn-pb: {{ section.settings.padding_bottom }}px;">
+  <div class="yn-src-why-choose-container">
+    {% render 'yoode-new-home-heading', subtitle: section.settings.subtitle, title: section.settings.title, description: section.settings.description %}
+    <div class="yn-src-why-choose-grid">
+      {% for block in section.blocks %}
+        {%- liquid
+          assign slot = forloop.index0 | modulo: group_size
+          assign column_index = slot | modulo: columns
+          assign column = column_index | plus: 1
+          assign group_index = forloop.index0 | divided_by: group_size
+          assign row_offset = group_index | times: 5
+          assign row_span = 3
+          if slot < columns
+            assign row_start = row_offset | plus: 1
+            if column_index == 0
+              assign row_span = 2
+            endif
+          else
+            if column_index == 0
+              assign row_start = row_offset | plus: 3
+            else
+              assign row_start = row_offset | plus: 4
+              assign row_span = 2
+            endif
+          endif
+        -%}
+        <article class="yn-src-why-choose-card {% if row_span == 2 %}yn-feature-card--short{% else %}yn-feature-card--tall{% endif %} yn-source-feature--{{ block.settings.image_size }}{% if block.settings.image_layout == 'side' %} yn-source-feature--side{% endif %}"
+          style="--yn-card-column: {{ column }}; --yn-card-row: {{ row_start }}; --yn-card-span: {{ row_span }}; --yn-feature-image-scale: {{ block.settings.image_scale | default: 100 | divided_by: 100.0 }};"
+          {{ block.shopify_attributes }}>
+          <div class="yn-src-why-choose-card-content">
+            <h3 class="yn-src-why-choose-card-title">
+              <span class="yn-src-why-choose-card-icon-wrap">
+                {% if block.settings.icon_image != blank %}
+                  {{ block.settings.icon_image | image_url: width: 80 | image_tag: loading: 'lazy', alt: '' }}
+                {% else %}
+                  {% render 'yoode-new-home-icon', icon: block.settings.icon %}
+                {% endif %}
+              </span>
+              <span>{{ block.settings.title | escape }}</span>
+            </h3>
+            <div class="yn-src-why-choose-card-text">{{ block.settings.text }}</div>
+          </div>
+          <div class="yn-src-why-choose-card-img-wrap">
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 900 | image_tag: class: 'yn-src-why-choose-card-img', loading: 'lazy', widths: '300, 450, 600, 900', sizes: '(min-width: 990px) 360px, (min-width: 750px) 45vw, 90vw' }}
+            {% elsif block.settings.fallback_image != blank %}
+              <img class="yn-src-why-choose-card-img" src="{{ block.settings.fallback_image | asset_url }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="600" height="600">
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YN Why Us",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "info": "Use Card background below to choose the card colour.",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Why us"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Why Businesses Choose Yoode"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>From quality fabrics to reliable delivery, we make custom apparel simple, scalable and stress-free for your brand.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "color",
+      "id": "source_background",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "grid_height",
+      "label": "Desktop grid height",
+      "min": 600,
+      "max": 1100,
+      "step": 10,
+      "unit": "px",
+      "default": 850
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Space between cards",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ebebeb"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "sliders",
+              "label": "Sliders (customise)"
+            },
+            {
+              "value": "users",
+              "label": "People (bulk / team)"
+            },
+            {
+              "value": "map-pin",
+              "label": "Map pin (reach)"
+            },
+            {
+              "value": "award",
+              "label": "Award (quality)"
+            },
+            {
+              "value": "printer",
+              "label": "Printer (printing options)"
+            },
+            {
+              "value": "headset",
+              "label": "Headset (support)"
+            },
+            {
+              "value": "truck",
+              "label": "Truck (delivery)"
+            },
+            {
+              "value": "shield",
+              "label": "Shield (trust)"
+            },
+            {
+              "value": "clock",
+              "label": "Clock (fast turnaround)"
+            },
+            {
+              "value": "star",
+              "label": "Star"
+            }
+          ],
+          "default": "star"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom icon (optional)",
+          "info": "Replaces the icon above. 80Ã—80px recommended."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature title"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Short description of this feature.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Transparent PNG works best."
+        },
+        {
+          "type": "text",
+          "id": "fallback_image",
+          "label": "Demo image file (used when no image is uploaded)",
+          "info": "Theme asset file name, e.g. yoode-new-home-img-bulk.webp"
+        },
+        {
+          "type": "select",
+          "id": "image_layout",
+          "label": "Image position",
+          "options": [
+            {
+              "value": "bottom",
+              "label": "Below text, centred"
+            },
+            {
+              "value": "side",
+              "label": "Bottom right, beside text"
+            }
+          ],
+          "default": "bottom"
+        },
+        {
+          "type": "select",
+          "id": "image_size",
+          "label": "Image size",
+          "options": [
+            {
+              "value": "small",
+              "label": "Small"
+            },
+            {
+              "value": "medium",
+              "label": "Medium"
+            },
+            {
+              "value": "large",
+              "label": "Large"
+            }
+          ],
+          "default": "large"
+        },
+        {
+          "type": "range",
+          "id": "image_scale",
+          "label": "Image scale",
+          "min": 60,
+          "max": 140,
+          "step": 5,
+          "unit": "%",
+          "default": 100
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Why Us",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "sliders",
+            "title": "Made to Your Specification",
+            "text": "<p>Choose your fabric, colour, size, print and embroidery â€” we bring your vision to life.</p>"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "users",
+            "title": "Built for Bulk",
+            "text": "<p>From small teams to large enterprises, we handle orders of any size.</p>"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "map-pin",
+            "title": "Pan-India Reach",
+            "text": "<p>We deliver and support your orders across major cities, with a strong presence in key locations.</p>"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "award",
+            "title": "Premium Quality",
+            "text": "<p>High-grade fabrics, durable prints and professional finishing for a lasting impression.</p>",
+            "image_size": "small"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "printer",
+            "title": "Endless Options",
+            "text": "<p>DTF, DTG, Embroidery, and Coloreel. The right solution for every design.</p>",
+            "image_size": "small"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "headset",
+            "title": "Support",
+            "text": "<p>From consultation to delivery, our team is with you at every step.</p>",
+            "image_layout": "side",
+            "image_size": "small"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,11 @@
+/* ==========================================================================
+   yd-rewamp-common — shared layout tokens for EVERY yd-rewamp section.
+   Change these once to resize / re-gutter the whole site; every section
+   references them via var(), so widths stay consistent and responsive.
+   ========================================================================== */
+:root {
+  /* Max content width (the centered container cap) */
+  --yd-container: 1800px;
+  /* Responsive side gutter — fluid with the viewport, clamped at both ends */
+  --yd-gutter: clamp(20px, 4vw, 100px);
+}

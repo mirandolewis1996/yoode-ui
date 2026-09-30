@@ -1,0 +1,115 @@
+.yd-category-card .title-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.yd-category-card .title-section .title {
+  line-height: 1.2;
+  font-size: calc(var(--font-heading-h2-scale) * 3.2rem);
+  padding-right: 40px;
+  color: var(--title-color);
+  margin: 0;
+}
+
+.yd-category-card .title-section .description {
+  font-size: calc(var(--font-body-scale) * 1.4rem);
+  max-width: 40%;
+  color: var(--desc-color);
+}
+
+.yd-category-card .title-section .description p {
+  margin: 0;
+}
+
+.yd-category-card .signature-cards {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols-desktop), 1fr);
+  gap: var(--grid-gap);
+}
+
+.yd-category-card .signature-cards .signature-card {
+  background-color: var(--card-bg-color, rgba(var(--color-background), 1));
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.yd-category-card .signature-cards .signature-card .full-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.yd-category-card .signature-cards .signature-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-top-left-radius: var(--card-radius);
+  border-top-right-radius: var(--card-radius);
+}
+
+.yd-category-card .signature-cards .signature-card .card-content {
+  padding: 30px 25px 25px;
+  flex-grow: 1;
+}
+
+.yd-category-card .signature-cards .signature-card .card-content .title {
+  font-size: calc(var(--font-heading-h3-scale) * 2.6rem);
+  margin-bottom: 18px;
+  line-height: 1;
+  color: var(--card-title-color);
+}
+
+.yd-category-card .signature-cards .signature-card .card-content .para {
+  font-size: calc(var(--font-body-scale) * 1.4rem);
+  color: var(--card-desc-color);
+  font-weight: 400;
+}
+
+.yd-category-card .signature-cards .signature-card .card-content .para p {
+  margin: 0;
+}
+
+@media (max-width: 992px) {
+  .yd-category-card .title-section {
+    flex-direction: column;
+  }
+
+  .yd-category-card .title-section .title {
+    max-width: 68%;
+    margin-bottom: 20px;
+  }
+
+  .yd-category-card .title-section .description {
+    max-width: 100%;
+  }
+
+  .yd-category-card .signature-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .yd-category-card .title-section .title {
+    font-size: 45px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 575px) {
+  .yd-category-card .signature-cards {
+    grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
+  }
+}
+
+.yd-category-card .card-content .title:empty,
+.yd-category-card .card-content .para:empty,
+.yd-category-card .title-section .description:empty {
+  display: none;
+  margin: 0;
+  padding: 0;
+}

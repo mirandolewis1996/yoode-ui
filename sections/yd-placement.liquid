@@ -1,0 +1,367 @@
+<style>
+  .yd-popular-placement {
+    padding: 60px 0;
+
+  }
+
+  .yd-popular-placement .page-width {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .yd-popular-placement__heading {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .yd-popular-placement__highlight {
+    color: #f96322;
+  }
+
+  .yd-popular-placement__description {
+    margin-top: 14px;
+    font-size: 16px;
+    color: #666;
+  }
+
+  .yd-popular-placement__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .yd-popular-placement__card {
+    border-radius: 18px;
+    padding: 16px;
+    transition: 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .yd-popular-placement__card:hover {
+    transform: translateY(-5px);
+  }
+
+  .yd-popular-placement__image {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #222;
+    margin-bottom: 20px;
+    height: 300px;
+  }
+
+  .yd-popular-placement__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: var(--image-fit);
+  }
+
+  .yd-popular-placement__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .yd-popular-placement__card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3c3c3c;
+    margin-bottom: 10px;
+  }
+
+  .yd-popular-placement__text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #6d6d6d;
+    margin-bottom: 22px;
+  }
+
+
+@media screen and (max-width: 991px) {
+
+  .yd-popular-placement__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  .yd-popular-placement__card {
+    order: var(--mobile-order);
+  }
+}
+
+@media screen and (max-width: 767px) {
+
+    .yd-popular-placement {
+      padding: 40px 0;
+    }
+
+    .yd-popular-placement .page-width {
+      padding: 0 15px;
+    }
+
+    .yd-popular-placement__heading {
+      margin-bottom: 30px;
+    }
+
+    .yd-popular-placement__grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .yd-popular-placement__card {
+      padding: 14px;
+    }
+
+    .yd-popular-placement__image {
+      height: 240px;
+      margin-bottom: 16px;
+    }
+
+    .yd-popular-placement__card-title {
+      font-size: 17px;
+    }
+
+    .yd-popular-placement__text {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+  }
+
+</style>
+
+<section class="yd-popular-placement color-{{ section.settings.color_scheme }} section-padding">
+  <div class="page-width">
+    <!-- HEADING -->
+    <div class="yd-popular-placement__heading">
+      {% if section.settings.heading != blank %}
+        <h2 class="yd-popular-placement__title">
+          {{ section.settings.heading }}
+          <span class="yd-popular-placement__highlight">
+            {{ section.settings.highlight_heading }}
+          </span>
+        </h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="yd-popular-placement__description">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- GRID -->
+    <div class="yd-popular-placement__grid">
+      {% for block in section.blocks %}
+        <div
+          class="yd-popular-placement__card color-{{ block.settings.color_scheme }}"
+          style="--image-fit: {{ block.settings.image_fit }};
+           --mobile-order: {{ block.settings.mobile_order }};"
+          {{ block.shopify_attributes }}
+        >
+          <!-- IMAGE -->
+          {% if block.settings.image != blank %}
+            <div class="yd-popular-placement__image">
+              {{
+                block.settings.image
+                | image_url: width: 800
+                | image_tag: alt: block.settings.title
+                | default: 'image', loading: 'lazy'
+              }}
+            </div>
+          {% endif %}
+
+          <!-- CONTENT -->
+          <div class="yd-popular-placement__content">
+            {% if block.settings.title != blank %}
+              <h3 class="yd-popular-placement__card-title">
+                {{ block.settings.title }}
+              </h3>
+            {% endif %}
+
+            {% if block.settings.text != blank %}
+              <div class="yd-popular-placement__text">
+                {{ block.settings.text }}
+              </div>
+            {% endif %}
+
+            <!-- BUTTON -->
+            {% if block.settings.button_label != blank %}
+              <a
+                href="{{ block.settings.button_link }}"
+                class="button--{{ block.settings.button_style }} button focus-inset"
+                {{ block.shopify_attributes }}
+              >
+                <div class="button__content">
+                  <span class="button__label" data-label="{{ block.settings.button_label }}">
+                    {{- block.settings.button_label -}}
+                  </span>
+                </div>
+
+                {% if block.settings.button_arrow %}
+                  <span
+                    class="yd-custom-banner__arrow"
+                    style="transform: rotate({{ block.settings.arrow_rotate }}deg);"
+                  >
+                    {% render 'icon-arrow' %}
+                  </span>
+                {% endif %}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YD Placement",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "POPULAR"
+    },
+    {
+      "type": "text",
+      "id": "highlight_heading",
+      "label": "Highlight Heading",
+      "default": "PLACEMENTS"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Add your description here.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "placement_card",
+      "name": "Placement Card",
+      "settings": [
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "default": "background-1",
+          "label": "t:sections.all.color_scheme.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card Image"
+        },
+        {
+          "type": "select",
+          "id": "image_fit",
+          "label": "Image Fit",
+          "default": "cover",
+          "options": [
+            { "value": "cover", "label": "Cover" },
+            { "value": "contain", "label": "Contain" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "mobile_order",
+          "label": "Mobile Card Order",
+          "default": "1",
+          "options": [
+            {
+              "value": "1",
+              "label": "Order 1"
+            },
+            {
+              "value": "2",
+              "label": "Order 2"
+            },
+            {
+              "value": "3",
+              "label": "Order 3"
+            },
+            {
+              "value": "4",
+              "label": "Order 4"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Placement Title"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Description",
+          "default": "<p>Add your content here.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_show",
+          "label": "Show Button",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label",
+          "default": "View More"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "options": [
+            { "value": "primary", "label": "Primary" },
+            { "value": "secondary", "label": "Secondary" },
+            { "value": "tertiary", "label": "Tertiary" }
+          ],
+          "default": "primary",
+          "label": "Style"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_arrow",
+          "label": "Show Arrow",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "arrow_rotate",
+          "label": "Arrow Rotation",
+          "min": 0,
+          "max": 360,
+          "step": 5,
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Placement",
+      "blocks": [{ "type": "placement_card" }, { "type": "placement_card" }, { "type": "placement_card" }]
+    }
+  ]
+}
+{% endschema %}

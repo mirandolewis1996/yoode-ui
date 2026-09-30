@@ -1,0 +1,382 @@
+{% style %}
+  .ai-horizontal-scroll-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    position: relative;
+  }
+
+  .ai-horizontal-scroll-wrapper-{{ ai_gen_id }} {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ai-horizontal-scroll-container-{{ ai_gen_id }} {
+    display: flex;
+    height: 100vh;
+    will-change: transform;
+  }
+
+  .ai-horizontal-scroll-slide-{{ ai_gen_id }} {
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-horizontal-scroll-slide-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .ai-horizontal-scroll-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-horizontal-scroll-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 600px;
+    max-height: 600px;
+  }
+
+  .ai-horizontal-scroll-content-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 40px;
+    max-width: 800px;
+  }
+
+  .ai-horizontal-scroll-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 16px;
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+  }
+
+  .ai-horizontal-scroll-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .ai-horizontal-scroll-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: {{ block.settings.overlay_color }};
+    opacity: {{ block.settings.overlay_opacity }};
+    z-index: 1;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-horizontal-scroll-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.7);
+    }
+
+    .ai-horizontal-scroll-text-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.text_size }}px * 0.9);
+    }
+
+    .ai-horizontal-scroll-content-{{ ai_gen_id }} {
+      padding: 20px;
+    }
+  }
+{% endstyle %}
+
+<horizontal-scroll-{{ ai_gen_id }} class="ai-horizontal-scroll-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-horizontal-scroll-wrapper-{{ ai_gen_id }}">
+    <div class="ai-horizontal-scroll-container-{{ ai_gen_id }}">
+      {% for i in (1..4) %}
+        {% liquid
+          assign slide_image_key = 'slide_' | append: i | append: '_image'
+          assign slide_heading_key = 'slide_' | append: i | append: '_heading'
+          assign slide_text_key = 'slide_' | append: i | append: '_text'
+          
+          assign slide_image = block.settings[slide_image_key]
+          assign slide_heading = block.settings[slide_heading_key]
+          assign slide_text = block.settings[slide_text_key]
+        %}
+        
+        <div class="ai-horizontal-scroll-slide-{{ ai_gen_id }}" data-slide="{{ i }}">
+          {% if slide_image %}
+            <img
+              src="{{ slide_image | image_url: width: 2000 }}"
+              alt="{{ slide_image.alt | escape }}"
+              loading="lazy"
+              width="{{ slide_image.width }}"
+              height="{{ slide_image.height }}"
+            >
+          {% else %}
+            <div class="ai-horizontal-scroll-placeholder-{{ ai_gen_id }}">
+              {{ 'lifestyle-1' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+          
+          {% if block.settings.show_overlay %}
+            <div class="ai-horizontal-scroll-overlay-{{ ai_gen_id }}"></div>
+          {% endif %}
+          
+          <div class="ai-horizontal-scroll-content-{{ ai_gen_id }}">
+            {% if slide_heading != blank %}
+              <h2 class="ai-horizontal-scroll-heading-{{ ai_gen_id }}">{{ slide_heading }}</h2>
+            {% endif %}
+            {% if slide_text != blank %}
+              <div class="ai-horizontal-scroll-text-{{ ai_gen_id }}">{{ slide_text }}</div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</horizontal-scroll-{{ ai_gen_id }}>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+  (function() {
+    class HorizontalScroll{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.wrapper = this.querySelector('.ai-horizontal-scroll-wrapper-{{ ai_gen_id }}');
+        this.container = this.querySelector('.ai-horizontal-scroll-container-{{ ai_gen_id }}');
+        this.slides = this.querySelectorAll('.ai-horizontal-scroll-slide-{{ ai_gen_id }}');
+        this.scrollTriggerInstance = null;
+      }
+
+      connectedCallback() {
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+          this.initGSAP();
+        } else {
+          const checkGSAP = setInterval(() => {
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+              clearInterval(checkGSAP);
+              this.initGSAP();
+            }
+          }, 100);
+        }
+      }
+
+      initGSAP() {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const totalSlides = this.slides.length;
+        const slideWidth = window.innerWidth;
+        const totalWidth = slideWidth * totalSlides;
+        const scrollDistance = totalWidth - slideWidth;
+
+        this.scrollTriggerInstance = ScrollTrigger.create({
+          trigger: this.wrapper,
+          start: 'top top',
+          end: () => `+=${scrollDistance * 3}`,
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const translateX = progress * scrollDistance;
+            gsap.to(this.container, {
+              x: -translateX,
+              duration: 0,
+              ease: 'none'
+            });
+          }
+        });
+
+        window.addEventListener('resize', () => this.handleResize());
+      }
+
+      handleResize() {
+        if (this.scrollTriggerInstance) {
+          this.scrollTriggerInstance.kill();
+        }
+        this.initGSAP();
+      }
+
+      disconnectedCallback() {
+        if (this.scrollTriggerInstance) {
+          this.scrollTriggerInstance.kill();
+        }
+      }
+    }
+
+    customElements.define('horizontal-scroll-{{ ai_gen_id }}', HorizontalScroll{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Horizontal scroll slides",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Slide 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "slide_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "slide_1_heading",
+      "label": "Heading",
+      "default": "Slide 1"
+    },
+    {
+      "type": "textarea",
+      "id": "slide_1_text",
+      "label": "Text",
+      "default": "Scroll down to see the next slide"
+    },
+    {
+      "type": "header",
+      "content": "Slide 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "slide_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "slide_2_heading",
+      "label": "Heading",
+      "default": "Slide 2"
+    },
+    {
+      "type": "textarea",
+      "id": "slide_2_text",
+      "label": "Text",
+      "default": "Keep scrolling for more"
+    },
+    {
+      "type": "header",
+      "content": "Slide 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "slide_3_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "slide_3_heading",
+      "label": "Heading",
+      "default": "Slide 3"
+    },
+    {
+      "type": "textarea",
+      "id": "slide_3_text",
+      "label": "Text",
+      "default": "Almost there"
+    },
+    {
+      "type": "header",
+      "content": "Slide 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "slide_4_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "slide_4_heading",
+      "label": "Heading",
+      "default": "Slide 4"
+    },
+    {
+      "type": "textarea",
+      "id": "slide_4_text",
+      "label": "Text",
+      "default": "Final slide"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "inter_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Text size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show overlay",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Overlay opacity",
+      "default": 0.4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Horizontal scroll slides"
+    }
+  ]
+}
+{% endschema %}

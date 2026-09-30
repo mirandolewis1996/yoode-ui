@@ -1,0 +1,842 @@
+{% if section.settings.layout == 'grid' %}
+{%- liquid
+  assign featured_blog = section.settings.blog
+  assign show_articles = false
+  # Post source: "blog" = latest posts of the chosen blog,
+  # "custom" = the post blocks (each can pick a post and/or use its own image and text)
+  if section.settings.source == 'blog' and featured_blog != blank and featured_blog.articles_count > 0
+    assign show_articles = true
+  endif
+
+  assign button_link = section.settings.button_link
+  if button_link == blank and featured_blog != blank
+    assign button_link = featured_blog.url
+  endif
+
+  assign arrow_icon = '<svg class="yn-featured-blog__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>'
+  assign image_sizes = '(min-width: 990px) calc((100vw - 16rem) / 3), (min-width: 750px) calc((100vw - 10rem) / 3), calc(100vw - 3.2rem)'
+-%}
+
+<div
+  class="yn-section yn-source yn-source--featured-blog yn-featured-blog color-{{ section.settings.color_scheme }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-source-background: {{ section.settings.source_background | default: '#ffffff' }}; --yn-pt: {{ section.settings.padding_top | divided_by: 10.0 }}rem; --yn-pb: {{ section.settings.padding_bottom | divided_by: 10.0 }}rem;"
+>
+  <div class="yn-container yn-container--narrow">
+    {% render 'yoode-new-home-heading',
+      subtitle: section.settings.subtitle,
+      title: section.settings.title,
+      description: section.settings.description,
+      align: 'center'
+    %}
+
+    <yoode-new-home-reveal>
+      <ul class="yn-featured-blog__grid" role="list">
+        {%- if show_articles -%}
+          {%- for article in featured_blog.articles limit: section.settings.post_limit -%}
+            <li data-yn-reveal style="--yn-step: {{ forloop.index0 | modulo: 3 }};">
+              <a class="yn-featured-blog__card" href="{{ article.url }}">
+                <span class="yn-featured-blog__media">
+                  {%- if article.image != blank -%}
+                    {{
+                      article.image
+                      | image_url: width: 1200
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '300, 450, 600, 800, 1000, 1200',
+                        sizes: image_sizes,
+                        alt: article.image.alt | default: article.title
+                    }}
+                  {%- else -%}
+                    {%- assign placeholder_index = forloop.index0 | modulo: 3 | plus: 1 -%}
+                    {{ 'blog-apparel-' | append: placeholder_index | placeholder_svg_tag: 'yn-featured-blog__placeholder' }}
+                  {%- endif -%}
+                </span>
+                <span class="yn-featured-blog__content">
+                  {%- if section.settings.show_tag or section.settings.show_date -%}
+                    <span class="yn-featured-blog__meta">
+                      {%- if section.settings.show_tag and article.tags.size > 0 -%}
+                        <span class="yn-featured-blog__tag">{{ article.tags.first | escape }}</span>
+                      {%- endif -%}
+                      {%- if section.settings.show_date -%}
+                        <time class="yn-featured-blog__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                          {{- article.published_at | date: section.settings.date_format -}}
+                        </time>
+                      {%- endif -%}
+                    </span>
+                  {%- endif -%}
+                  <span class="yn-featured-blog__title">{{ article.title | escape }}</span>
+                </span>
+              </a>
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for block in section.blocks limit: section.settings.post_limit -%}
+            {%- liquid
+              # A picked post supplies title, tag, date and link; an uploaded image always wins over the post image
+              assign post = block.settings.post
+              assign card_title = block.settings.title
+              assign card_tag_text = block.settings.tag
+              assign card_date = block.settings.date
+              assign card_link = block.settings.link
+              assign card_image = block.settings.image
+              if post != blank
+                assign typed_title = block.settings.title | strip
+                if typed_title == 'Post title'
+                  assign typed_title = blank
+                endif
+                assign card_title = block.settings.post_title | strip | default: typed_title | default: post.title
+                assign card_tag_text = post.tags.first
+                assign card_date = post.published_at | date: section.settings.date_format
+                assign card_link = post.url
+                if card_image == blank
+                  assign card_image = post.image
+                endif
+              endif
+
+              assign card_tag = 'div'
+              if card_link != blank
+                assign card_tag = 'a'
+              endif
+              assign show_block_tag = false
+              if section.settings.show_tag and card_tag_text != blank
+                assign show_block_tag = true
+              endif
+              assign show_block_date = false
+              if section.settings.show_date and card_date != blank
+                assign show_block_date = true
+              endif
+            -%}
+            <li data-yn-reveal style="--yn-step: {{ forloop.index0 | modulo: 3 }};" {{ block.shopify_attributes }}>
+              <{{ card_tag }}
+                class="yn-featured-blog__card"
+                {% if card_link != blank %}
+                  href="{{ card_link }}"
+                {% endif %}
+              >
+                <span class="yn-featured-blog__media">
+                  {%- if card_image != blank -%}
+                    {{
+                      card_image
+                      | image_url: width: 1200
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '300, 450, 600, 800, 1000, 1200',
+                        sizes: image_sizes,
+                        alt: card_image.alt | default: card_title
+                    }}
+                  {%- else -%}
+                    {%- assign placeholder_index = forloop.index0 | modulo: 3 | plus: 1 -%}
+                    {{ 'blog-apparel-' | append: placeholder_index | placeholder_svg_tag: 'yn-featured-blog__placeholder' }}
+                  {%- endif -%}
+                </span>
+                <span class="yn-featured-blog__content">
+                  {%- if show_block_tag or show_block_date -%}
+                    <span class="yn-featured-blog__meta">
+                      {%- if show_block_tag -%}
+                        <span class="yn-featured-blog__tag">{{ card_tag_text | escape }}</span>
+                      {%- endif -%}
+                      {%- if show_block_date -%}
+                        <span class="yn-featured-blog__date">{{ card_date | escape }}</span>
+                      {%- endif -%}
+                    </span>
+                  {%- endif -%}
+                  <span class="yn-featured-blog__title">{{ card_title | escape }}</span>
+                </span>
+              </{{ card_tag }}>
+            </li>
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
+    </yoode-new-home-reveal>
+
+    {%- if section.settings.show_view_all and section.settings.button_label != blank and button_link != blank -%}
+      <div class="yn-featured-blog__footer">
+        <a class="yn-featured-blog__link" href="{{ button_link }}">
+          {{- section.settings.button_label | escape -}}
+          {{ arrow_icon }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+
+{% else %}
+{%- liquid
+  assign featured_blog = section.settings.blog
+  assign feat_block = section.blocks[0]
+  assign feat_post = feat_block.settings.post
+  if section.settings.source == 'blog' and featured_blog != blank
+    assign feat_post = featured_blog.articles[0]
+  endif
+  assign feat_title = feat_block.settings.post_title | default: feat_block.settings.title | default: feat_post.title | default: section.settings.feat_title
+  assign feat_tag = feat_block.settings.tag | default: feat_post.tags.first | default: section.settings.feat_cat
+  assign feat_date = feat_block.settings.date | default: section.settings.feat_date
+  assign feat_link = feat_block.settings.link | default: feat_post.url
+  assign feat_image = feat_block.settings.image | default: feat_post.image
+  if section.settings.source == 'blog' and feat_post != blank
+    assign feat_title = feat_post.title
+    assign feat_tag = feat_post.tags.first
+    assign feat_date = feat_post.published_at | date: section.settings.date_format
+    assign feat_link = feat_post.url
+    assign feat_image = feat_post.image
+  endif
+  assign mid_block = section.blocks[1]
+  assign mid_post = mid_block.settings.post
+  if section.settings.source == 'blog' and featured_blog != blank
+    assign mid_post = featured_blog.articles[1]
+  endif
+  assign mid_title = mid_block.settings.post_title | default: mid_block.settings.title | default: mid_post.title | default: section.settings.mid_title
+  assign mid_tag = mid_block.settings.tag | default: mid_post.tags.first | default: section.settings.mid_cat
+  assign mid_link = mid_block.settings.link | default: mid_post.url
+  if section.settings.source == 'blog' and mid_post != blank
+    assign mid_title = mid_post.title
+    assign mid_tag = mid_post.tags.first
+    assign mid_link = mid_post.url
+  endif
+  assign blue_block = section.blocks[2]
+  assign blue_post = blue_block.settings.post
+  if section.settings.source == 'blog' and featured_blog != blank
+    assign blue_post = featured_blog.articles[2]
+  endif
+  assign blue_title = blue_block.settings.post_title | default: blue_block.settings.title | default: blue_post.title | default: section.settings.blue_title
+  assign blue_tag = blue_block.settings.tag | default: blue_post.tags.first | default: section.settings.blue_cat
+  assign blue_date = blue_block.settings.date | default: section.settings.blue_date
+  assign blue_link = blue_block.settings.link | default: blue_post.url
+  assign blue_image = blue_block.settings.image | default: blue_post.image
+  if section.settings.source == 'blog' and blue_post != blank
+    assign blue_title = blue_post.title
+    assign blue_tag = blue_post.tags.first
+    assign blue_date = blue_post.published_at | date: section.settings.date_format
+    assign blue_link = blue_post.url
+    assign blue_image = blue_post.image
+  endif
+-%}
+
+
+<div data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-source-background: {{ section.settings.source_background | default: '#ffffff' }}; --yn-pt: {{ section.settings.padding_top }}px; --yn-pb: {{ section.settings.padding_bottom }}px;" class="yn-source yn-source--featured-blog yn-src-blogs-section" id="blogs-{{ section.id }}">
+  <div class="yn-src-blogs-container">
+
+
+    <div class="yn-src-blogs-header">
+      <h2 class="yn-src-blogs-title">{{ section.settings.title }}</h2>
+      <a {% if section.settings.button_link != blank %}href="{{ section.settings.button_link }}"{% elsif section.settings.blog != blank %}href="{{ section.settings.blog.url }}"{% else %}role="link" aria-disabled="true"{% endif %} class="yn-src-blogs-header-btn">
+        {{ section.settings.button_label }}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+
+
+    <div class="yn-src-blogs-grid">
+
+
+      <div class="yn-src-blog-card yn-src-blog-col-left yn-src-group" {{ feat_block.shopify_attributes }}>
+{% if feat_link != blank %}<a class="yn-src-blog-card-link" href="{{ feat_link }}" aria-label="{{ feat_title | escape }}"></a>{% endif %}
+        {% if feat_image != blank %}
+          {{ feat_image | image_url: width: 1200 | image_tag: class: 'yn-src-blog-img-bg', loading: 'lazy', widths: '300, 600, 900, 1200', sizes: '(min-width: 990px) 45vw, 100vw' }}
+        {% else %}
+          {{ 'image' | placeholder_svg_tag: 'yn-src-blog-img-bg placeholder-svg' }}
+        {% endif %}
+
+        <div class="yn-src-blog-badge-hot">ðŸ”¥</div>
+
+        <div class="yn-src-blog-text-cutout">
+          <div class="yn-src-blog-curve-tl"></div>
+          <div class="yn-src-blog-curve-br"></div>
+
+          <div class="yn-src-blog-meta">{{ feat_tag }} <span>| {{ feat_date }}</span></div>
+          <h3 class="yn-src-blog-main-title">{{ feat_title | newline_to_br }}</h3>
+        </div>
+      </div>
+
+
+      <div class="yn-src-blog-col-mid">
+
+
+        <div class="yn-src-blog-card yn-src-blog-card-green yn-src-group" {{ mid_block.shopify_attributes }}>
+          <div class="yn-src-blog-green-cutout">
+            <div class="yn-src-blog-curve-bl"></div>
+            <div class="yn-src-blog-curve-tr"></div>
+            <div class="yn-src-blog-green-arrow-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <div class="yn-src-blog-green-content">
+            <div class="yn-src-blog-meta">{{ mid_tag }}</div>
+            <h3 class="yn-src-blog-green-title">{% if mid_link != blank %}<a href="{{ mid_link }}">{% endif %}{{ mid_title | escape | newline_to_br }}{% if mid_link != blank %}</a>{% endif %}</h3>
+            <p class="yn-src-blog-green-desc">
+              {{ section.settings.mid_desc }} <span class="yn-src-blog-green-more">More</span>
+            </p>
+          </div>
+
+          <div class="yn-src-blog-green-links">
+            {% if section.settings.link1_url != blank %}<a href="{{ section.settings.link1_url }}" class="yn-src-blog-green-link yn-src-group/yn-src-link">
+              <span class="yn-src-blog-green-link-text">{{ section.settings.link1_text }}</span>
+              <svg class="yn-src-blog-green-link-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>{% endif %}
+            {% if section.settings.link2_url != blank %}<a href="{{ section.settings.link2_url }}" class="yn-src-blog-green-link yn-src-group/yn-src-link">
+              <span class="yn-src-blog-green-link-text">{{ section.settings.link2_text }}</span>
+              <svg class="yn-src-blog-green-link-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>{% endif %}
+          </div>
+        </div>
+
+
+        <div class="yn-src-blog-card yn-src-blog-card-video yn-src-group">
+{% if section.settings.video_link != blank %}<a class="yn-src-blog-card-link" href="{{ section.settings.video_link }}" aria-label="{{ section.settings.vid_title | escape }}"></a>{% endif %}
+          {% if section.settings.video_image != blank %}
+            {{ section.settings.video_image | image_url: width: 1200 | image_tag: class: 'yn-src-blog-video-img', loading: 'lazy', widths: '300, 600, 900, 1200', sizes: '(min-width: 990px) 30vw, 100vw' }}
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'yn-src-blog-video-img placeholder-svg' }}
+          {% endif %}
+          <div class="yn-src-blog-video-overlay"></div>
+
+          <div class="yn-src-blog-video-meta">{{ section.settings.vid_cat }}</div>
+
+          <div class="yn-src-blog-play-btn-wrap" {% if section.settings.video_link == blank %}hidden{% endif %}>
+            <div class="yn-src-blog-play-btn">
+              <div class="yn-src-blog-play-triangle"></div>
+            </div>
+          </div>
+
+          <div class="yn-src-blog-video-content">
+            <div class="yn-src-blog-video-time">{{ section.settings.vid_time }} . {{ section.settings.vid_date }}</div>
+            <h4 class="yn-src-blog-video-title">{{ section.settings.vid_title }}</h4>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="yn-src-blog-col-right">
+
+
+        <div class="yn-src-blog-card yn-src-blog-card-blue yn-src-group" {{ blue_block.shopify_attributes }}>
+{% if blue_link != blank %}<a class="yn-src-blog-card-link" href="{{ blue_link }}" aria-label="{{ blue_title | escape }}"></a>{% endif %}
+          <div class="yn-src-blog-blue-content">
+            <div class="yn-src-blog-meta">{{ blue_tag }}</div>
+            <div class="yn-src-blog-blue-time">Hot . {{ blue_date }}</div>
+            <h3 class="yn-src-blog-blue-title">{{ blue_title | newline_to_br }}</h3>
+          </div>
+          <div class="yn-src-blog-blue-img-wrap">
+            {% if blue_image != blank %}
+              {{ blue_image | image_url: width: 1200 | image_tag: class: 'yn-src-blog-blue-img', loading: 'lazy', widths: '300, 600, 900, 1200', sizes: '(min-width: 990px) 25vw, 100vw' }}
+            {% else %}
+              {{ 'image' | placeholder_svg_tag: 'yn-src-blog-blue-img placeholder-svg' }}
+            {% endif %}
+          </div>
+        </div>
+
+
+        <div class="yn-src-blog-card yn-src-blog-card-purple yn-src-group">{% if section.settings.categories_link != blank %}<a class="yn-src-blog-card-link" href="{{ section.settings.categories_link }}" aria-label="{{ section.settings.categories_label | escape }}"></a>{% endif %}
+          <div class="yn-src-blog-tags">
+            {% assign tags = section.settings.category_tags | split: ',' %}{% for tag in tags %}<span class="yn-src-blog-tag">{{ tag | strip | escape }}</span>{% endfor %}
+          </div>
+
+          <div class="yn-src-blog-purple-title">{{ section.settings.categories_label | escape }}</div>
+
+          <div class="yn-src-blog-purple-cutout">
+            <div class="yn-src-blog-curve-tl-inner"></div>
+            <div class="yn-src-blog-curve-bl-inner"></div>
+            <div class="yn-src-blog-purple-arrow-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "YN Featured Blog",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Our Journal"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Latest from the Blog"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Insights, guides, and updates from the Yoode team.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Posts"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Post source",
+      "options": [
+        {
+          "value": "custom",
+          "label": "Custom posts (blocks below)"
+        },
+        {
+          "value": "blog",
+          "label": "Latest posts from a blog"
+        }
+      ],
+      "default": "custom",
+      "info": "Custom posts: each card can pick a blog post and/or use its own image and text."
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog",
+      "info": "Used when Post source is \"Latest posts from a blog\", and as the default link for the button. If it is empty, the custom posts are shown."
+    },
+    {
+      "type": "range",
+      "id": "post_limit",
+      "label": "Number of posts to show",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tag",
+      "label": "Show tag",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "date_format",
+      "label": "Date format",
+      "info": "strftime format used for real posts, e.g. %b %d, %Y",
+      "default": "%b %d, %Y"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "View All Posts"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Leave empty to link to the selected blog."
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "header",
+      "content": "Left Featured Post"
+    },
+    {
+      "type": "text",
+      "id": "feat_cat",
+      "label": "Category",
+      "default": "Category . Apparel"
+    },
+    {
+      "type": "text",
+      "id": "feat_date",
+      "label": "Date",
+      "default": "24 Sep"
+    },
+    {
+      "type": "textarea",
+      "id": "feat_title",
+      "label": "Title",
+      "default": "THE ULTIMATE GUIDE TO\nPREMIUM FABRICS"
+    },
+    {
+      "type": "header",
+      "content": "Middle Green Post"
+    },
+    {
+      "type": "text",
+      "id": "mid_cat",
+      "label": "Category",
+      "default": "Category . Branding"
+    },
+    {
+      "type": "textarea",
+      "id": "mid_title",
+      "label": "Title",
+      "default": "ELEVATE YOUR\nBRAND WITH\nCUSTOM MERCH\nTHIS SEASON"
+    },
+    {
+      "type": "textarea",
+      "id": "mid_desc",
+      "label": "Description",
+      "default": "Discover how high-quality custom merchandise can transform your company culture and build lasting client relationships. The right apparel speaks volumes before you even say a word ..."
+    },
+    {
+      "type": "text",
+      "id": "link1_text",
+      "label": "Link 1 Text",
+      "default": "HOW TO CHOOSE THE PERFECT CORPORATE GIFT"
+    },
+    {
+      "type": "url",
+      "id": "link1_url",
+      "label": "Link 1 URL"
+    },
+    {
+      "type": "text",
+      "id": "link2_text",
+      "label": "Link 2 Text",
+      "default": "THE DIFFERENCE BETWEEN DTG AND SCREEN PRINTING"
+    },
+    {
+      "type": "url",
+      "id": "link2_url",
+      "label": "Link 2 URL"
+    },
+    {
+      "type": "header",
+      "content": "Middle Video Post"
+    },
+    {
+      "type": "image_picker",
+      "id": "video_image",
+      "label": "Video thumbnail",
+      "info": "Editorial layout. Select the image shown on the video card."
+    },
+    {
+      "type": "text",
+      "id": "vid_cat",
+      "label": "Category",
+      "default": "Category . Tutorial"
+    },
+    {
+      "type": "text",
+      "id": "vid_time",
+      "label": "Duration",
+      "default": "5 Min"
+    },
+    {
+      "type": "text",
+      "id": "vid_date",
+      "label": "Date",
+      "default": "15 Sep"
+    },
+    {
+      "type": "text",
+      "id": "vid_title",
+      "label": "Title",
+      "default": "UNBOXING EXPERIENCE | CRAFTING THE PERFECT GIFT SET"
+    },
+    {
+      "type": "header",
+      "content": "Right Blue Post"
+    },
+    {
+      "type": "text",
+      "id": "blue_cat",
+      "label": "Category",
+      "default": "Category . Design"
+    },
+    {
+      "type": "text",
+      "id": "blue_date",
+      "label": "Date",
+      "default": "12 Sep"
+    },
+    {
+      "type": "textarea",
+      "id": "blue_title",
+      "label": "Title",
+      "default": "TRENDING\nSTYLES FOR\nTECH TEAMS"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "bento",
+          "label": "Editorial cards"
+        },
+        {
+          "value": "grid",
+          "label": "Post grid"
+        }
+      ],
+      "default": "bento"
+    },
+    {
+      "type": "url",
+      "id": "video_link",
+      "label": "Video link"
+    },
+    {
+      "type": "textarea",
+      "id": "category_tags",
+      "label": "Categories (comma separated)",
+      "default": "Corporate Gifting, Screen Printing, Embroidery, Design Tips, Company Swag, Bulk Orders"
+    },
+    {
+      "type": "text",
+      "id": "categories_label",
+      "label": "Categories label",
+      "default": "View All Categories"
+    },
+    {
+      "type": "url",
+      "id": "categories_link",
+      "label": "Categories link"
+    },
+    {
+      "type": "color",
+      "id": "source_background",
+      "label": "Section background",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article",
+      "name": "Post card",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Used for Custom posts. In Editorial cards, the first block controls the left feature, the second controls the middle text card, and the third controls the right image card."
+        },
+        {
+          "type": "article",
+          "id": "post",
+          "label": "Blog post (optional)",
+          "info": "When a post is picked, its title, tag, date and link are used. The image below still replaces the post image if you upload one."
+        },
+        {
+          "type": "text",
+          "id": "post_title",
+          "label": "Custom title (optional)",
+          "info": "Replaces the picked post's title on this card. Leave empty to use the post title."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Post card image",
+          "info": "Overrides the blog post image. Leave empty to use the post image."
+        },
+        {
+          "type": "header",
+          "content": "Custom post (when no blog post is picked)"
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Tag",
+          "default": "Guides"
+        },
+        {
+          "type": "text",
+          "id": "date",
+          "label": "Date",
+          "default": "Sep 15, 2026"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Card title. Also replaces the picked post's title when filled in."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Featured Blog",
+      "blocks": [
+        {
+          "type": "article",
+          "settings": {
+            "tag": "Guides",
+            "date": "Sep 15, 2026",
+            "title": "How to Choose the Right Fabric for Your Custom T-Shirts"
+          }
+        },
+        {
+          "type": "article",
+          "settings": {
+            "tag": "Guides",
+            "date": "Sep 15, 2026",
+            "title": "How to Choose the Right Fabric for Your Custom T-Shirts"
+          }
+        },
+        {
+          "type": "article",
+          "settings": {
+            "tag": "Guides",
+            "date": "Sep 15, 2026",
+            "title": "How to Choose the Right Fabric for Your Custom T-Shirts"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

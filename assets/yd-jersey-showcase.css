@@ -1,0 +1,90 @@
+/* SECTION */
+.yd-jersey-showcase-section {
+    padding: 2px;
+    text-align: center;
+    height: 95vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* HEADER */
+.yd-jersey-showcase-section .yd-title {
+  margin-bottom: 8px;
+}
+
+.yd-jersey-showcase-section .yd-subtitle {
+  font-size: 14px;
+  color: #666;
+}
+
+/* IMAGE WRAPPER */
+.yd-jersey-showcase-section .yd-jersey-showcase {
+  position: relative;
+  margin: 50px auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* BACKGROUND GLOW */
+.yd-jersey-showcase-section .yd-jersey-showcase::before {
+  content: "";
+  position: absolute;
+  width: 600px;
+  height: 300px;
+  background: radial-gradient(
+    circle,
+    rgba(180, 210, 255, 0.6) 0%,
+    rgba(180, 210, 255, 0.2) 40%,
+    transparent 70%
+  );
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -40%);
+  filter: blur(40px);
+  z-index: 0;
+}
+
+/* IMAGE */
+.yd-jersey-showcase-section .yd-jersey-showcase img {
+  position: relative;
+  z-index: 1;
+  max-width: 1650px;
+  width: 100%;
+}
+
+/* BUTTONS */
+.yd-jersey-showcase-section .yd-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* BUTTON STYLE */
+.yd-jersey-showcase-section .yd-btn {
+  background: #ff5a2c;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.yd-jersey-showcase-section .yd-btn:hover {
+  background: #e14a20;
+}
+
+/* OUTLINE BUTTON */
+.yd-jersey-showcase-section .yd-btn-outline {
+  background: transparent;
+  border: 1px solid #ff5a2c;
+  color: #ff5a2c;
+}
+
+.yd-jersey-showcase-section .yd-btn-outline:hover {
+  background: #ff5a2c;
+  color: #fff;
+}

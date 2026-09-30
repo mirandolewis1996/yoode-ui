@@ -1,0 +1,391 @@
+{% style %}
+.yd-why-choose{
+  padding:60px 20px;
+}
+.yd-why-choose .page-width{
+  max-width:1200px;
+  margin:0 auto;
+}
+.yd-why-choose__heading{
+  margin-bottom:50px;
+}
+.yd-why-choose__grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:24px;
+}
+@media(max-width:768px){
+  .yd-why-choose{
+    padding:40px 15px;
+    
+  }
+
+  .yd-why-choose__heading{
+    margin-bottom:30px;
+  }
+
+  .yd-why-choose__grid{
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+}
+{% endstyle %}
+
+<div class="yd-why-choose color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding section-padding">
+  <div class="page-width">
+
+    <h2 
+      class="yd-why-choose__heading"
+      style="
+        font-size:{{ section.settings.heading_size }}px;
+        color:{{ section.settings.heading_color }};
+        text-align:{{ section.settings.heading_align }};
+      "
+    >
+      {{ section.settings.heading }}
+    </h2>
+
+    <div class="yd-why-choose__grid">
+
+      {% for block in section.blocks %}
+
+        {% if block.type == 'content' %}
+
+          <div 
+            style="
+              background:{{ block.settings.card_bg }};
+              border-radius:20px;
+              padding:35px;
+            "
+            {{ block.shopify_attributes }}
+          >
+
+            {% if block.settings.icon != blank %}
+              <div
+                style="
+                  width:70px;
+                  height:70px;
+                  border-radius:50%;
+                  background:{{ block.settings.icon_bg }};
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  margin-bottom:25px;
+                "
+              >
+                <img
+                  src="{{ block.settings.icon | image_url }}"
+                  alt="{{ block.settings.title }}"
+                  loading="lazy"
+                  style="
+                    width:{{ block.settings.icon_size }}px;
+                    height:{{ block.settings.icon_size }}px;
+                    object-fit:contain;
+                  "
+                >
+              </div>
+            {% endif %}
+
+            <h3
+              style="
+                font-size:{{ block.settings.title_size }}px;
+                color:{{ block.settings.title_color }};
+                text-align:{{ block.settings.title_align }};
+                font-weight:{{ block.settings.text_weight }};
+                margin-bottom:15px;
+              "
+            >
+              {{ block.settings.title }}
+            </h3>
+
+            <div
+              style="
+                font-size:{{ block.settings.text_size }}px;
+                color:{{ block.settings.text_color }};
+                text-align:{{ block.settings.text_align }};
+                line-height:1.7;
+              "
+            >
+              {{ block.settings.text }}
+            </div>
+
+          </div>
+
+        {% elsif block.type == 'image' %}
+
+          <div
+            style="
+              border-radius:20px;
+              overflow:hidden;
+            "
+            {{ block.shopify_attributes }}
+          >
+
+            <img
+              src="{{ block.settings.image | image_url: width: 1200 }}"
+              alt="Image"
+              loading="lazy"
+              style="
+                width:100%;
+                height:100%;
+                object-fit:{{ block.settings.image_fit }};
+                display:block;
+              "
+            >
+
+          </div>
+
+        {% endif %}
+
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YD Choose Section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "WHY CHOOSE YOODE"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "default": 42
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#333333"
+    },
+    {
+      "type": "select",
+      "id": "heading_align",
+      "label": "Heading Align",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "content",
+      "name": "Content Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "color",
+          "id": "icon_bg",
+          "label": "Icon Background",
+          "default": "#ffffff"
+        },
+        {
+          "type": "range",
+          "id": "icon_size",
+          "label": "Icon Size",
+          "min": 20,
+          "max": 80,
+          "step": 2,
+          "default": 36
+        },
+        {
+          "type": "color",
+          "id": "card_bg",
+          "label": "Card Background",
+          "default": "#ece3d7"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Premium Fabric Quality"
+        },
+        {
+          "type": "range",
+          "id": "title_size",
+          "label": "Title Size",
+          "min": 14,
+          "max": 50,
+          "step": 1,
+          "default": 30
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Title Color",
+          "default": "#444444"
+        },
+  {
+  "type": "select",
+  "id": "text_weight",
+  "label": "Text Weight",
+  "options": [
+    {
+      "value": "400",
+      "label": "Normal"
+    },
+    {
+      "value": "500",
+      "label": "Medium"
+    },
+    {
+      "value": "600",
+      "label": "Semi Bold"
+    },
+    {
+      "value": "700",
+      "label": "Bold"
+    }
+  ],
+  "default": "400"
+},
+        {
+          "type": "select",
+          "id": "title_align",
+          "label": "Title Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Add your content here."
+        },
+        {
+          "type": "range",
+          "id": "text_size",
+          "label": "Text Size",
+          "min": 10,
+          "max": 30,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default": "#666666"
+        },
+        {
+          "type": "select",
+          "id": "text_align",
+          "label": "Text Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "image_fit",
+          "label": "Image Fit",
+          "options": [
+            {
+              "value": "cover",
+              "label": "Cover"
+            },
+            {
+              "value": "contain",
+              "label": "Contain"
+            }
+          ],
+          "default": "cover"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Choose Section",
+      "blocks": [
+        {
+          "type": "content"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "content"
+        },
+        {
+          "type": "content"
+        },
+        {
+          "type": "content"
+        },
+        {
+          "type": "content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,266 @@
+{%- liquid
+  assign bg_style = ''
+  assign bg = section.settings.background_color
+  if bg != blank and bg != 'rgba(0,0,0,0)'
+    if bg.alpha != 0
+      assign bg_style = '--yn-features-bar-bg: ' | append: bg | append: ';'
+    endif
+  endif
+  assign repeat = section.settings.repeat
+-%}
+
+<div
+  class="yn-section yn-features-bar color-{{ section.settings.color_scheme }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-pt: {{ section.settings.padding_top | divided_by: 10.0 }}rem; --yn-pb: {{ section.settings.padding_bottom | divided_by: 10.0 }}rem; --yn-features-bar-duration: {{ section.settings.speed }}s; {{ bg_style }}"
+>
+  {%- if section.blocks.size > 0 -%}
+    <div class="yn-features-bar__row">
+      {%- for track in (1..2) -%}
+        <ul class="yn-features-bar__track" {% if track == 2 %}aria-hidden="true"{% endif %}>
+          {%- for i in (1..repeat) -%}
+            {%- for block in section.blocks -%}
+              <li
+                class="yn-features-bar__item"
+                {% if track == 1 and i == 1 %}{{ block.shopify_attributes }}{% endif %}
+                {% if i > 1 %}aria-hidden="true"{% endif %}
+              >
+                <span class="yn-features-bar__icon">
+                  {%- if block.settings.icon_image != blank -%}
+                    {{ block.settings.icon_image | image_url: width: 60 | image_tag: loading: 'lazy', alt: '' }}
+                  {%- elsif block.settings.icon != 'none' -%}
+                    {% render 'yoode-new-home-icon', icon: block.settings.icon %}
+                  {%- endif -%}
+                </span>
+                {%- if block.settings.strong_text != blank -%}
+                  <strong class="yn-features-bar__strong">{{ block.settings.strong_text | escape }}</strong>
+                {%- endif -%}
+                {%- if block.settings.strong_text != blank and block.settings.regular_text != blank and section.settings.separator != blank -%}
+                  <span class="yn-features-bar__separator" aria-hidden="true">
+                    {{- section.settings.separator | escape -}}
+                  </span>
+                {%- endif -%}
+                {%- if block.settings.regular_text != blank -%}
+                  <span class="yn-features-bar__text">{{ block.settings.regular_text | escape }}</span>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          {%- endfor -%}
+        </ul>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "YN Features Bar",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-3"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Custom background",
+      "info": "Optional. Overrides the color scheme background."
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator between bold and regular text",
+      "default": "•"
+    },
+    {
+      "type": "range",
+      "id": "repeat",
+      "label": "Repeat items per loop",
+      "info": "Repeats the items so the bar stays full on wide screens.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll duration",
+      "info": "Seconds for one full loop. Higher is slower.",
+      "min": 10,
+      "max": 90,
+      "step": 5,
+      "unit": "s",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "box", "label": "Box" },
+            { "value": "paint-bucket", "label": "Paint bucket" },
+            { "value": "printer", "label": "Printer" },
+            { "value": "map-pin", "label": "Map pin" },
+            { "value": "building", "label": "Building" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "award", "label": "Award" },
+            { "value": "users", "label": "People" },
+            { "value": "headset", "label": "Headset" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "star", "label": "Star" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "box"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom icon image",
+          "info": "Optional. Replaces the icon above."
+        },
+        {
+          "type": "text",
+          "id": "strong_text",
+          "label": "Bold text",
+          "default": "No minimum order"
+        },
+        {
+          "type": "text",
+          "id": "regular_text",
+          "label": "Regular text",
+          "default": "Choose your preferred look"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Features Bar",
+      "settings": {
+        "background_color": "#000000"
+      },
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "box", "strong_text": "No minimum order", "regular_text": "Choose your preferred look" } },
+        { "type": "feature", "settings": { "icon": "paint-bucket", "strong_text": "50+ colours", "regular_text": "Bring your ideas to life" } },
+        { "type": "feature", "settings": { "icon": "printer", "strong_text": "Custom Printing", "regular_text": "DTF · DTG · Embroidery" } },
+        { "type": "feature", "settings": { "icon": "map-pin", "strong_text": "Pan India service", "regular_text": "Order & support across India" } },
+        { "type": "feature", "settings": { "icon": "building", "strong_text": "Bulk & Business", "regular_text": "Built for teams and businesses" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

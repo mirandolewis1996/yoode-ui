@@ -1,0 +1,419 @@
+<yoode-home-timeline data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-source-background: {{ section.settings.source_background | default: '#f8f5f0' }}; --yn-pt: {{ section.settings.padding_top }}px; --yn-pb: {{ section.settings.padding_bottom }}px;" class="color-{{ section.settings.color_scheme }} yn-source yn-source--process yn-src-process-section" id="process-{{ section.id }}">
+  <div class="yn-src-pr-container">
+
+    <div class="yn-src-pr-left-col">
+      <div class="yn-src-pr-header">
+        <h4 class="yn-src-pr-subheading">{{ section.settings.subtitle }}</h4>
+        <h2 class="yn-src-pr-title">{{ section.settings.title }}</h2>
+        <div class="yn-src-pr-description">{{ section.settings.description }}</div>
+      </div>
+
+      <div class="yn-src-pr-progress-wrapper">
+        <div class="yn-src-pr-progress-label">
+          <span class="yn-src-pr-progress-text">{{ section.settings.progress_label | escape }}</span>
+        </div>
+        <div class="yn-src-pr-progress-bar-bg">
+          <div class="yn-src-pr-progress-bar-fill" id="scroll-progress-{{ section.id }}"></div>
+        </div>
+      </div>
+
+      <div class="yn-src-pr-usps">
+
+        <div class="yn-src-pr-usp-item">
+          <div class="yn-src-pr-usp-icon-wrap">
+            <div class="yn-src-pr-usp-icon-shine"></div>
+            <div class="yn-src-pr-usp-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="yn-src-pr-usp-svg"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            </div>
+          </div>
+          <div class="yn-src-pr-usp-text">
+            <h4 class="yn-src-pr-usp-title">{{ section.settings.usp_1_title | escape }}</h4>
+            <p class="yn-src-pr-usp-desc">{{ section.settings.usp_1_text | escape }}</p>
+          </div>
+        </div>
+
+        <div class="yn-src-pr-usp-item" style="transition-delay: 0.1s;">
+          <div class="yn-src-pr-usp-icon-wrap">
+            <div class="yn-src-pr-usp-icon-shine"></div>
+            <div class="yn-src-pr-usp-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="yn-src-pr-usp-svg"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+          <div class="yn-src-pr-usp-text">
+            <h4 class="yn-src-pr-usp-title">{{ section.settings.usp_2_title | escape }}</h4>
+            <p class="yn-src-pr-usp-desc">{{ section.settings.usp_2_text | escape }}</p>
+          </div>
+        </div>
+
+        <div class="yn-src-pr-usp-item" style="transition-delay: 0.2s;">
+          <div class="yn-src-pr-usp-icon-wrap">
+            <div class="yn-src-pr-usp-icon-shine"></div>
+            <div class="yn-src-pr-usp-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="yn-src-pr-usp-svg"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            </div>
+          </div>
+          <div class="yn-src-pr-usp-text">
+            <h4 class="yn-src-pr-usp-title">{{ section.settings.usp_3_title | escape }}</h4>
+            <p class="yn-src-pr-usp-desc">{{ section.settings.usp_3_text | escape }}</p>
+          </div>
+        </div>
+
+        <div class="yn-src-pr-usp-item" style="transition-delay: 0.3s;">
+          <div class="yn-src-pr-usp-icon-wrap">
+            <div class="yn-src-pr-usp-icon-shine"></div>
+            <div class="yn-src-pr-usp-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="yn-src-pr-usp-svg"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+          </div>
+          <div class="yn-src-pr-usp-text">
+            <h4 class="yn-src-pr-usp-title">{{ section.settings.usp_4_title | escape }}</h4>
+            <p class="yn-src-pr-usp-desc">{{ section.settings.usp_4_text | escape }}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="yn-src-pr-right-col">
+      {% for block in section.blocks %}
+        {% assign is_even = forloop.index0 | modulo: 2 %}{% unless section.settings.stagger %}{% assign is_even = 0 %}{% endunless %}
+        <div {{ block.shopify_attributes }} class="yn-src-pr-step {% if is_even == 0 %}yn-src-pr-step-even{% else %}yn-src-pr-step-reverse yn-src-pr-step-odd{% endif %}">
+
+          <div class="yn-src-pr-step-number {% if is_even == 0 %}yn-src-pr-step-number-even{% else %}yn-src-pr-step-number-odd{% endif %}">
+            {% if section.settings.show_numbers %}0{{ forloop.index }}{% endif %}
+          </div>
+
+          <div class="yn-src-pr-step-img-wrap">
+            {% if block.settings.image %}
+              <img width="1000" height="1000" src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.title }}" class="yn-src-pr-step-img" loading="lazy">
+            {% else %}
+              {% assign fallback_name = block.settings.fallback_image %}{% if fallback_name == blank %}{% assign fallback_name = 'yoode-new-home-img-step' | append: forloop.index | append: '.webp' %}{% endif %}
+              <img width="1000" height="1000" src="{{ fallback_name | asset_url }}" alt="{{ block.settings.title }}" class="yn-src-pr-step-img" loading="lazy">
+            {% endif %}
+            <div class="yn-src-pr-step-img-overlay"></div>
+          </div>
+
+          <div class="yn-src-pr-step-text-wrap">
+            <div class="yn-src-pr-step-label-wrap">
+               {% if section.settings.show_arrows %}<span class="yn-src-pr-step-line"></span>{% endif %}
+               <span class="yn-src-pr-step-label">Step 0{{ forloop.index }}</span>
+            </div>
+
+            <h3 class="yn-src-pr-step-title">
+              {{ block.settings.title }}.
+            </h3>
+
+            <p class="yn-src-pr-step-desc">
+              {{ block.settings.description }}
+            </p>
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</yoode-home-timeline>
+
+{% schema %}
+{
+  "name": "YN Process Steps",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "info": "Cards use the scheme's background; image rings use the secondary background.",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "How Yoode Works"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "From Idea to Delivery"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Getting your custom apparel is simple. Follow these easy steps and we'll handle the rest â€” from design to delivery.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Steps"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "Number the step titles",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show connecting arrows on desktop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "stagger",
+      "label": "Zig-zag cards on desktop",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "text",
+      "id": "usp_1_title",
+      "label": "Benefit 1 title",
+      "default": "No Minimum Order"
+    },
+    {
+      "type": "text",
+      "id": "usp_1_text",
+      "label": "Benefit 1 text",
+      "default": "Order what you need, no quantity limits."
+    },
+    {
+      "type": "text",
+      "id": "usp_2_title",
+      "label": "Benefit 2 title",
+      "default": "Free 24-Hour Mockup"
+    },
+    {
+      "type": "text",
+      "id": "usp_2_text",
+      "label": "Benefit 2 text",
+      "default": "Get your design preview within 24 hours."
+    },
+    {
+      "type": "text",
+      "id": "usp_3_title",
+      "label": "Benefit 3 title",
+      "default": "Own Trigger Gallery"
+    },
+    {
+      "type": "text",
+      "id": "usp_3_text",
+      "label": "Benefit 3 text",
+      "default": "Choose from our design templates or create your own."
+    },
+    {
+      "type": "text",
+      "id": "usp_4_title",
+      "label": "Benefit 4 title",
+      "default": "Pay After Approval"
+    },
+    {
+      "type": "text",
+      "id": "usp_4_text",
+      "label": "Benefit 4 text",
+      "default": "Your satisfaction comes first."
+    },
+    {
+      "type": "text",
+      "id": "progress_label",
+      "label": "Progress label",
+      "default": "Scroll Progress"
+    },
+    {
+      "type": "color",
+      "id": "source_background",
+      "label": "Section background",
+      "default": "#f8f5f0"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Shown in a circle. Square images work best."
+        },
+        {
+          "type": "text",
+          "id": "fallback_image",
+          "label": "Demo image file (used when no image is uploaded)",
+          "info": "File name in the theme assets, e.g. yoode-new-home-img-step1.webp"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Step title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Short description of this step."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "YN Process Steps",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "fallback_image": "yoode-new-home-img-step1.webp",
+            "title": "Choose Product",
+            "description": "Select from our wide range of t-shirts, jerseys, polos, hoodies and more."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "fallback_image": "yoode-new-home-img-step2.webp",
+            "title": "Share Design",
+            "description": "Upload your artwork, logo or share your requirements with us."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "fallback_image": "yoode-new-home-img-step3.webp",
+            "title": "Review Mockup",
+            "description": "Get a digital preview of your design before production."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "fallback_image": "yoode-new-home-img-step4.webp",
+            "title": "Approve & Order",
+            "description": "Confirm the design, place your order and we'll get to work."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "fallback_image": "yoode-new-home-img-step5.webp",
+            "title": "Production & Delivery",
+            "description": "Your apparel is carefully produced, quality checked and delivered."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

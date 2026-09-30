@@ -1,0 +1,291 @@
+{% style %}
+  {% render 'section-margin' %}
+  {% render 'section-padding' %}
+{% endstyle %}
+
+<!-- What Can We Build Section -->
+<section class="yoode-build-section section-{{ section.id }}-padding section-padding">
+  <div class="yoode-container">
+    {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+      <header class="yoode-build-header">
+        {% if section.settings.heading != blank %}
+          <h2 class="yoode-build-title">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="yoode-build-subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </header>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="yoode-build-grid">
+        {% for block in section.blocks %}
+          <article class="yoode-build-card" {{ block.shopify_attributes }}>
+            <div class="yoode-build-card-media">
+              {% if block.settings.image %}
+                {{ block.settings.image | image_url: width: 600 | image_tag: alt: block.settings.card_title, class: "yoode-build-card-img" }}
+              {% endif %}
+            </div>
+            <div class="yoode-build-card-content">
+              {% if block.settings.category != blank %}
+                <span class="yoode-build-category">{{ block.settings.category }}</span>
+              {% endif %}
+              {% if block.settings.card_title != blank %}
+                <h3 class="yoode-build-card-title">{{ block.settings.card_title }}</h3>
+              {% endif %}
+              {% if block.settings.card_text != blank %}
+                <p class="yoode-build-card-text">{{ block.settings.card_text }}</p>
+              {% endif %}
+              {% if block.settings.link_text != blank %}
+                <a href="{{ block.settings.link_url }}" class="yoode-build-card-link">
+                  {{ block.settings.link_text }}
+                  <svg class="yoode-build-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "New Yoode Build",
+  "class": "yoode-build-section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "What can we build for you?",
+      "label": "Heading Text"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "default": "Three distinct experiences — one brand, one team, one platform.",
+      "label": "Subtitle Text"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "build_card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.all.image.label"
+        },
+        {
+          "type": "text",
+          "id": "category",
+          "default": "Category",
+          "label": "Category Label"
+        },
+        {
+          "type": "text",
+          "id": "card_title",
+          "default": "Card Title",
+          "label": "Card Title"
+        },
+        {
+          "type": "textarea",
+          "id": "card_text",
+          "default": "Card description text goes here.",
+          "label": "Card Description"
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "default": "Learn more",
+          "label": "Link Text"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Yoode Build",
+      "settings": {
+        "heading": "What can we build for you?",
+        "subtitle": "Three distinct experiences — one brand, one team, one platform."
+      },
+      "blocks": [
+        {
+          "type": "build_card",
+          "settings": {
+            "category": "Corporate",
+            "card_title": "Equip your team. Define your brand.",
+            "card_text": "Onboarding kits, company merch, corporate gifting, conference apparel.",
+            "link_text": "Build your kit"
+          }
+        },
+        {
+          "type": "build_card",
+          "settings": {
+            "category": "Sports & Teams",
+            "card_title": "Kit your team. Own the field.",
+            "card_text": "Custom jerseys, teamwear, tournament apparel, fanwear for any sport.",
+            "link_text": "Design your jersey"
+          }
+        },
+        {
+          "type": "build_card",
+          "settings": {
+            "category": "Personalised",
+            "card_title": "Make it yours. One piece or a thousand.",
+            "card_text": "Custom tees, gifts, event merch, identity products — any quantity.",
+            "link_text": "Start customising"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

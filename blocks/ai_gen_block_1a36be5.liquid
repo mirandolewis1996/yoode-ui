@@ -1,0 +1,528 @@
+{% doc %}
+  @prompt
+    Create a full-screen horizontal scrolling section using HTML, Tailwind CSS, and GSAP with ScrollTrigger. The section should be pinned (pin: true) while the user scrolls down, translating the content horizontally.
+    
+    Design Specs:
+    
+    Container: h-screen, overflow-hidden.
+    
+    Wrapper: Flex container holding 5 product cards.
+    
+    Cards: Each card must be min-w-[600px], h-screen, flex-col, centered, bg-white, with a right border (border-r).
+    
+    Card Content:
+    
+    Image Box: w-[350px], h-[350px], rounded-3xl, bg-gradient from-[#FFE5EE] to-[#FFF0F5], with a large centered emoji (👕, 👔, 🧥, ☕, 🎒).
+    
+    Typography: Bold dark title (text-[2.5rem]) and muted subtitle (text-[1.1rem]).
+    
+    Content: T-Shirts, Polos, Hoodies, Mugs, Accessories.
+    
+    GSAP Logic: Animate the wrapper's x value to move left based on the scroll width, using scrub: 1."
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-horizontal-scroll-{{ ai_gen_id }} {
+    display: block;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .ai-horizontal-scroll-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    height: 100vh;
+    will-change: transform;
+  }
+
+  .ai-horizontal-scroll-card-{{ ai_gen_id }} {
+    min-width: 600px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: {{ block.settings.card_bg_color }};
+    border-right: 1px solid {{ block.settings.border_color }};
+    flex-shrink: 0;
+  }
+
+  .ai-horizontal-scroll-image-box-{{ ai_gen_id }} {
+    width: 350px;
+    height: 350px;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    background: linear-gradient(135deg, {{ block.settings.gradient_start }} 0%, {{ block.settings.gradient_end }} 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+
+  .ai-horizontal-scroll-emoji-{{ ai_gen_id }} {
+    font-size: {{ block.settings.emoji_size }}px;
+    line-height: 1;
+  }
+
+  .ai-horizontal-scroll-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 10px 0;
+    text-align: center;
+  }
+
+  .ai-horizontal-scroll-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-horizontal-scroll-card-{{ ai_gen_id }} {
+      min-width: 100vw;
+    }
+
+    .ai-horizontal-scroll-image-box-{{ ai_gen_id }} {
+      width: 250px;
+      height: 250px;
+    }
+
+    .ai-horizontal-scroll-title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.7);
+    }
+
+    .ai-horizontal-scroll-subtitle-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.subtitle_size }}px * 0.85);
+    }
+  }
+{% endstyle %}
+
+<horizontal-scroll-{{ ai_gen_id }}
+  class="ai-horizontal-scroll-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-horizontal-scroll-wrapper-{{ ai_gen_id }}">
+    {% if block.settings.card_1_enabled %}
+      <div class="ai-horizontal-scroll-card-{{ ai_gen_id }}">
+        <div
+          class="ai-horizontal-scroll-image-box-{{ ai_gen_id }}"
+          style="background: linear-gradient(135deg, {{ block.settings.card_1_gradient_start }} 0%, {{ block.settings.card_1_gradient_end }} 100%);"
+        >
+          <span class="ai-horizontal-scroll-emoji-{{ ai_gen_id }}">{{ block.settings.card_1_emoji }}</span>
+        </div>
+        <h3 class="ai-horizontal-scroll-title-{{ ai_gen_id }}">{{ block.settings.card_1_title }}</h3>
+        <p class="ai-horizontal-scroll-subtitle-{{ ai_gen_id }}">{{ block.settings.card_1_subtitle }}</p>
+      </div>
+    {% endif %}
+
+    {% if block.settings.card_2_enabled %}
+      <div class="ai-horizontal-scroll-card-{{ ai_gen_id }}">
+        <div
+          class="ai-horizontal-scroll-image-box-{{ ai_gen_id }}"
+          style="background: linear-gradient(135deg, {{ block.settings.card_2_gradient_start }} 0%, {{ block.settings.card_2_gradient_end }} 100%);"
+        >
+          <span class="ai-horizontal-scroll-emoji-{{ ai_gen_id }}">{{ block.settings.card_2_emoji }}</span>
+        </div>
+        <h3 class="ai-horizontal-scroll-title-{{ ai_gen_id }}">{{ block.settings.card_2_title }}</h3>
+        <p class="ai-horizontal-scroll-subtitle-{{ ai_gen_id }}">{{ block.settings.card_2_subtitle }}</p>
+      </div>
+    {% endif %}
+
+    {% if block.settings.card_3_enabled %}
+      <div class="ai-horizontal-scroll-card-{{ ai_gen_id }}">
+        <div
+          class="ai-horizontal-scroll-image-box-{{ ai_gen_id }}"
+          style="background: linear-gradient(135deg, {{ block.settings.card_3_gradient_start }} 0%, {{ block.settings.card_3_gradient_end }} 100%);"
+        >
+          <span class="ai-horizontal-scroll-emoji-{{ ai_gen_id }}">{{ block.settings.card_3_emoji }}</span>
+        </div>
+        <h3 class="ai-horizontal-scroll-title-{{ ai_gen_id }}">{{ block.settings.card_3_title }}</h3>
+        <p class="ai-horizontal-scroll-subtitle-{{ ai_gen_id }}">{{ block.settings.card_3_subtitle }}</p>
+      </div>
+    {% endif %}
+
+    {% if block.settings.card_4_enabled %}
+      <div class="ai-horizontal-scroll-card-{{ ai_gen_id }}">
+        <div
+          class="ai-horizontal-scroll-image-box-{{ ai_gen_id }}"
+          style="background: linear-gradient(135deg, {{ block.settings.card_4_gradient_start }} 0%, {{ block.settings.card_4_gradient_end }} 100%);"
+        >
+          <span class="ai-horizontal-scroll-emoji-{{ ai_gen_id }}">{{ block.settings.card_4_emoji }}</span>
+        </div>
+        <h3 class="ai-horizontal-scroll-title-{{ ai_gen_id }}">{{ block.settings.card_4_title }}</h3>
+        <p class="ai-horizontal-scroll-subtitle-{{ ai_gen_id }}">{{ block.settings.card_4_subtitle }}</p>
+      </div>
+    {% endif %}
+
+    {% if block.settings.card_5_enabled %}
+      <div class="ai-horizontal-scroll-card-{{ ai_gen_id }}">
+        <div
+          class="ai-horizontal-scroll-image-box-{{ ai_gen_id }}"
+          style="background: linear-gradient(135deg, {{ block.settings.card_5_gradient_start }} 0%, {{ block.settings.card_5_gradient_end }} 100%);"
+        >
+          <span class="ai-horizontal-scroll-emoji-{{ ai_gen_id }}">{{ block.settings.card_5_emoji }}</span>
+        </div>
+        <h3 class="ai-horizontal-scroll-title-{{ ai_gen_id }}">{{ block.settings.card_5_title }}</h3>
+        <p class="ai-horizontal-scroll-subtitle-{{ ai_gen_id }}">{{ block.settings.card_5_subtitle }}</p>
+      </div>
+    {% endif %}
+  </div>
+</horizontal-scroll-{{ ai_gen_id }}>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+  (function() {
+    class HorizontalScroll{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.initScrollAnimation();
+      }
+
+      initScrollAnimation() {
+        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+          console.error('GSAP or ScrollTrigger not loaded');
+          return;
+        }
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        const wrapper = this.querySelector('.ai-horizontal-scroll-wrapper-{{ ai_gen_id }}');
+        const cards = this.querySelectorAll('.ai-horizontal-scroll-card-{{ ai_gen_id }}');
+
+        if (!wrapper || cards.length === 0) return;
+
+        const scrollWidth = wrapper.scrollWidth - window.innerWidth;
+
+        gsap.to(wrapper, {
+          x: -scrollWidth,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: this,
+            pin: true,
+            scrub: 1,
+            end: () => '+=' + scrollWidth,
+            invalidateOnRefresh: true
+          }
+        });
+      }
+
+      disconnectedCallback() {
+        if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.getAll().forEach(trigger => {
+            if (trigger.vars.trigger === this) {
+              trigger.kill();
+            }
+          });
+        }
+      }
+    }
+
+    customElements.define('horizontal-scroll-{{ ai_gen_id }}', HorizontalScroll{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Horizontal scroll",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "General style"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#dee0e0"
+    },
+    {
+      "type": "color",
+      "id": "gradient_start",
+      "label": "Default gradient start",
+      "default": "#FFE5EE"
+    },
+    {
+      "type": "color",
+      "id": "gradient_end",
+      "label": "Default gradient end",
+      "default": "#FFF0F5"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "emoji_size",
+      "min": 50,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Emoji size",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#262d33"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#676c70"
+    },
+    {
+      "type": "header",
+      "content": "Card 1 - T-Shirts"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_1_enabled",
+      "label": "Enable card 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "card_1_emoji",
+      "label": "Emoji",
+      "default": "👕"
+    },
+    {
+      "type": "text",
+      "id": "card_1_title",
+      "label": "Title",
+      "default": "T-Shirts"
+    },
+    {
+      "type": "text",
+      "id": "card_1_subtitle",
+      "label": "Subtitle",
+      "default": "Comfortable everyday wear"
+    },
+    {
+      "type": "color",
+      "id": "card_1_gradient_start",
+      "label": "Gradient start",
+      "default": "#FFE5EE"
+    },
+    {
+      "type": "color",
+      "id": "card_1_gradient_end",
+      "label": "Gradient end",
+      "default": "#FFF0F5"
+    },
+    {
+      "type": "header",
+      "content": "Card 2 - Polos"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_2_enabled",
+      "label": "Enable card 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "card_2_emoji",
+      "label": "Emoji",
+      "default": "👔"
+    },
+    {
+      "type": "text",
+      "id": "card_2_title",
+      "label": "Title",
+      "default": "Polos"
+    },
+    {
+      "type": "text",
+      "id": "card_2_subtitle",
+      "label": "Subtitle",
+      "default": "Classic style meets comfort"
+    },
+    {
+      "type": "color",
+      "id": "card_2_gradient_start",
+      "label": "Gradient start",
+      "default": "#E5F0FF"
+    },
+    {
+      "type": "color",
+      "id": "card_2_gradient_end",
+      "label": "Gradient end",
+      "default": "#F0F8FF"
+    },
+    {
+      "type": "header",
+      "content": "Card 3 - Hoodies"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_3_enabled",
+      "label": "Enable card 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "card_3_emoji",
+      "label": "Emoji",
+      "default": "🧥"
+    },
+    {
+      "type": "text",
+      "id": "card_3_title",
+      "label": "Title",
+      "default": "Hoodies"
+    },
+    {
+      "type": "text",
+      "id": "card_3_subtitle",
+      "label": "Subtitle",
+      "default": "Stay warm and stylish"
+    },
+    {
+      "type": "color",
+      "id": "card_3_gradient_start",
+      "label": "Gradient start",
+      "default": "#FFF5E5"
+    },
+    {
+      "type": "color",
+      "id": "card_3_gradient_end",
+      "label": "Gradient end",
+      "default": "#FFFAF0"
+    },
+    {
+      "type": "header",
+      "content": "Card 4 - Mugs"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_4_enabled",
+      "label": "Enable card 4",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "card_4_emoji",
+      "label": "Emoji",
+      "default": "☕"
+    },
+    {
+      "type": "text",
+      "id": "card_4_title",
+      "label": "Title",
+      "default": "Mugs"
+    },
+    {
+      "type": "text",
+      "id": "card_4_subtitle",
+      "label": "Subtitle",
+      "default": "Perfect for your morning coffee"
+    },
+    {
+      "type": "color",
+      "id": "card_4_gradient_start",
+      "label": "Gradient start",
+      "default": "#E5FFE5"
+    },
+    {
+      "type": "color",
+      "id": "card_4_gradient_end",
+      "label": "Gradient end",
+      "default": "#F0FFF0"
+    },
+    {
+      "type": "header",
+      "content": "Card 5 - Accessories"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_5_enabled",
+      "label": "Enable card 5",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "card_5_emoji",
+      "label": "Emoji",
+      "default": "🎒"
+    },
+    {
+      "type": "text",
+      "id": "card_5_title",
+      "label": "Title",
+      "default": "Accessories"
+    },
+    {
+      "type": "text",
+      "id": "card_5_subtitle",
+      "label": "Subtitle",
+      "default": "Complete your look"
+    },
+    {
+      "type": "color",
+      "id": "card_5_gradient_start",
+      "label": "Gradient start",
+      "default": "#F5E5FF"
+    },
+    {
+      "type": "color",
+      "id": "card_5_gradient_end",
+      "label": "Gradient end",
+      "default": "#FAF0FF"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Horizontal scroll"
+    }
+  ]
+}
+{% endschema %}

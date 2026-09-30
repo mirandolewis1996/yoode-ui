@@ -1,0 +1,610 @@
+<div data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-source-background: {{ section.settings.source_background | default: '#ffffff' }}; --yn-about-padding-top: {{ section.settings.padding_top | default: 72 }}px; --yn-about-padding-bottom: {{ section.settings.padding_bottom | default: 72 }}px; --yn-about-padding-top-mobile: {{ section.settings.padding_top_mobile | default: 40 }}px; --yn-about-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile | default: 40 }}px;" class="color-{{ section.settings.color_scheme }} yn-source yn-source--about yn-src-about-section" id="about-yoode-{{ section.id }}">
+  <div class="yn-src-about-container">
+
+    <div class="yn-src-about-grid">
+
+
+      <div class="yn-src-about-card-top">
+        <div class="yn-src-about-top-content">
+          <div class="yn-src-about-badge">{{ section.settings.subtitle }}</div>
+
+          <h2 class="yn-src-about-title">{{ section.settings.title | newline_to_br }}</h2>
+
+          <div class="yn-src-about-desc">{{ section.settings.description }}</div>
+
+          <a {% if section.settings.button_link != blank %}href="{{ section.settings.button_link }}"{% else %}role="link" aria-disabled="true"{% endif %} class="yn-src-about-btn yn-src-group">
+            {{ section.settings.button_label }}
+            <div class="yn-src-about-btn-icon-wrap">
+              <svg class="yn-src-about-btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </div>
+          </a>
+        </div>
+
+
+        <div class="yn-src-about-img-group{% if section.settings.image_position == 'left' %} yn-source-about-images-left{% endif %}">
+
+          <div class="yn-src-about-img-col yn-src-md-flex">
+            {% if section.settings.collage_image_1 != blank %}
+              {{ section.settings.collage_image_1 | image_url: width: 1200 | image_tag: class: 'yn-src-about-img yn-src-about-img-h1', loading: 'lazy', widths: '300, 600, 900, 1200', sizes: '(min-width: 990px) 40vw, 90vw' }}
+            {% else %}
+              {{ 'image' | placeholder_svg_tag: 'yn-src-about-img yn-src-about-img-h1 placeholder-svg' }}
+            {% endif %}
+            {% if section.settings.collage_image_2 != blank %}
+              {{ section.settings.collage_image_2 | image_url: width: 1200 | image_tag: class: 'yn-src-about-img yn-src-about-img-h2', loading: 'lazy', widths: '300, 600, 900, 1200', sizes: '(min-width: 990px) 40vw, 90vw' }}
+            {% else %}
+              {{ 'image' | placeholder_svg_tag: 'yn-src-about-img yn-src-about-img-h2 placeholder-svg' }}
+            {% endif %}
+          </div>
+          {% if section.settings.image != blank %}
+            {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'yn-src-about-img-large', loading: 'lazy', widths: '300, 600, 900, 1200', sizes: '(min-width: 990px) 40vw, 90vw' }}
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'yn-src-about-img-large placeholder-svg' }}
+          {% endif %}
+
+
+          <div class="yn-src-about-img-col yn-src-sm-flex">
+            {% if section.settings.collage_image_4 != blank %}
+              {{ section.settings.collage_image_4 | image_url: width: 1200 | image_tag: class: 'yn-src-about-img yn-src-about-img-h2', loading: 'lazy', widths: '300, 600, 900, 1200', sizes: '(min-width: 990px) 40vw, 90vw' }}
+            {% else %}
+              {{ 'image' | placeholder_svg_tag: 'yn-src-about-img yn-src-about-img-h2 placeholder-svg' }}
+            {% endif %}
+            {% if section.settings.collage_image_5 != blank %}
+              {{ section.settings.collage_image_5 | image_url: width: 1200 | image_tag: class: 'yn-src-about-img yn-src-about-img-h3', loading: 'lazy', widths: '300, 600, 900, 1200', sizes: '(min-width: 990px) 40vw, 90vw' }}
+            {% else %}
+              {{ 'image' | placeholder_svg_tag: 'yn-src-about-img yn-src-about-img-h3 placeholder-svg' }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+
+      <div class="yn-src-about-card-bl">
+        <h3 class="yn-src-about-bl-title">{{ section.settings.bl_title }}</h3>
+
+        <div class="yn-src-about-bl-img-wrap">
+          {% if section.settings.collage_image_6 != blank %}
+            {{ section.settings.collage_image_6 | image_url: width: 1200 | image_tag: class: 'yn-src-about-bl-img', loading: 'lazy', widths: '300, 600, 900, 1200', sizes: '(min-width: 990px) 40vw, 90vw' }}
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'yn-src-about-bl-img placeholder-svg' }}
+          {% endif %}
+          <div class="yn-src-about-bl-overlay"></div>
+
+          <div class="yn-src-about-floating-pill yn-src-pill-1">Quality Always</div>
+          <div class="yn-src-about-floating-pill yn-src-pill-2">Innovation</div>
+          <div class="yn-src-about-floating-pill yn-src-pill-3">Customer First</div>
+        </div>
+      </div>
+
+
+      <div class="yn-src-about-card-br">
+        <div>
+          <h3 class="yn-src-about-br-title">{{ section.settings.br_title }}</h3>
+          <p class="yn-src-about-br-desc">{{ section.settings.br_desc }}</p>
+        </div>
+
+        <div class="yn-src-about-stats">
+          <div class="yn-src-about-stat-item">
+            <div class="yn-src-about-stat-num">{{ section.settings.stat1_num }}</div>
+            <div class="yn-src-about-stat-label">{{ section.settings.stat1_label }}</div>
+          </div>
+          <div class="yn-src-about-stat-item">
+            <div class="yn-src-about-stat-num">{{ section.settings.stat2_num }}</div>
+            <div class="yn-src-about-stat-label">{{ section.settings.stat2_label }}</div>
+          </div>
+          <div class="yn-src-about-stat-item">
+            <div class="yn-src-about-stat-num">{{ section.settings.stat3_num }}</div>
+            <div class="yn-src-about-stat-label">{{ section.settings.stat3_label }}</div>
+          </div>
+          <div class="yn-src-about-stat-item">
+            <div class="yn-src-about-stat-num">{{ section.settings.stat4_num }}</div>
+            <div class="yn-src-about-stat-label">{{ section.settings.stat4_label }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="yn-src-about-card-bottom">
+      <div class="yn-src-about-values-col">
+        <div class="yn-src-about-values-header">
+          <span class="yn-src-about-values-line"></span>
+          <span class="yn-src-about-values-label">{{ section.settings.values_label }}</span>
+          <span class="yn-src-about-values-line"></span>
+        </div>
+
+        <div class="yn-src-about-values-grid">
+          {% for block in section.blocks %}
+            <div class="yn-src-about-val-item" {{ block.shopify_attributes }}>
+              <div class="yn-src-about-val-icon-wrap">
+
+                {% if block.settings.icon_name == 'shield' %}
+                  <svg class="yn-src-about-val-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                {% elsif block.settings.icon_name == 'cpu' %}
+                  <svg class="yn-src-about-val-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                    <rect x="9" y="9" width="6" height="6"></rect>
+                    <line x1="9" y1="1" x2="9" y2="4"></line>
+                    <line x1="15" y1="1" x2="15" y2="4"></line>
+                    <line x1="9" y1="20" x2="9" y2="23"></line>
+                    <line x1="15" y1="20" x2="15" y2="23"></line>
+                    <line x1="20" y1="9" x2="23" y2="9"></line>
+                    <line x1="20" y1="14" x2="23" y2="14"></line>
+                    <line x1="1" y1="9" x2="4" y2="9"></line>
+                    <line x1="1" y1="14" x2="4" y2="14"></line>
+                  </svg>
+                {% elsif block.settings.icon_name == 'users' %}
+                  <svg class="yn-src-about-val-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                {% elsif block.settings.icon_name == 'leaf' %}
+                  <svg class="yn-src-about-val-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                  </svg>
+                {% else %}
+                  <svg class="yn-src-about-val-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                {% endif %}
+              </div>
+              <h4 class="yn-src-about-val-title">{{ block.settings.title }}</h4>
+              <p class="yn-src-about-val-desc">{{ block.settings.desc }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="yn-src-about-cta-card">
+        <div>
+          <p class="yn-src-about-cta-label">{{ section.settings.cta_label }}</p>
+          <h3 class="yn-src-about-cta-title">{{ section.settings.cta_title | newline_to_br }}</h3>
+        </div>
+        <a {% if section.settings.cta_btn_link != blank %}href="{{ section.settings.cta_btn_link }}"{% else %}role="link" aria-disabled="true"{% endif %} class="yn-src-about-cta-btn">
+          {{ section.settings.cta_btn_text }}
+          <svg class="yn-src-about-cta-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YN Image With Text",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "info": "The image frame uses the scheme's secondary background.",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "collage_image_1",
+      "label": "Collage: top left"
+    },
+    {
+      "type": "image_picker",
+      "id": "collage_image_2",
+      "label": "Collage: bottom left"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Collage: center (large)"
+    },
+    {
+      "type": "image_picker",
+      "id": "collage_image_4",
+      "label": "Collage: top right"
+    },
+    {
+      "type": "image_picker",
+      "id": "collage_image_5",
+      "label": "Collage: bottom right"
+    },
+    {
+      "type": "image_picker",
+      "id": "collage_image_6",
+      "label": "Lower detail card image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position on desktop",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Our Story"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "default": "About Yoode"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>We are India's leading platform for premium customizable apparel and corporate gifting. Our mission is to empower brands, teams, and individuals with high-quality, custom-made products that leave a lasting impression.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "info": "Leave empty to hide the button.",
+      "default": "Read Our Story"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Mobile top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Mobile bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "text",
+      "id": "bl_title",
+      "label": "Bottom Left Card Title",
+      "default": "From Premium Fabrics to Professional Finishing, These Are the Details That Matter."
+    },
+    {
+      "type": "text",
+      "id": "br_title",
+      "label": "Bottom Right Card Title",
+      "default": "Discover the Highlights of Yoode in Action."
+    },
+    {
+      "type": "textarea",
+      "id": "br_desc",
+      "label": "Bottom Right Card Description",
+      "default": "From everyday wear to large-scale corporate orders, we deliver apparel that makes an impact."
+    },
+    {
+      "type": "text",
+      "id": "stat1_num",
+      "label": "Stat 1 Number",
+      "default": "10,000+"
+    },
+    {
+      "type": "text",
+      "id": "stat1_label",
+      "label": "Stat 1 Label",
+      "default": "Orders Delivered"
+    },
+    {
+      "type": "text",
+      "id": "stat2_num",
+      "label": "Stat 2 Number",
+      "default": "50+"
+    },
+    {
+      "type": "text",
+      "id": "stat2_label",
+      "label": "Stat 2 Label",
+      "default": "Colours Available"
+    },
+    {
+      "type": "text",
+      "id": "stat3_num",
+      "label": "Stat 3 Number",
+      "default": "Pan-India"
+    },
+    {
+      "type": "text",
+      "id": "stat3_label",
+      "label": "Stat 3 Label",
+      "default": "Service Network"
+    },
+    {
+      "type": "text",
+      "id": "stat4_num",
+      "label": "Stat 4 Number",
+      "default": "500+"
+    },
+    {
+      "type": "text",
+      "id": "stat4_label",
+      "label": "Stat 4 Label",
+      "default": "Happy Customers"
+    },
+    {
+      "type": "text",
+      "id": "values_label",
+      "label": "Values Label",
+      "default": "Our Values"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA Label",
+      "default": "Ready to Get Started?"
+    },
+    {
+      "type": "textarea",
+      "id": "cta_title",
+      "label": "CTA Title",
+      "default": "Let us create\nsomething custom."
+    },
+    {
+      "type": "text",
+      "id": "cta_btn_text",
+      "label": "CTA Button Text",
+      "default": "Get a Quote"
+    },
+    {
+      "type": "url",
+      "id": "cta_btn_link",
+      "label": "CTA Button Link"
+    },
+    {
+      "type": "color",
+      "id": "source_background",
+      "label": "Section background",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Image With Text",
+      "settings": {
+        "subtitle": "Our Story",
+        "title": "About Yoode",
+        "description": "<p>We are India's leading platform for premium customizable apparel and corporate gifting. Our mission is to empower brands, teams, and individuals with high-quality, custom-made products that leave a lasting impression.</p>",
+        "button_label": "Read Our Story"
+      },
+      "blocks": [
+        {
+          "type": "value",
+          "settings": {
+            "icon_name": "shield",
+            "title": "Quality Always",
+            "desc": "Premium fabrics, lasting comfort and professional finishing."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "icon_name": "cpu",
+            "title": "Innovation in Printing",
+            "desc": "Advanced technology for vibrant, durable and precise results."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "icon_name": "users",
+            "title": "Customer First",
+            "desc": "Your vision, our priority from design to delivery."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "icon_name": "leaf",
+            "title": "Sustainable Choices",
+            "desc": "Thoughtful processes for a better tomorrow."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "icon_name": "map-pin",
+            "title": "Built for India",
+            "desc": "Serving businesses, teams and creators across the country."
+          }
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Value Item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon_name",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "shield",
+              "label": "Shield Check"
+            },
+            {
+              "value": "cpu",
+              "label": "CPU"
+            },
+            {
+              "value": "users",
+              "label": "Users"
+            },
+            {
+              "value": "leaf",
+              "label": "Leaf"
+            },
+            {
+              "value": "map-pin",
+              "label": "Map Pin"
+            }
+          ],
+          "default": "shield"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Value Title"
+        },
+        {
+          "type": "text",
+          "id": "desc",
+          "label": "Description",
+          "default": "Value description text goes here."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

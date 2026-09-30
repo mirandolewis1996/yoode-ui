@@ -1,0 +1,292 @@
+{{ 'yd-form-with-txt.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yd-blr-static.js' | asset_url }}" defer="defer"></script>
+<div class="yd-blr-hero section-padding">
+  <div class="container">
+    <div class="d-flex">
+      <div class="left-section">
+        <div class="content">
+          <div class="rating-wrapper">
+            <div class="rating">
+              <!-- <i class="fa-solid fa-star"></i> -->
+              <img
+                class="star-img"
+                src="{{ "corp-top-rating-star.svg" | asset_url }}"
+                alt=""
+                width="auto"
+                height="auto"
+                loading="lazy"
+              >
+              <span>4.9</span>
+            </div>
+            <span class="txt">Top Rating</span>
+          </div>
+          <h3 class="title">Personalized Corporate Gifts in Bangalore for Every Occasion</h3>
+          <p>
+            Make a lasting impression with premium custom corporate gifts in Bangalore, thoughtfully created for your employees, clients, events and business milestones. 
+          </p>
+          <p>
+            As a trusted <strong>corporate gifting company in Bangalore,</strong> Yoode brings together quality products, personalized branding and professional presentation to create gifts that reflect your brand. From product selection and customization to packaging and delivery, our team handles every detail for a smooth and reliable corporate gifting experience. 
+          </p>
+          <h3 class="sub-title">Get a free consultation now!</h3>
+          <div class="btn-wrapper">
+            <a
+              target="_blank"
+              class="button whatsapp button--primary with-arrow media-banner__button"
+              href="https://wa.me/+918069750293?text=I%20would%20like%20to%20receive%20a%20free%20consultation%20regarding%20corporate%20gifting."
+            >
+              <div class="button__content">
+                <span class="button__label" data-label="Get a Custom Gift Ideas">Get a Custom Gift Ideas</span>
+
+                <div class="button__icons">
+                  <span class="button__icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1.5 10.5011L10.2421 1.75789M2.46394 1.05078H10.9492V9.53606" stroke="currentColor"
+                      	stroke-width="1.4" stroke-linecap="square"></path>
+                    </svg>
+                  </span>
+                  <span class="button__icon button__icon--2">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1.5 10.5011L10.2421 1.75789M2.46394 1.05078H10.9492V9.53606" stroke="currentColor"
+                      	stroke-width="1.4" stroke-linecap="square"></path>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <span class="animated-button-circle"></span>
+            </a>
+            <a
+              target="_blank"
+              class="button call-us button--primary with-arrow media-banner__button"
+              href="tel:+918069750293"
+            >
+              <div class="button__content">
+                <span class="button__label" data-label="Call Us">Call Us</span>
+
+                <div class="button__icons">
+                  <span class="button__icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1.5 10.5011L10.2421 1.75789M2.46394 1.05078H10.9492V9.53606" stroke="currentColor"
+                      	stroke-width="1.4" stroke-linecap="square"></path>
+                    </svg>
+                  </span>
+                  <span class="button__icon button__icon--2">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1.5 10.5011L10.2421 1.75789M2.46394 1.05078H10.9492V9.53606" stroke="currentColor"
+                      	stroke-width="1.4" stroke-linecap="square"></path>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <span class="animated-button-circle"></span>
+            </a>
+          </div>
+          <!--
+            <div class="static-wrapper">
+                <div class="static">
+                    <div class="value">100K <span>+</span></div>
+                    <p>Gifts Delivered </p>
+                </div>
+                <div class="static">
+                    <div class="value">100 <span>+</span></div>
+                    <p>Custom Gifting Option </p>
+                </div>
+                <div class="static">
+                    <div class="value">99.9 <span>%</span></div>
+                    <p>On Time Delivery </p>
+                </div>
+                <div class="static">
+                    <div class="value">5 <span>+</span></div>
+                    <p>Year of Excellence </p>
+                </div>
+            </div>
+          -->
+          <div class="static-wrapper">
+            <div class="static">
+              <div class="value"><span class="counter" data-target="100" data-format="K">0</span><span>+</span></div>
+              <p>Gifts Delivered</p>
+            </div>
+            <div class="static">
+              <div class="value"><span class="counter" data-target="100">0</span><span>+</span></div>
+              <p>Customizable Gifts</p>
+            </div>
+            <div class="static">
+              <div class="value"><span class="counter" data-target="99.9">0</span><span>%</span></div>
+              <p>Timely Delivery</p>
+            </div>
+            <div class="static">
+              <div class="value"><span class="counter" data-target="5">0</span><span>+</span></div>
+              <p>Year of Excellence</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-section">
+        <div class="form-wrap">
+          <h3 class="title">Quick Call Back</h3>
+          {%- form 'contact', id: 'CallBackForm' -%}
+            {%- if form.posted_successfully? -%}
+              <div class="form-status form-status-list form__message" tabindex="-1" autofocus>
+                {% render 'icon-success' %}
+                {{ 'templates.contact.form.post_success' | t }}
+              </div>
+            {%- elsif form.errors -%}
+            {%- endif -%}
+            <input
+              type="hidden"
+              name="contact[Source]"
+              value="From : Corporate Gifting Page - Yoode"
+            >
+            <div class="field field__name">
+              <input
+                class="field__input focus-inset"
+                autocomplete="name"
+                type="text"
+                id="CallBackForm-name"
+                name="contact[Name]"
+                value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                placeholder="Name"
+                required
+              >
+              <label class="field__label body-small" for="CallBackForm-name">Name </label>
+            </div>
+            <div class="field">
+              <input
+                type="tel"
+                id="CallBackForm-phone"
+                class="field__input"
+                autocomplete="tel"
+                name="contact[Phone]"
+                pattern="[0-9\-]*"
+                value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+                placeholder="Phone Number"
+                required
+              >
+              <label class="field__label body-small" for="CallBackForm-phone"> Phone Number </label>
+            </div>
+            <div class="field field--with-error">
+              <input
+                autocomplete="email"
+                type="email"
+                id="CallBackForm-email"
+                class="field__input focus-inset"
+                name="contact[email]"
+                spellcheck="false"
+                autocapitalize="off"
+                value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                aria-required="true"
+                {% if form.errors contains 'email' %}
+                  aria-invalid="true" aria-describedby="CallBackForm-email-error"
+                {% endif %}
+                placeholder="yourmail@gmail.com"
+                required
+              >
+              <label class="field__label body-small" for="CallBackForm-email"> Business Email </label>
+              {%- if form.errors contains 'email' -%}
+                <small class="contact-form__field-error" id="CallBackForm-email-error">
+                  <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
+                  <span class="form__message">
+                    {{- form.errors.translated_fields.email | capitalize }}
+                    {{ form.errors.messages.email -}}
+                  </span>
+                </small>
+              {%- endif -%}
+            </div>
+
+            <div class="row">
+              <div>
+                <label class="field__label body-small" for="CallBackForm-company"> Company </label>
+                <input
+                  class="field__input focus-inset"
+                  autocomplete="company"
+                  type="text"
+                  id="CallBackForm-company"
+                  name="contact[company]"
+                  value="{% if form.company %}{{ form.company }}{% elsif customer %}{{ customer.company }}{% endif %}"
+                  placeholder="Company"
+                >
+              </div>
+              <div>
+                <label class="field__label body-small" for="CallBackForm-city"> City </label>
+                <input
+                  class="field__input focus-inset"
+                  autocomplete="city"
+                  type="text"
+                  id="CallBackForm-city"
+                  name="contact[city]"
+                  value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                  placeholder="City"
+                >
+              </div>
+            </div>
+            <div class="field">
+              <textarea
+                id="CallBackForm-body"
+                class="text-area field__input"
+                name="contact[body]"
+                placeholder="comments"
+                aria-required="true"
+                required
+              >
+							              {{- form.body -}}
+							    </textarea>
+              <label class="field__label body-small" for="CallBackForm-body">
+                {{- 'templates.contact.form.comment' | t -}}
+              </label>
+            </div>
+            <div class="contact-form__bottom">
+              <!--
+                <button type="submit" class="button button--primary focus-inset">
+                  <div class="button__content">
+                    <span class="button__label" data-label="Request Call Back">
+                      <i class="fa-light fa-arrow-right"></i> Request Call Back
+                    </span>
+                  </div>
+                </button>
+              -->
+              <button type="submit" class="button button--primary">
+                <div class="button__content">
+                  <span class="button__label" data-label="Request Call Back"> Request Call Back </span>
+
+                  <div class="button__icons">
+                    <span class="button__icon">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.5 10.5011L10.2421 1.75789M2.46394 1.05078H10.9492V9.53606" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"></path>
+                      </svg>
+                    </span>
+                    <span class="button__icon button__icon--2">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.5 10.5011L10.2421 1.75789M2.46394 1.05078H10.9492V9.53606" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"></path>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+                <span class="animated-button-circle" style="transform-origin: 78.2085% -4.72656%;"></span>
+              </button>
+
+              {% if section.settings.additional_text != blank %}
+                <div class="contact-form__add-text body-small">
+                  {{- section.settings.additional_text -}}
+                </div>
+              {% endif %}
+            </div>
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YD Form with Txt",
+  "enabled_on": {
+    "templates": ["*"]
+  },
+  "settings": [],
+  "presets": [
+    {
+      "name": "YD Form with Txt"
+    }
+  ]
+}
+{% endschema %}

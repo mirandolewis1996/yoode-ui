@@ -1,0 +1,1153 @@
+{
+  "PRODUCT_DATA": [
+    {
+      "name": "Men's Crew Neck Set-in Half Sleeve T-Shirt - Single Jersey 180 GSM",
+      "mrp": 480,
+      "retail": 340,
+      "corporate": 320,
+      "special_corporate": 290,
+      "dropshipper": 270
+    },
+    {
+      "name": "Men's Crew Neck Raglan Full Sleeve T-Shirt - Single Jersey 180 GSM",
+      "mrp": 590,
+      "retail": 420,
+      "corporate": 390,
+      "special_corporate": 360,
+      "dropshipper": 330
+    },
+    {
+      "name": "Men's Crew Neck Set-in Half Sleeve T-Shirt - Interlock 220 GSM",
+      "mrp": 660,
+      "retail": 470,
+      "corporate": 430,
+      "special_corporate": 400,
+      "dropshipper": 370
+    },
+    {
+      "name": "Men's Crew Neck Raglan Full Sleeve T-Shirt - Interlock 220 GSM",
+      "mrp": 840,
+      "retail": 590,
+      "corporate": 550,
+      "special_corporate": 510,
+      "dropshipper": 470
+    },
+    {
+      "name": "Men's Crew Neck Set-in Half Sleeve Oversized T-Shirt - Interlock 220 GSM",
+      "mrp": 780,
+      "retail": 550,
+      "corporate": 510,
+      "special_corporate": 470,
+      "dropshipper": 430
+    },
+    {
+      "name": "Men's Crew Neck Raglan Half Sleeve Oversized T-Shirt - Interlock 220 GSM",
+      "mrp": 780,
+      "retail": 550,
+      "corporate": 510,
+      "special_corporate": 470,
+      "dropshipper": 430
+    },
+    {
+      "name": "Men's Crew Neck Set-in Half Sleeve Oversized T-Shirt - French Terry 250 GSM",
+      "mrp": 720,
+      "retail": 510,
+      "corporate": 470,
+      "special_corporate": 440,
+      "dropshipper": 400
+    },
+    {
+      "name": "Men's Crew Neck Raglan Half Sleeve Oversized T-Shirt - French Terry 250 GSM",
+      "mrp": 720,
+      "retail": 510,
+      "corporate": 470,
+      "special_corporate": 440,
+      "dropshipper": 400
+    },
+    {
+      "name": "Men's Extended Shoulder Patch T-Shirt",
+      "mrp": 600,
+      "retail": 420,
+      "corporate": 390,
+      "special_corporate": 360,
+      "dropshipper": 330
+    },
+    {
+      "name": "Men's Shoulder Patch Piping T-Shirt",
+      "mrp": 520,
+      "retail": 370,
+      "corporate": 340,
+      "special_corporate": 320,
+      "dropshipper": 290
+    },
+    {
+      "name": "Men’s Key Pocket T-Shirt",
+      "mrp": 540,
+      "retail": 380,
+      "corporate": 360,
+      "special_corporate": 330,
+      "dropshipper": 300
+    },
+    {
+      "name": "Men's Shoulder Patch T-Shirt",
+      "mrp": 540,
+      "retail": 380,
+      "corporate": 360,
+      "special_corporate": 330,
+      "dropshipper": 300
+    },
+    {
+      "name": "Men’s Side Strip T-Shirt",
+      "mrp": 560,
+      "retail": 400,
+      "corporate": 370,
+      "special_corporate": 340,
+      "dropshipper": 310
+    },
+    {
+      "name": "Men’s Patterned Raglan Sleeve T-Shirt",
+      "mrp": 540,
+      "retail": 380,
+      "corporate": 360,
+      "special_corporate": 330,
+      "dropshipper": 300
+    },
+    {
+      "name": "Men’s Fly-Dry Side Slits Tank Top",
+      "mrp": 480,
+      "retail": 340,
+      "corporate": 320,
+      "special_corporate": 290,
+      "dropshipper": 270
+    },
+    {
+      "name": "Men’s Regular Side Slits Tank Top",
+      "mrp": 480,
+      "retail": 340,
+      "corporate": 320,
+      "special_corporate": 290,
+      "dropshipper": 270
+    },
+    {
+      "name": "Men's Set-in Half Sleeve Polo - Airtex 260 GSM",
+      "mrp": 800,
+      "retail": 560,
+      "corporate": 520,
+      "special_corporate": 480,
+      "dropshipper": 440
+    },
+    {
+      "name": "Men's Raglan Half Sleeve Polo - Airtex 260 GSM",
+      "mrp": 800,
+      "retail": 560,
+      "corporate": 520,
+      "special_corporate": 480,
+      "dropshipper": 440
+    },
+    {
+      "name": "Men's Set-in Half Sleeve Polo - Mars 200 GSM",
+      "mrp": 600,
+      "retail": 420,
+      "corporate": 390,
+      "special_corporate": 360,
+      "dropshipper": 330
+    },
+    {
+      "name": "Men's Raglan Half Sleeve Polo - Mars 200 GSM",
+      "mrp": 600,
+      "retail": 420,
+      "corporate": 390,
+      "special_corporate": 360,
+      "dropshipper": 330
+    },
+    {
+      "name": "Men's Set-in Half Sleeve Polo With Tipping - Airtex 260 GSM",
+      "mrp": 800,
+      "retail": 560,
+      "corporate": 520,
+      "special_corporate": 480,
+      "dropshipper": 440
+    },
+    {
+      "name": "Men's Raglan Half Sleeve Polo With Tipping - Airtex 260 GSM",
+      "mrp": 800,
+      "retail": 560,
+      "corporate": 520,
+      "special_corporate": 480,
+      "dropshipper": 440
+    },
+    {
+      "name": "Men's Set-in Half Sleeve With Zipper Polo - Mars 200 GSM",
+      "mrp": 620,
+      "retail": 440,
+      "corporate": 410,
+      "special_corporate": 380,
+      "dropshipper": 350
+    },
+    {
+      "name": "Men's Raglan Half Sleeve With Zipper Polo - Mars 200 GSM",
+      "mrp": 620,
+      "retail": 440,
+      "corporate": 410,
+      "special_corporate": 380,
+      "dropshipper": 350
+    },
+    {
+      "name": "Men's Set-in Half Sleeve Polo With Zipper - Airtex 260 GSM",
+      "mrp": 820,
+      "retail": 580,
+      "corporate": 540,
+      "special_corporate": 500,
+      "dropshipper": 460
+    },
+    {
+      "name": "Men's Raglan Half Sleeve Polo With Zipper - Airtex 260 GSM",
+      "mrp": 820,
+      "retail": 580,
+      "corporate": 540,
+      "special_corporate": 500,
+      "dropshipper": 460
+    },
+    {
+      "name": "Men's Set-in Sleeve Economic Hoodie - Fleece 300 GSM",
+      "mrp": 1310,
+      "retail": 930,
+      "corporate": 860,
+      "special_corporate": 800,
+      "dropshipper": 730
+    },
+    {
+      "name": "Men's Raglan Sleeve Economic Hoodie - Fleece 300 GSM",
+      "mrp": 1310,
+      "retail": 930,
+      "corporate": 860,
+      "special_corporate": 800,
+      "dropshipper": 730
+    },
+    {
+      "name": "Men's Set-in Sleeve Premium Hoodie - Fleece 320 GSM",
+      "mrp": 1970,
+      "retail": 1390,
+      "corporate": 1290,
+      "special_corporate": 1190,
+      "dropshipper": 1090
+    },
+    {
+      "name": "Men's Raglan Sleeve Premium Hoodie - Fleece 320 GSM",
+      "mrp": 1970,
+      "retail": 1390,
+      "corporate": 1290,
+      "special_corporate": 1190,
+      "dropshipper": 1090
+    },
+    {
+      "name": "Men's Set-in Sleeve Premium Oversized Hoodie - Fleece 320 GSM",
+      "mrp": 2330,
+      "retail": 1570,
+      "corporate": 1470,
+      "special_corporate": 1370,
+      "dropshipper": 1270
+    },
+    {
+      "name": "Men's Raglan Sleeve Premium Oversized Hoodie - Fleece 320 GSM",
+      "mrp": 2330,
+      "retail": 1570,
+      "corporate": 1470,
+      "special_corporate": 1370,
+      "dropshipper": 1270
+    },
+    {
+      "name": "Men's Set-in Sleeve Economic Oversized Hoodie - Fleece 300 GSM",
+      "mrp": 1520,
+      "retail": 1070,
+      "corporate": 990,
+      "special_corporate": 920,
+      "dropshipper": 840
+    },
+    {
+      "name": "Men's Raglan Sleeve Economic Oversized Hoodie - Fleece 300 GSM",
+      "mrp": 1520,
+      "retail": 1070,
+      "corporate": 990,
+      "special_corporate": 920,
+      "dropshipper": 840
+    },
+    {
+      "name": "Men's Set-in Sleeve Economic Zipper Hoodie - Fleece 300 GSM",
+      "mrp": 1550,
+      "retail": 1090,
+      "corporate": 1020,
+      "special_corporate": 940,
+      "dropshipper": 860
+    },
+    {
+      "name": "Men's Raglan Sleeve Economic Zipper Hoodie - Fleece 300 GSM",
+      "mrp": 1550,
+      "retail": 1090,
+      "corporate": 1020,
+      "special_corporate": 940,
+      "dropshipper": 860
+    },
+    {
+      "name": "Men's Set-in Sleeve Premium Zipper Hoodie - Fleece 320 GSM",
+      "mrp": 2170,
+      "retail": 1490,
+      "corporate": 1390,
+      "special_corporate": 1290,
+      "dropshipper": 1190
+    },
+    {
+      "name": "Men's Raglan Sleeve Premium Zipper Hoodie - Fleece 320 GSM",
+      "mrp": 2170,
+      "retail": 1490,
+      "corporate": 1390,
+      "special_corporate": 1290,
+      "dropshipper": 1190
+    },
+    {
+      "name": "Men's Set-in Sleeve Economic Sweat Shirt - Fleece 300 GSM",
+      "mrp": 1090,
+      "retail": 770,
+      "corporate": 720,
+      "special_corporate": 660,
+      "dropshipper": 610
+    },
+    {
+      "name": "Men's Raglan Sleeve Economic Sweat Shirt - Fleece 300 GSM",
+      "mrp": 1090,
+      "retail": 770,
+      "corporate": 720,
+      "special_corporate": 660,
+      "dropshipper": 610
+    },
+    {
+      "name": "Men's Set-in Sleeve Premium Sweat Shirt - Fleece 320 GSM",
+      "mrp": 1670,
+      "retail": 1180,
+      "corporate": 1100,
+      "special_corporate": 1010,
+      "dropshipper": 930
+    },
+    {
+      "name": "Men's Raglan Sleeve Premium Sweat Shirt - Fleece 320 GSM",
+      "mrp": 1670,
+      "retail": 1180,
+      "corporate": 1100,
+      "special_corporate": 1010,
+      "dropshipper": 930
+    },
+    {
+      "name": "Men's Rugs Printed Cuban Collar Shirt",
+      "mrp": 820,
+      "retail": 580,
+      "corporate": 540,
+      "special_corporate": 500,
+      "dropshipper": 460
+    },
+    {
+      "name": "Men's High Neck Jacket - French Terry 250 GSM",
+      "mrp": 1230,
+      "retail": 870,
+      "corporate": 810,
+      "special_corporate": 750,
+      "dropshipper": 690
+    },
+    {
+      "name": "Men's High Neck Jacket - Fleece 300 GSM",
+      "mrp": 1540,
+      "retail": 1080,
+      "corporate": 1010,
+      "special_corporate": 930,
+      "dropshipper": 850
+    },
+    {
+      "name": "Men's Woven Cuban Collar Shirt",
+      "mrp": 850,
+      "retail": 600,
+      "corporate": 560,
+      "special_corporate": 520,
+      "dropshipper": 480
+    },
+    {
+      "name": "Men's Fleece Shorts - Fleece 300 GSM",
+      "mrp": 600,
+      "retail": 420,
+      "corporate": 390,
+      "special_corporate": 360,
+      "dropshipper": 330
+    },
+    {
+      "name": "Men's Joggers - Fleece 300 GSM",
+      "mrp": 900,
+      "retail": 600,
+      "corporate": 540,
+      "special_corporate": 500,
+      "dropshipper": 500
+    },
+    {
+      "name": "Women's Crew Neck Set-in Half Sleeve T-Shirt - Single Jersey 180 GSM",
+      "mrp": 440,
+      "retail": 310,
+      "corporate": 290,
+      "special_corporate": 270,
+      "dropshipper": 250
+    },
+    {
+      "name": "Women's Crew Neck Raglan Full Sleeve T-Shirt - Single Jersey 180 GSM",
+      "mrp": 510,
+      "retail": 370,
+      "corporate": 340,
+      "special_corporate": 320,
+      "dropshipper": 290
+    },
+    {
+      "name": "Women's Crew Neck Set-in Half Sleeve T-Shirt - Interlock 220 GSM",
+      "mrp": 560,
+      "retail": 400,
+      "corporate": 370,
+      "special_corporate": 340,
+      "dropshipper": 310
+    },
+    {
+      "name": "Women's Crew Neck Raglan Full Sleeve T-Shirt - Interlock 220 GSM",
+      "mrp": 720,
+      "retail": 510,
+      "corporate": 470,
+      "special_corporate": 440,
+      "dropshipper": 400
+    },
+    {
+      "name": "Women's Crew Neck Set-in Half Sleeve Oversized T-Shirt - Interlock 220 GSM",
+      "mrp": 580,
+      "retail": 410,
+      "corporate": 380,
+      "special_corporate": 350,
+      "dropshipper": 320
+    },
+    {
+      "name": "Women's Crew Neck Raglan Half Sleeve Oversized T-Shirt - Interlock 220 GSM",
+      "mrp": 580,
+      "retail": 410,
+      "corporate": 380,
+      "special_corporate": 350,
+      "dropshipper": 320
+    },
+    {
+      "name": "Women's Crew Neck Set-in Half Sleeve Oversized T-Shirt - French Terry 250 GSM",
+      "mrp": 540,
+      "retail": 380,
+      "corporate": 360,
+      "special_corporate": 330,
+      "dropshipper": 300
+    },
+    {
+      "name": "Women's Crew Neck Raglan Half Sleeve Oversized T-Shirt - French Terry 250 GSM",
+      "mrp": 540,
+      "retail": 380,
+      "corporate": 360,
+      "special_corporate": 330,
+      "dropshipper": 300
+    },
+    {
+      "name": "Women's Set-in Half Sleeve Polo - Airtex 260 GSM",
+      "mrp": 700,
+      "retail": 490,
+      "corporate": 460,
+      "special_corporate": 420,
+      "dropshipper": 390
+    },
+    {
+      "name": "Women's Raglan Half Sleeve Polo - Airtex 260 GSM",
+      "mrp": 700,
+      "retail": 490,
+      "corporate": 460,
+      "special_corporate": 420,
+      "dropshipper": 390
+    },
+    {
+      "name": "Women's Set-in Half Sleeve Polo - Mars 200 GSM",
+      "mrp": 440,
+      "retail": 310,
+      "corporate": 290,
+      "special_corporate": 270,
+      "dropshipper": 250
+    },
+    {
+      "name": "Women's Raglan Half Sleeve Polo - Mars 200 GSM",
+      "mrp": 440,
+      "retail": 310,
+      "corporate": 290,
+      "special_corporate": 270,
+      "dropshipper": 250
+    },
+    {
+      "name": "Women's Set-in Half Sleeve Polo With Tipping - Airtex 260 GSM",
+      "mrp": 700,
+      "retail": 490,
+      "corporate": 460,
+      "special_corporate": 420,
+      "dropshipper": 390
+    },
+    {
+      "name": "Women's Raglan Half Sleeve Polo With Tipping - Airtex 260 GSM",
+      "mrp": 700,
+      "retail": 490,
+      "corporate": 460,
+      "special_corporate": 420,
+      "dropshipper": 390
+    },
+    {
+      "name": "Women's Set-in Half Sleeve With Zipper Polo - Mars 200 GSM",
+      "mrp": 460,
+      "retail": 330,
+      "corporate": 300,
+      "special_corporate": 280,
+      "dropshipper": 260
+    },
+    {
+      "name": "Women's Raglan Half Sleeve With Zipper Polo - Mars 200 GSM",
+      "mrp": 460,
+      "retail": 330,
+      "corporate": 300,
+      "special_corporate": 280,
+      "dropshipper": 260
+    },
+    {
+      "name": "Women's Set-in Half Sleeve Polo With Zipper - Airtex 260 GSM",
+      "mrp": 720,
+      "retail": 510,
+      "corporate": 470,
+      "special_corporate": 440,
+      "dropshipper": 400
+    },
+    {
+      "name": "Women's Raglan Half Sleeve Polo With Zipper - Airtex 260 GSM",
+      "mrp": 720,
+      "retail": 510,
+      "corporate": 470,
+      "special_corporate": 440,
+      "dropshipper": 400
+    },
+    {
+      "name": "Women's Set-in Sleeve Economic Hoodie - Fleece 300 GSM",
+      "mrp": 1230,
+      "retail": 870,
+      "corporate": 810,
+      "special_corporate": 750,
+      "dropshipper": 690
+    },
+    {
+      "name": "Women's Raglan Sleeve Economic Hoodie - Fleece 300 GSM",
+      "mrp": 1230,
+      "retail": 870,
+      "corporate": 810,
+      "special_corporate": 750,
+      "dropshipper": 690
+    },
+    {
+      "name": "Women's Set-in Sleeve Premium Hoodie - Fleece 320 GSM",
+      "mrp": 1870,
+      "retail": 1320,
+      "corporate": 1230,
+      "special_corporate": 1130,
+      "dropshipper": 1040
+    },
+    {
+      "name": "Women's Raglan Sleeve Premium Hoodie - Fleece 320 GSM",
+      "mrp": 1870,
+      "retail": 1320,
+      "corporate": 1230,
+      "special_corporate": 1130,
+      "dropshipper": 1040
+    },
+    {
+      "name": "Women's Set-in Sleeve Premium Oversized Hoodie - Fleece 320 GSM",
+      "mrp": 1910,
+      "retail": 1350,
+      "corporate": 1250,
+      "special_corporate": 1160,
+      "dropshipper": 1060
+    },
+    {
+      "name": "Women's Raglan Sleeve Premium Oversized Hoodie - Fleece 320 GSM",
+      "mrp": 1910,
+      "retail": 1350,
+      "corporate": 1250,
+      "special_corporate": 1160,
+      "dropshipper": 1060
+    },
+    {
+      "name": "Women's Set-in Sleeve Economic Oversized Hoodie - Fleece 300 GSM",
+      "mrp": 1270,
+      "retail": 900,
+      "corporate": 840,
+      "special_corporate": 770,
+      "dropshipper": 710
+    },
+    {
+      "name": "Women's Raglan Sleeve Economic Oversized Hoodie - Fleece 300 GSM",
+      "mrp": 1270,
+      "retail": 900,
+      "corporate": 840,
+      "special_corporate": 770,
+      "dropshipper": 710
+    },
+    {
+      "name": "Women's Set-in Sleeve Economic Zipper Hoodie - Fleece 300 GSM",
+      "mrp": 1330,
+      "retail": 940,
+      "corporate": 870,
+      "special_corporate": 810,
+      "dropshipper": 740
+    },
+    {
+      "name": "Women's Raglan Sleeve Economic Zipper Hoodie - Fleece 300 GSM",
+      "mrp": 1330,
+      "retail": 940,
+      "corporate": 870,
+      "special_corporate": 810,
+      "dropshipper": 740
+    },
+    {
+      "name": "Women's Set-in Sleeve Premium Zipper Hoodie - Fleece 320 GSM",
+      "mrp": 1890,
+      "retail": 1330,
+      "corporate": 1240,
+      "special_corporate": 1140,
+      "dropshipper": 1050
+    },
+    {
+      "name": "Women's Raglan Sleeve Premium Zipper Hoodie - Fleece 320 GSM",
+      "mrp": 1890,
+      "retail": 1330,
+      "corporate": 1240,
+      "special_corporate": 1140,
+      "dropshipper": 1050
+    },
+    {
+      "name": "Women's Set-in Sleeve Economic Sweat Shirt - Fleece 300 GSM",
+      "mrp": 930,
+      "retail": 660,
+      "corporate": 610,
+      "special_corporate": 570,
+      "dropshipper": 520
+    },
+    {
+      "name": "Women's Raglan Sleeve Economic Sweat Shirt - Fleece 300 GSM",
+      "mrp": 930,
+      "retail": 660,
+      "corporate": 610,
+      "special_corporate": 570,
+      "dropshipper": 520
+    },
+    {
+      "name": "Women's Set-in Sleeve Premium Sweat Shirt - Fleece 320 GSM",
+      "mrp": 1390,
+      "retail": 980,
+      "corporate": 910,
+      "special_corporate": 840,
+      "dropshipper": 770
+    },
+    {
+      "name": "Women's Raglan Sleeve Premium Sweat Shirt - Fleece 320 GSM",
+      "mrp": 1390,
+      "retail": 980,
+      "corporate": 910,
+      "special_corporate": 840,
+      "dropshipper": 770
+    },
+    {
+      "name": "Women's Rugs Printed Cuban Collar Shirt",
+      "mrp": 820,
+      "retail": 580,
+      "corporate": 540,
+      "special_corporate": 500,
+      "dropshipper": 460
+    },
+    {
+      "name": "Women's Rugs Printed Cuban Collar Crop Shirt",
+      "mrp": 800,
+      "retail": 560,
+      "corporate": 520,
+      "special_corporate": 480,
+      "dropshipper": 440
+    },
+    {
+      "name": "Women's Fleece Shorts - Fleece 300 GSM",
+      "mrp": 600,
+      "retail": 420,
+      "corporate": 390,
+      "special_corporate": 360,
+      "dropshipper": 330
+    },
+    {
+      "name": "Women's Joggers - Fleece 300 GSM",
+      "mrp": 1000,
+      "retail": 700,
+      "corporate": 600,
+      "special_corporate": 550,
+      "dropshipper": 500
+    },
+    {
+      "name": "Women's High Neck Jacket - French Terry 250 GSM",
+      "mrp": 1150,
+      "retail": 810,
+      "corporate": 760,
+      "special_corporate": 700,
+      "dropshipper": 640
+    },
+    {
+      "name": "Women's High Neck Jacket - Fleece 300 GSM",
+      "mrp": 1460,
+      "retail": 1030,
+      "corporate": 950,
+      "special_corporate": 880,
+      "dropshipper": 810
+    },
+    {
+      "name": "Varsity Jacket",
+      "mrp": 1670,
+      "retail": 1180,
+      "corporate": 1100,
+      "special_corporate": 1010,
+      "dropshipper": 930
+    },
+    {
+      "name": "Fashion Hoodie",
+      "mrp": 2000,
+      "retail": 1600,
+      "corporate": 1200,
+      "special_corporate": 1100,
+      "dropshipper": 1000
+    },
+    {
+      "name": "Fashion Polo",
+      "mrp": 800,
+      "retail": 600,
+      "corporate": 500,
+      "special_corporate": 400,
+      "dropshipper": 350
+    },
+    {
+      "name": "Polyester Zipper Polo",
+      "mrp": 800,
+      "retail": 600,
+      "corporate": 500,
+      "special_corporate": 400,
+      "dropshipper": 350
+    },
+    {
+      "name": "Wide Neck Zipper Crew Neck - Black",
+      "mrp": 900,
+      "retail": 600,
+      "corporate": 500,
+      "special_corporate": 400,
+      "dropshipper": 350
+    }
+  ],
+  "RATES": [
+    [
+      "Setup Charge",
+      "Embroidery (Standard)",
+      null,
+      1,
+      9,
+      200
+    ],
+    [
+      "Setup Charge",
+      "Embroidery (Standard)",
+      null,
+      10,
+      49,
+      200
+    ],
+    [
+      "Setup Charge",
+      "Embroidery (Standard)",
+      null,
+      50,
+      99,
+      200
+    ],
+    [
+      "Setup Charge",
+      "Embroidery (Standard)",
+      null,
+      100,
+      null,
+      200
+    ],
+    [
+      "Setup Charge",
+      "Embroidery (Coloreel)",
+      null,
+      1,
+      9,
+      200
+    ],
+    [
+      "Setup Charge",
+      "Embroidery (Coloreel)",
+      null,
+      10,
+      49,
+      200
+    ],
+    [
+      "Setup Charge",
+      "Embroidery (Coloreel)",
+      null,
+      50,
+      99,
+      200
+    ],
+    [
+      "Setup Charge",
+      "Embroidery (Coloreel)",
+      null,
+      100,
+      null,
+      200
+    ],
+    [
+      "Rate",
+      "DTG",
+      "Dark",
+      1,
+      9,
+      1.2
+    ],
+    [
+      "Rate",
+      "DTG",
+      "Dark",
+      10,
+      49,
+      1.1
+    ],
+    [
+      "Rate",
+      "DTG",
+      "Dark",
+      50,
+      99,
+      1
+    ],
+    [
+      "Rate",
+      "DTG",
+      "Dark",
+      100,
+      null,
+      0.9
+    ],
+    [
+      "Rate",
+      "DTG",
+      "White",
+      1,
+      9,
+      0.8
+    ],
+    [
+      "Rate",
+      "DTG",
+      "White",
+      10,
+      49,
+      0.7
+    ],
+    [
+      "Rate",
+      "DTG",
+      "White",
+      50,
+      99,
+      0.6
+    ],
+    [
+      "Rate",
+      "DTG",
+      "White",
+      100,
+      null,
+      0.5
+    ],
+    [
+      "Rate",
+      "DTF",
+      null,
+      1,
+      9,
+      0.5
+    ],
+    [
+      "Rate",
+      "DTF",
+      null,
+      10,
+      49,
+      0.45
+    ],
+    [
+      "Rate",
+      "DTF",
+      null,
+      50,
+      99,
+      0.4
+    ],
+    [
+      "Rate",
+      "DTF",
+      null,
+      100,
+      null,
+      0.35
+    ],
+    [
+      "Rate",
+      "Embroidery (Standard)",
+      null,
+      1,
+      9,
+      8
+    ],
+    [
+      "Rate",
+      "Embroidery (Standard)",
+      null,
+      10,
+      49,
+      7
+    ],
+    [
+      "Rate",
+      "Embroidery (Standard)",
+      null,
+      50,
+      99,
+      6
+    ],
+    [
+      "Rate",
+      "Embroidery (Standard)",
+      null,
+      100,
+      null,
+      6
+    ],
+    [
+      "Rate",
+      "Embroidery (Coloreel)",
+      null,
+      1,
+      9,
+      10
+    ],
+    [
+      "Rate",
+      "Embroidery (Coloreel)",
+      null,
+      10,
+      49,
+      9
+    ],
+    [
+      "Rate",
+      "Embroidery (Coloreel)",
+      null,
+      50,
+      99,
+      8
+    ],
+    [
+      "Rate",
+      "Embroidery (Coloreel)",
+      null,
+      100,
+      null,
+      8
+    ],
+    [
+      "Min Rate",
+      "Embroidery (Standard)",
+      null,
+      1,
+      9,
+      100
+    ],
+    [
+      "Min Rate",
+      "Embroidery (Standard)",
+      null,
+      10,
+      49,
+      80
+    ],
+    [
+      "Min Rate",
+      "Embroidery (Standard)",
+      null,
+      50,
+      99,
+      70
+    ],
+    [
+      "Min Rate",
+      "Embroidery (Standard)",
+      null,
+      100,
+      null,
+      60
+    ],
+    [
+      "Min Rate",
+      "Embroidery (Coloreel)",
+      null,
+      1,
+      9,
+      120
+    ],
+    [
+      "Min Rate",
+      "Embroidery (Coloreel)",
+      null,
+      10,
+      49,
+      100
+    ],
+    [
+      "Min Rate",
+      "Embroidery (Coloreel)",
+      null,
+      50,
+      99,
+      90
+    ],
+    [
+      "Min Rate",
+      "Embroidery (Coloreel)",
+      null,
+      100,
+      null,
+      80
+    ],
+    [
+      "Min Rate",
+      "DTG",
+      "Dark",
+      1,
+      9,
+      80
+    ],
+    [
+      "Min Rate",
+      "DTG",
+      "Dark",
+      10,
+      49,
+      80
+    ],
+    [
+      "Min Rate",
+      "DTG",
+      "Dark",
+      50,
+      99,
+      80
+    ],
+    [
+      "Min Rate",
+      "DTG",
+      "Dark",
+      100,
+      null,
+      80
+    ],
+    [
+      "Min Rate",
+      "DTG",
+      "White",
+      1,
+      9,
+      60
+    ],
+    [
+      "Min Rate",
+      "DTG",
+      "White",
+      10,
+      49,
+      60
+    ],
+    [
+      "Min Rate",
+      "DTG",
+      "White",
+      50,
+      99,
+      60
+    ],
+    [
+      "Min Rate",
+      "DTG",
+      "White",
+      100,
+      null,
+      60
+    ],
+    [
+      "Min Rate",
+      "DTF",
+      "White",
+      1,
+      9,
+      60
+    ],
+    [
+      "Min Rate",
+      "DTF",
+      "White",
+      10,
+      49,
+      60
+    ],
+    [
+      "Min Rate",
+      "DTF",
+      "White",
+      50,
+      99,
+      60
+    ],
+    [
+      "Min Rate",
+      "DTF",
+      "White",
+      100,
+      null,
+      60
+    ]
+  ],
+  "COMPLEXITY": {
+    "Light (text/outline)": 0.7,
+    "Medium (logo)": 0.85,
+    "Full Fill": 1,
+    "Patch/Badge Heavy": 1.2
+  },
+  "ALL_ADDONS": [
+    "DTG",
+    "DTF",
+    "Embroidery (Standard)",
+    "Embroidery (Coloreel)"
+  ],
+  "LOCATIONS": [
+    "FRONT",
+    "BACK",
+    "LEFT SLEEVE",
+    "RIGHT SLEEVE"
+  ],
+  "LOGO_B64": ""
+}

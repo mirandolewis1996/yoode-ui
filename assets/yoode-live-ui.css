@@ -1,0 +1,1150 @@
+/*
+ * YOODE LIVE UI
+ * Presentation-only bridge between the existing live templates and the
+ * homepage design system. Content, template order, links and storefront
+ * behaviour remain owned by their existing Liquid sections and apps.
+ * The homepage is excluded in theme.liquid because it already supplies the
+ * canonical visual treatment through yoode-new-home.css.
+ */
+
+body:not(.template-index) {
+  --yl-surface: var(--yn-color-cream, #f8f6f1);
+  --yl-card: var(--yn-color-white, #fff);
+  --yl-ink: var(--yn-color-dark, #111827);
+  --yl-muted: var(--yn-color-muted, #6b7280);
+  --yl-line: color-mix(in srgb, var(--yn-color-dark, #111827) 12%, transparent);
+  --yl-accent: var(--yn-color-accent, #e53935);
+  --yl-radius-sm: var(--yn-radius-sm, .8rem);
+  --yl-radius-md: var(--yn-radius-md, 1.2rem);
+  --yl-radius-lg: var(--yn-radius-lg, 2.4rem);
+  --yl-shadow: 0 1.8rem 5rem rgba(17, 24, 39, .08);
+  --yl-container: var(--yn-container, 140rem);
+  --yl-gutter: clamp(1.6rem, 3vw, 4rem);
+  color: var(--yl-ink);
+  background: var(--yl-surface);
+  font-family: var(--yn-font-body, var(--font-body-family));
+}
+
+body:not(.template-index) main,
+body:not(.template-index) #MainContent {
+  overflow: clip;
+}
+
+body:not(.template-index) .page-width,
+body:not(.template-index) .container {
+  width: min(100%, calc(var(--yl-container) + var(--yl-gutter) * 2));
+  margin-inline: auto;
+  padding-inline: var(--yl-gutter);
+}
+
+body:not(.template-index) :is(h1, h2, h3, .h0, .h1, .h2, .h3) {
+  color: var(--yl-ink);
+  font-family: var(--yn-font-heading, var(--font-heading-family));
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -.035em;
+}
+
+body:not(.template-index) :is(.main-page-title, .collection-hero__title) {
+  font-size: clamp(3.2rem, 5vw, 7.2rem);
+}
+
+body:not(.template-index) :is(p, .rte, .collection-hero__description) {
+  line-height: 1.65;
+}
+
+body:not(.template-index) :is(.button, button.button, .shopify-payment-button__button--unbranded) {
+  min-height: 4.8rem;
+  padding: 1.2rem 2.2rem;
+  border: 1px solid var(--yl-ink);
+  border-radius: 999rem;
+  background: var(--yl-ink);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition: transform .25s ease, background-color .25s ease, color .25s ease,
+    border-color .25s ease, box-shadow .25s ease;
+}
+
+body:not(.template-index) :is(.button, button.button, .shopify-payment-button__button--unbranded):hover {
+  transform: translateY(-2px);
+  border-color: var(--yl-accent);
+  background: var(--yl-accent);
+  box-shadow: 0 1rem 2.4rem rgba(229, 57, 53, .2);
+}
+
+body:not(.template-index) :is(input, select, textarea, .select__select, .field__input) {
+  border-radius: var(--yl-radius-md);
+}
+
+body:not(.template-index) :is(input, select, textarea, .select__select, .field__input):focus-visible,
+body:not(.template-index) :is(a, button, summary):focus-visible {
+  outline: .2rem solid var(--yl-accent);
+  outline-offset: .3rem;
+}
+
+/* Collection and search editorial header */
+body:is(.template-collection, .template-search) :is(.collection-hero, .template-search__header) {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(5rem, 8vw, 10rem);
+  background: var(--yl-surface);
+  text-align: center;
+}
+
+body.template-collection .collection-hero::before,
+body.template-search .template-search__header::before {
+  position: absolute;
+  z-index: -1;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+  content: 'YOODE';
+  color: transparent;
+  font-family: var(--yn-font-heading, var(--font-heading-family));
+  font-size: clamp(10rem, 23vw, 34rem);
+  font-weight: 700;
+  line-height: .7;
+  letter-spacing: -.08em;
+  -webkit-text-stroke: 1px rgba(17, 24, 39, .09);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+body.template-collection .collection-hero__description {
+  max-width: 68rem;
+  margin: 2rem auto 0;
+  color: var(--yl-muted);
+}
+
+/* Product grids and cards: same proportions as the homepage/Vercel system. */
+body:is(.template-collection, .template-search) .section-template--padding,
+body:is(.template-collection, .template-search) .collection,
+body.template-list-collections main {
+  background: #faf9f7;
+}
+
+body:is(.template-collection, .template-search) .product-grid {
+  column-gap: clamp(1.6rem, 2vw, 2.4rem);
+  row-gap: clamp(2.4rem, 4vw, 4rem);
+}
+
+body:not(.template-index) :is(.card-wrapper, .product-card-wrapper) {
+  height: 100%;
+}
+
+body:is(.template-collection, .template-search) .card-wrapper {
+  height: auto;
+  padding: 1.2rem;
+  overflow: hidden;
+  border: 1px solid rgba(17, 24, 39, .06);
+  border-radius: 2.8rem;
+  background: var(--yl-card);
+  box-shadow: 0 .8rem 2.8rem rgba(17, 24, 39, .05);
+  transition: translate .35s ease, box-shadow .35s ease;
+}
+
+body:is(.template-collection, .template-search) .card-wrapper:hover {
+  translate: 0 -.5rem;
+  box-shadow: var(--yl-shadow);
+}
+
+body:is(.template-collection, .template-search) .card:not(.card--horizontal) {
+  height: auto;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body:is(.template-collection, .template-search) .card:not(.card--horizontal) .card__inner {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 2rem;
+  background: #f0efeb;
+}
+
+body:is(.template-collection, .template-search) .card__inner > .media,
+body:is(.template-collection, .template-search) .card__inner > .card__content {
+  width: 100%;
+  height: 100%;
+}
+
+body:is(.template-collection, .template-search) .card-information {
+  padding: 1.4rem .6rem .8rem;
+}
+
+body:is(.template-collection, .template-search) .card-information__wrapper {
+  display: grid;
+  gap: .8rem;
+}
+
+body:is(.template-collection, .template-search) .collection-product-list {
+  column-gap: clamp(1.6rem, 2vw, 2.4rem);
+  row-gap: clamp(2.4rem, 4vw, 4rem);
+}
+
+@media screen and (max-width: 575px) {
+  /* Match the gap used to calculate the theme's two-column mobile card widths. */
+  body:is(.template-collection, .template-search) .collection-product-list--2-mobile {
+    column-gap: .8rem;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  body:is(.template-collection, .template-search) .collection-wrapper--vertical {
+    display: block;
+  }
+
+  body:is(.template-collection, .template-search) .products-grid,
+  body:is(.template-collection, .template-search) .collection-wrapper--vertical .products-grid.full-width {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  body:is(.template-collection, .template-search)
+    .products-grid .collection-product-list--3-items .collection-product-card,
+  body:is(.template-collection, .template-search)
+    .products-grid .collection-product-list--4-items .collection-product-card {
+    width: calc((100% - clamp(3.2rem, 4vw, 4.8rem)) / 3);
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  body:is(.template-collection, .template-search)
+    .products-grid .collection-product-list--4-items .collection-product-card {
+    width: calc((100% - 7.2rem) / 4);
+  }
+}
+
+body:is(.template-collection, .template-search) .card-wrapper .placeholder-svg {
+  width: 100%;
+  height: 100%;
+  background: #efeee9;
+}
+
+body:not(.template-index) .card:not(.card--horizontal) .media img {
+  transition: transform .7s var(--yn-ease, ease);
+}
+
+body:not(.template-index) .card:not(.card--horizontal):hover .media img {
+  transform: scale(1.05);
+}
+
+body:not(.template-index) .card__content {
+  padding: 1.6rem .6rem .8rem;
+}
+
+body:not(.template-index) .card__heading {
+  font-size: clamp(1.5rem, 1.2vw, 1.8rem);
+  letter-spacing: -.02em;
+}
+
+body:not(.template-index) .card-information > :is(.caption-with-letter-spacing, .vendor) {
+  color: var(--yl-muted);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+body:not(.template-index) .price-item--regular,
+body:not(.template-index) .price-item--sale {
+  color: var(--yl-ink);
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+body:not(.template-index) .badge {
+  padding: .7rem 1rem;
+  border: 0;
+  border-radius: 999rem;
+  background: var(--yl-accent);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* Filters, sort and pagination */
+body:is(.template-collection, .template-search) :is(.facets-container, .facets__form, .mobile-facets__inner) {
+  border-color: var(--yl-line);
+  background: #faf9f7;
+}
+
+/* Shared desktop filter trigger. The base facets component assigns its
+   nested icon and label a dark color, which becomes unreadable after the
+   global action-button background is applied. */
+body:is(.template-collection, .template-search) .facets-button-show {
+  display: none;
+  align-items: center;
+  gap: .8rem;
+  min-height: 4.8rem;
+  padding: 1.2rem 2.2rem;
+  border: .1rem solid var(--yl-ink);
+  border-radius: 999rem;
+  background: var(--yl-ink);
+  color: #fff;
+  box-shadow: 0 1rem 2.4rem rgba(17, 24, 39, .14);
+}
+
+@media screen and (min-width: 750px) {
+  body:is(.template-collection, .template-search) .facets-button-show {
+    display: flex;
+  }
+}
+
+body:is(.template-collection, .template-search) .facets-button-show :is(span, svg) {
+  color: #fff;
+  opacity: 1;
+}
+
+body:is(.template-collection, .template-search) .facets-button-show svg :is(path, line) {
+  stroke: currentColor;
+}
+
+body:is(.template-collection, .template-search) .facets-button-show.active {
+  border-color: var(--yl-accent);
+  background: var(--yl-accent);
+}
+
+@media screen and (hover: hover) and (pointer: fine) {
+  body:is(.template-collection, .template-search) .facets-button-show:hover {
+    border-color: var(--yl-accent);
+    background: var(--yl-accent);
+    color: #fff;
+  }
+
+  body:is(.template-collection, .template-search) .facets-button-show:hover :is(span, svg) {
+    color: #fff;
+    opacity: 1;
+  }
+}
+
+body:is(.template-collection, .template-search) .facets-button-show:focus-visible {
+  outline: .2rem solid var(--yl-accent);
+  outline-offset: .3rem;
+}
+
+body:not(.template-index) :is(.facets__summary, .facet-filters__label, .product-count__text) {
+  color: var(--yl-ink);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+body:not(.template-index) .facets__display {
+  overflow: hidden;
+  border: 1px solid var(--yl-line);
+  border-radius: var(--yl-radius-lg);
+  background: #fff;
+  box-shadow: var(--yl-shadow);
+}
+
+body:not(.template-index) .pagination__item {
+  width: 4rem;
+  height: 4rem;
+  border: 1px solid var(--yl-line);
+  border-radius: 50%;
+  background: #fff;
+}
+
+body:not(.template-index) .pagination__item--current {
+  background: var(--yl-ink);
+  color: #fff;
+}
+
+/* Product detail */
+body.template-product main {
+  background: #faf9f7;
+}
+
+body.template-product .product {
+  gap: clamp(3rem, 5vw, 7rem);
+  padding-block: clamp(2rem, 4vw, 5.6rem) clamp(4rem, 6vw, 8rem);
+}
+
+body.template-product .product__outer {
+  align-items: flex-start;
+  gap: clamp(3rem, 4vw, 6rem);
+}
+
+body.template-product :is(.product__media-item, .product__media, .thumbnail) {
+  overflow: hidden;
+  border-radius: var(--yl-radius-lg);
+  background: #efeee9;
+}
+
+body.template-product .product__info-container {
+  padding: clamp(2rem, 3vw, 4rem);
+  border: 1px solid rgba(17, 24, 39, .06);
+  border-radius: 3.2rem;
+  background: #fff;
+  box-shadow: var(--yl-shadow);
+}
+
+@media screen and (min-width: 990px) {
+  body.template-product .product__outer .product__main,
+  body.template-product .product__outer--desktop-order.product__outer .product__main {
+    width: min(58%, 82rem);
+  }
+
+  body.template-product .product__outer .product__info-container,
+  body.template-product .product__outer--desktop-order.product__outer .product__info-container {
+    width: min(42%, 54rem);
+    max-width: 54rem;
+    flex: 1 1 42%;
+  }
+}
+
+body.template-product .product__title h1 {
+  font-size: clamp(3rem, 4vw, 5.6rem);
+}
+
+body.template-product .product__info-container {
+  font-size: 1.4rem;
+}
+
+body.template-product .product__info-container :is(.breadcrumb, .product-form__group-name, .yd-product-highlight) {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+body.template-product .product__info-container .price {
+  font-size: clamp(1.8rem, 1.6vw, 2.2rem);
+}
+
+body.template-product .yd-personalization-message-container .title {
+  margin: 0;
+  font-size: clamp(2rem, 2.2vw, 3.2rem);
+  line-height: 1.15;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+body.template-product .yd-personalization-message-container .description {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+body.template-product
+  .product-form__controls:not(.product-form__controls--colors)
+  .product-form__controls-group {
+  gap: .6rem 1.8rem;
+}
+
+body.template-product
+  .product-form__controls:not(.product-form__controls--colors)
+  .product-form__controls-group input + label:not(.color-swatch):not(.variant-swatch) {
+  height: auto;
+  padding: .5rem 0;
+  border: 0;
+  border-bottom: .2rem solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--yl-muted);
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+body.template-product
+  .product-form__controls:not(.product-form__controls--colors)
+  .product-form__controls-group input:checked + label:not(.color-swatch):not(.variant-swatch) {
+  border-bottom-color: var(--yl-accent);
+  color: var(--yl-ink);
+}
+
+body.template-product
+  .product-form__controls:not(.product-form__controls--colors)
+  .product-form__controls-group input + label:not(.color-swatch):not(.variant-swatch):hover {
+  border-color: transparent;
+  border-bottom-color: var(--yl-accent);
+  color: var(--yl-ink);
+}
+
+/* PDP actions: homepage pill language with explicit, accessible states. */
+body.template-product .product__info-container :is(.product-popup__button, .product-form__submit,
+  .shopify-payment-button__button.shopify-payment-button__button--unbranded) {
+  min-height: 4.8rem;
+  height: 4.8rem;
+  max-height: none;
+  padding: 1.2rem 2.2rem;
+  border: .1rem solid var(--yl-ink);
+  border-radius: 999rem;
+  font-family: var(--yn-font-body, var(--font-body-family));
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .06em;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: color .25s ease, background-color .25s ease,
+    border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+
+body.template-product .product__info-container .product-popup__button {
+  width: fit-content;
+  background: transparent;
+  color: var(--yl-ink);
+}
+
+body.template-product .product__info-container .product-popup__button
+  :is(.button__label, .button__label::after) {
+  color: currentColor;
+}
+
+body.template-product .product__info-container .product-form__submit {
+  background: var(--yl-ink);
+  color: #fff;
+}
+
+/* The dynamic-checkout Add to Cart uses the theme's transparent variant,
+   whose nested label otherwise keeps a dark foreground on this dark button. */
+body.template-product .product__info-container .product-form__submit .button__label,
+body.template-product .product__info-container .product-form__submit .button__label::after {
+  color: #fff;
+}
+
+body.template-product .product__info-container
+  .shopify-payment-button__button.shopify-payment-button__button--unbranded {
+  width: 100%;
+  background: var(--yl-accent);
+  border-color: var(--yl-accent);
+  color: #fff !important;
+}
+
+@media screen and (hover: hover) and (pointer: fine) {
+  body.template-product .product__info-container :is(.product-popup__button, .product-form__submit,
+    .shopify-payment-button__button.shopify-payment-button__button--unbranded):not(:disabled):hover {
+    transform: translateY(-2px);
+    background: var(--yl-accent);
+    border-color: var(--yl-accent);
+    color: #fff;
+    opacity: 1;
+    box-shadow: 0 1rem 2.4rem rgba(229, 57, 53, .2);
+  }
+
+  body.template-product .product__info-container
+    .shopify-payment-button__button.shopify-payment-button__button--unbranded:not(:disabled):hover {
+    background: var(--yl-ink);
+    border-color: var(--yl-ink);
+    color: #fff !important;
+    box-shadow: 0 1rem 2.4rem rgba(17, 24, 39, .18);
+  }
+
+  body.template-product .product__info-container .product-form__submit:not(:disabled):hover
+    :is(.button__label, .button__label::after) {
+    color: #fff;
+  }
+
+  body.template-product .product__info-container .product-popup__button:not(:disabled):hover
+    :is(.button__label, .button__label::after) {
+    color: #fff;
+  }
+}
+
+body.template-product .product__info-container .product-form__submit:disabled {
+  background: #e5e7eb;
+  border-color: #e5e7eb;
+  color: #4b5563;
+  cursor: not-allowed;
+  opacity: 1;
+  box-shadow: none;
+  transform: none;
+}
+
+body.template-product .product__info-container .product-form__submit:disabled
+  :is(.button__label, .button__label::after) {
+  color: #4b5563;
+}
+
+body.template-product .product__info-container :is(.product-popup__button, .product-form__submit,
+  .shopify-payment-button__button.shopify-payment-button__button--unbranded):focus-visible {
+  outline: .2rem solid var(--yl-accent);
+  outline-offset: .3rem;
+}
+
+body.template-product .product-form__buttons-row {
+  gap: 1rem;
+}
+
+body.template-product .product-form__quantity .quantity {
+  height: 4.8rem;
+  border: .1rem solid var(--yl-line);
+  border-radius: 999rem;
+  background: #fff;
+}
+
+/* PDP order benefits: individual soft cards instead of a divided grey bar. */
+body.template-product .yd-product-order-badges {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .8rem;
+  width: 100%;
+  height: auto;
+  margin-top: 1.6rem !important;
+  padding: 0;
+  background: transparent;
+}
+
+body.template-product .yd-product-order-badges .tags {
+  width: auto;
+  min-width: 0;
+  min-height: 9.2rem;
+  gap: .8rem;
+  justify-content: center;
+  padding: 1.2rem .8rem;
+  border: .1rem solid rgba(17, 24, 39, .08);
+  border-radius: var(--yl-radius-md);
+  background: #faf9f7;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+body.template-product .yd-product-order-badges .tags:not(:last-child) {
+  border-right: .1rem solid rgba(17, 24, 39, .08);
+}
+
+body.template-product .yd-product-order-badges .tags img {
+  width: 4.4rem;
+  height: 4.4rem;
+  object-fit: contain;
+  border: 0;
+  border-radius: 50%;
+}
+
+body.template-product .yd-product-order-badges .tags p {
+  margin: 0;
+  color: var(--yl-ink);
+  font-size: 1.2rem !important;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+body.template-product .yd-product-order-badges .tags .rating {
+  gap: .3rem;
+}
+
+@media screen and (hover: hover) and (pointer: fine) {
+  body.template-product .yd-product-order-badges .tags:hover {
+    transform: translateY(-2px);
+    border-color: rgba(229, 57, 53, .28);
+    box-shadow: 0 .8rem 2rem rgba(17, 24, 39, .08);
+  }
+}
+
+body.template-product :is(.accordion, .product__accordion) {
+  border-color: var(--yl-line);
+}
+
+/* Cart and search surfaces */
+body.template-cart :is(.cart-items, .cart__footer),
+body.template-search .template-search {
+  padding-block: clamp(4rem, 7vw, 8rem);
+}
+
+body.template-cart .cart-item,
+body:not(.template-index) .drawer__inner {
+  border-radius: var(--yl-radius-lg);
+  background: #fff;
+}
+
+body:not(.template-index) :is(.cart-item__image, .cart-drawer-item__image) {
+  border-radius: var(--yl-radius-md);
+}
+
+/* Standard pages keep their content and order; only their presentation changes. */
+body.template-page #MainContent > .shopify-section:first-child:not([class*='yoode-new-home']) {
+  position: relative;
+}
+
+body.template-page :is(.main-page-title, .page-title) {
+  margin-block: clamp(4rem, 7vw, 8rem) clamp(2rem, 4vw, 4rem);
+}
+
+body.template-page .rte :is(img, iframe, video) {
+  overflow: hidden;
+  border-radius: var(--yl-radius-lg);
+}
+
+body.template-page .rte :is(blockquote, table) {
+  border-radius: var(--yl-radius-md);
+  background: #fff;
+}
+
+/* About: preserve every block while giving legacy sections the home language. */
+body.yd-context-about-us .yd-brand-story__tagline {
+  font-size: clamp(3.6rem, 5vw, 6.4rem);
+}
+
+body.yd-context-about-us .yd-brand-story__intro {
+  max-width: 72rem;
+  margin-inline: auto;
+  color: var(--yl-muted);
+  font-size: clamp(1.5rem, 1.3vw, 1.8rem);
+}
+
+body.yd-context-about-us .yd-brand-story__grid {
+  gap: 2.4rem;
+}
+
+body.yd-context-about-us .yd-brand-story__card,
+body.yd-context-about-us .yd-vertical-timeline .timeline-content {
+  overflow: hidden;
+  border: 1px solid var(--yl-line);
+  border-radius: var(--yl-radius-lg);
+  background: #fff;
+  box-shadow: 0 1rem 3rem rgba(17, 24, 39, .06);
+}
+
+body.yd-context-about-us .yd-technology :is(.title, .timeline-main-title),
+body.yd-context-about-us .steps__content-heading {
+  font-size: clamp(2.8rem, 4vw, 5.2rem);
+}
+
+body.yd-context-about-us .bg-black .yd-technology > .title,
+body.yd-context-about-us .bg-black .yd-technology > .para {
+  color: #fff;
+}
+
+body.yd-context-about-us .bg-black .yd-technology > .para {
+  opacity: .82;
+}
+
+body.yd-context-about-us .yd-technology .para,
+body.yd-context-about-us .steps__content-description {
+  color: var(--yl-muted);
+  font-size: clamp(1.4rem, 1.2vw, 1.7rem);
+}
+
+body.yd-context-about-us .yd-technology .card {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: var(--yl-radius-lg);
+}
+
+/* Case studies and case details. */
+body:is(.yd-context-case-studies, .yd-context-case-study-detail, .yd-context-idynamics-case-study, .yd-context-kombans-case-study)
+  .yd-jersey-section .yd-container {
+  width: min(100%, calc(var(--yl-container) + var(--yl-gutter) * 2));
+  margin-inline: auto;
+  padding-inline: var(--yl-gutter);
+}
+
+body:is(.yd-context-case-studies, .yd-context-case-study-detail, .yd-context-idynamics-case-study, .yd-context-kombans-case-study)
+  .yd-jersey-section .yd-row {
+  align-items: center;
+  gap: clamp(2.4rem, 5vw, 7rem);
+}
+
+body:is(.yd-context-case-studies, .yd-context-case-study-detail, .yd-context-idynamics-case-study, .yd-context-kombans-case-study)
+  .yd-jersey-section .yd-image img {
+  border-radius: var(--yl-radius-lg);
+}
+
+body:is(.yd-context-case-studies, .yd-context-case-study-detail, .yd-context-idynamics-case-study, .yd-context-kombans-case-study)
+  .yd-jersey-section :is(.yd-main-title, .yd-title),
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study, .yd-context-kombans-case-study)
+  :is(.yd-jersey-showcase-section .yd-title, .yd-process-heading, .yd-final-output-section .yd-title) {
+  font-size: clamp(2.8rem, 4vw, 5.2rem);
+}
+
+body:is(.yd-context-case-studies, .yd-context-case-study-detail, .yd-context-idynamics-case-study, .yd-context-kombans-case-study)
+  .yd-jersey-section .yd-desc {
+  max-width: 62ch;
+  color: var(--yl-muted);
+  font-size: clamp(1.5rem, 1.2vw, 1.7rem);
+  line-height: 1.7;
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study, .yd-context-kombans-case-study)
+  :is(.yd-process-item, .yd-final-output-section, .yd-testimonial-section, .yd-slider-with-popup)
+  :is(p, li) {
+  font-size: clamp(1.4rem, 1.1vw, 1.6rem);
+  line-height: 1.7;
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study, .yd-context-kombans-case-study)
+  :is(.yd-first-choice .multicolumn-card, .yd-process-item, .yd-slider-with-popup .content-card) {
+  overflow: hidden;
+  border: 1px solid var(--yl-line);
+  border-radius: var(--yl-radius-lg);
+  background: #fff;
+  box-shadow: 0 1rem 3rem rgba(17, 24, 39, .06);
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study, .yd-context-kombans-case-study)
+  .yd-testimonial-wrapper {
+  max-width: 96rem;
+  margin-inline: auto;
+}
+
+/* BitsNPixs and iDynamics hero CTAs: keep both labels readable and align the
+   primary/secondary interaction states with the homepage button system. */
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-jersey-showcase-section .yd-buttons .button {
+  border-width: .1rem !important;
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-jersey-showcase-section .yd-buttons .button--secondary {
+  border-color: var(--yl-ink) !important;
+  background: var(--yl-ink);
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-jersey-showcase-section .yd-buttons .button--tertiary {
+  border-color: var(--yl-accent) !important;
+  background: var(--yl-accent);
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-jersey-showcase-section .yd-buttons .button :is(.button__label, .button__label::after) {
+  color: #fff;
+}
+
+/* These two case studies use the execution component as a compact timeline.
+   Undo the generic case-study card treatment so step labels are not pinned to
+   a rounded card edge and the sequence remains easy to scan. */
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-process-section .yd-process-wrapper {
+  width: min(100%, 104rem);
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-process-section .yd-process-item {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: clamp(1.6rem, 3vw, 4rem);
+  overflow: visible;
+  padding: 2.4rem 0;
+  border: 0;
+  border-bottom: .1rem solid var(--yl-line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-process-section .yd-process-item:first-child {
+  border-top: .1rem solid var(--yl-line);
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-process-section .yd-process-step {
+  min-width: 0;
+  color: var(--yl-accent);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-process-section .yd-process-content h3 {
+  margin-bottom: .8rem;
+  color: var(--yl-ink);
+  font-size: clamp(1.6rem, 1.4vw, 2rem);
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-process-section .yd-process-content p {
+  max-width: 72ch;
+  color: var(--yl-muted);
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  .yd-testimonial-section .yd-testimonial-title {
+  color: #fff;
+}
+
+body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+  h2.yd-title {
+  margin-bottom: clamp(1.2rem, 1.5vw, 2rem);
+  padding-bottom: 0;
+}
+
+@media screen and (max-width: 749px) {
+  body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+    .yd-process-section .yd-process-item {
+    grid-template-columns: 1fr;
+    gap: .8rem;
+    padding-block: 2rem;
+  }
+}
+
+@media screen and (hover: hover) and (pointer: fine) {
+  body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+    .yd-jersey-showcase-section .yd-buttons .button--secondary:hover {
+    border-color: var(--yl-accent) !important;
+    background: var(--yl-accent);
+  }
+
+  body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+    .yd-jersey-showcase-section .yd-buttons .button--tertiary:hover {
+    border-color: var(--yl-ink) !important;
+    background: var(--yl-ink);
+  }
+
+  body:is(.yd-context-case-study-detail, .yd-context-idynamics-case-study)
+    .yd-jersey-showcase-section .yd-buttons .button:hover
+    :is(.button__label, .button__label::after) {
+    color: #fff;
+  }
+}
+
+/* Stores and locations. */
+body:is(.yd-context-store-bangalore, .yd-context-store-trivandrum, .yd-context-store-marthandam, .yd-context-store-chennai)
+  .rich-text__blocks {
+  max-width: 90rem;
+  padding-block: clamp(4rem, 7vw, 8rem);
+}
+
+body:is(.yd-context-store-bangalore, .yd-context-store-trivandrum, .yd-context-store-marthandam, .yd-context-store-chennai)
+  :is(.media-banner__wrapper, .yd-map-container, .yd-slider-with-popup .content-card) {
+  overflow: hidden;
+  border-radius: var(--yl-radius-lg);
+}
+
+body:is(.yd-context-store-bangalore, .yd-context-store-trivandrum, .yd-context-store-marthandam, .yd-context-store-chennai)
+  .yd-map-container {
+  border: 1px solid var(--yl-line);
+  background: #fff;
+  box-shadow: var(--yl-shadow);
+}
+
+body.yd-context-store-locations :is(.steps__content-image, .steps__content-inner) {
+  overflow: hidden;
+  border-radius: var(--yl-radius-lg);
+}
+
+/* Shop hub. */
+body.yd-context-shop .slideshow {
+  margin-top: 0;
+}
+
+body.yd-context-shop :is(.yd-coll-media-banner, .social-media-slide) {
+  overflow: hidden;
+  border-radius: 0;
+}
+
+body.yd-context-shop :is(.banner__heading, .social-media-content__main-text) {
+  font-family: var(--yn-font-heading, var(--font-heading-family));
+  font-size: clamp(2.8rem, 4vw, 5.2rem);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+}
+
+/* Chennai landing page: restore contrast in the dark production story. */
+body.yd-context-yoode-chennai .yd-chennai {
+  color: var(--yl-ink);
+  font-size: 1.6rem;
+}
+
+body.yd-context-yoode-chennai .yd-chennai :is(.blue, .process, .process-head) {
+  color: #fff;
+}
+
+body.yd-context-yoode-chennai .yd-chennai :is(.blue, .process, .process-head)
+  :is(h1, h2, h3, h4, strong, b) {
+  color: #fff;
+}
+
+body.yd-context-yoode-chennai .yd-chennai
+  :is(.testi-card, .site-footer) :is(h1, h2, h3, h4) {
+  color: #fff;
+}
+
+body.yd-context-yoode-chennai .yd-chennai :is(.blue, .process, .process-head)
+  :is(p, li) {
+  color: rgba(255, 255, 255, .82);
+}
+
+body.yd-context-yoode-chennai .yd-chennai :is(.trust, .cats, .products, .faq) p {
+  font-size: clamp(1.4rem, 1.1vw, 1.6rem);
+  line-height: 1.7;
+}
+
+body.yd-context-yoode-chennai .yd-chennai :is(.prod, .faq-item, .yd-chennai-banner__card) {
+  border-radius: var(--yl-radius-lg);
+}
+
+/* Custom sports jerseys: protect the intended light-on-dark sections from
+   global heading styles and keep dense supporting copy readable. */
+body:is(.yd-context-custom-jerseys, .yd-context-custom-jerseys-bangalore) .yd-seo-section {
+  --yd-seo-on-dark-muted: rgba(255, 255, 255, .78);
+  --yd-seo-fs-label: 1.2rem;
+  --yd-seo-fs-feature-title: 1.4rem;
+  --yd-seo-fs-feature-text: 1.4rem;
+  --yd-seo-fs-step-text: 1.4rem;
+  --yd-seo-fs-print-text: 1.4rem;
+  --yd-seo-fs-why-text: 1.4rem;
+  --yd-seo-fs-bulk-text: 1.4rem;
+  --yd-seo-fs-review: 1.4rem;
+  --yd-seo-fs-store-address: 1.4rem;
+  --yd-seo-fs-faq-a: 1.4rem;
+  font-size: 1.6rem;
+}
+
+body:is(.yd-context-custom-jerseys, .yd-context-custom-jerseys-bangalore)
+  :is(.yd-seo-features, .yd-seo-steps, .yd-seo-bulk, .yd-seo-cta)
+  :is(h1, h2, h3, h4, .yd-seo-title) {
+  color: #fff;
+}
+
+body:is(.yd-context-custom-jerseys, .yd-context-custom-jerseys-bangalore)
+  .yd-seo-features :is(.yd-seo-feature-title, .yd-seo-feature-text),
+body:is(.yd-context-custom-jerseys, .yd-context-custom-jerseys-bangalore)
+  .yd-seo-steps :is(.yd-seo-step-num, .yd-seo-step-title, .yd-seo-step-text),
+body:is(.yd-context-custom-jerseys, .yd-context-custom-jerseys-bangalore)
+  .yd-seo-bulk :is(.yd-seo-bulk-title, .yd-seo-bulk-text) {
+  color: rgba(255, 255, 255, .84);
+}
+
+body:is(.yd-context-custom-jerseys, .yd-context-custom-jerseys-bangalore)
+  :is(.yd-seo-text, .yd-seo-subtitle, .yd-seo-print-text, .yd-seo-why-text, .yd-seo-faq-a) {
+  font-size: clamp(1.4rem, 1.1vw, 1.6rem);
+  line-height: 1.65;
+}
+
+body:is(.yd-context-custom-jerseys, .yd-context-custom-jerseys-bangalore)
+  :is(.yd-seo-print-card, .yd-seo-why-card, .yd-seo-review, .yd-seo-store-card, .yd-seo-faq-item) {
+  border-radius: var(--yl-radius-lg);
+}
+
+/* Corporate gifting Bangalore: retain copy while improving hierarchy and
+   legibility across the long-form landing page. */
+body.yd-context-corporate-gifting-blr #MainContent {
+  color: var(--yl-ink);
+  font-size: 1.6rem;
+}
+
+body.yd-context-corporate-gifting-blr
+  :is(.yd-blr-hero, .yd-blr-about, .yd-corporate-statistic, .yd-seo-content)
+  :is(h1, h2, h3) {
+  color: var(--yl-ink);
+  line-height: 1.08;
+}
+
+body.yd-context-corporate-gifting-blr
+  :is(.yd-blr-hero, .yd-blr-about, .yd-corporate-statistic, .yd-seo-content)
+  :is(p, li) {
+  color: var(--yl-muted);
+  font-size: clamp(1.4rem, 1.1vw, 1.6rem);
+  line-height: 1.7;
+}
+
+body.yd-context-corporate-gifting-blr
+  :is(.yd-blr-hero, .yd-blr-about, .yd-corporate-statistic)
+  img {
+  border-radius: var(--yl-radius-lg);
+}
+
+body.yd-context-corporate-gifting-blr
+  :is(.yd-blr-hero form, .yd-first-choice .multicolumn-card, .collapsible-content__item) {
+  border-radius: var(--yl-radius-lg);
+}
+
+body.yd-context-corporate-gifting-blr
+  :is(.yd-blr-hero .content p, .yd-blr-hero .field__label, .yd-blr-hero .field__input,
+    .yd-blr-about .richtext-content, .yd-first-choice .multicolumn-card__text,
+    .yd-corporate-statistic .richtext-content, .yd-corporate-statistic .short-desc,
+    .yd-seo-content .richtext-content) {
+  color: #4b5563;
+  font-size: clamp(1.4rem, 1.1vw, 1.6rem);
+  line-height: 1.7;
+}
+
+body.yd-context-corporate-gifting-blr
+  :is(.yd-blr-hero .title, .yd-blr-about h2, .yd-first-choice h2,
+    .yd-corporate-statistic h2, .collapsible-content__heading) {
+  color: var(--yl-ink);
+  font-size: clamp(3rem, 4vw, 5.2rem);
+  line-height: 1.08;
+}
+
+body.yd-context-corporate-gifting-blr .yd-seo-content {
+  max-width: var(--yl-container);
+  margin-inline: auto;
+  padding-inline: var(--yl-gutter);
+}
+
+@media screen and (max-width: 749px) {
+  body:is(.yd-context-yoode-chennai, .yd-context-custom-jerseys,
+    .yd-context-custom-jerseys-bangalore, .yd-context-corporate-gifting-blr) {
+    --yl-gutter: 1.6rem;
+  }
+
+  body.yd-context-corporate-gifting-blr
+    :is(.yd-blr-hero .title, .yd-blr-about h2, .yd-first-choice h2,
+      .yd-corporate-statistic h2, .collapsible-content__heading) {
+    font-size: clamp(2.8rem, 9vw, 4rem);
+  }
+}
+
+/* Keep interaction usable for keyboard and reduced-motion visitors. */
+@media (prefers-reduced-motion: reduce) {
+  body:not(.template-index) *,
+  body:not(.template-index) *::before,
+  body:not(.template-index) *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  body:not(.template-index) {
+    --yl-gutter: clamp(1.6rem, 3vw, 2.4rem);
+  }
+
+  body.template-product .product__info-container {
+    border-radius: 2.4rem;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  body:is(.template-collection, .template-search) .card-wrapper {
+    padding: .8rem;
+    border-radius: 2rem;
+  }
+
+  body:not(.template-index) .card:not(.card--horizontal) .card__inner {
+    border-radius: 1.4rem;
+  }
+
+  body:not(.template-index) .card__content {
+    padding: 1.2rem .4rem .5rem;
+  }
+
+  body.template-product .product__info-container {
+    padding: 2rem 1.6rem;
+    border-radius: 2rem;
+  }
+
+  body.template-product .product__info-container :is(.product-popup__button, .product-form__submit,
+    .shopify-payment-button__button.shopify-payment-button__button--unbranded) {
+    min-height: 4.6rem;
+    height: 4.6rem;
+    padding-inline: 1.8rem;
+    font-size: 1.2rem;
+  }
+
+  body.template-product .product-form__quantity .quantity {
+    height: 4.6rem;
+  }
+
+  body.template-product .yd-product-order-badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.template-product .yd-product-order-badges .tags {
+    min-height: 8rem;
+  }
+}

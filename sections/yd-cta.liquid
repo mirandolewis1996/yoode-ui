@@ -1,0 +1,296 @@
+{{ 'yd-cta.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .yd-cta-{{ section.id }} {
+    /* Section Colors handled by color_scheme class */
+    /* Button Colors handled by button_color_scheme class or overrides */
+    --cta-width: {{ section.settings.desktop_width_percent }}%;
+    --cta-align: {{ section.settings.text_alignment }};
+    --cta-radius: {{ section.settings.border_radius }}px;
+
+    --cta-heading-size: {{ section.settings.heading_size }}px;
+    --cta-subtext-size: {{ section.settings.subtext_size }}px;
+
+    --btn-radius: {{ section.settings.button_border_radius }}px;
+    --btn-bg: {{ section.settings.button_background }};
+    --btn-text: {{ section.settings.button_text_color }};
+    --btn-bg-hover: {{ section.settings.button_background_hover }};
+    --btn-text-hover: {{ section.settings.button_text_color_hover }};
+
+    --cta-padding-v: {{ section.settings.padding_vertical }}px;
+    --cta-padding-h: {{ section.settings.padding_horizontal }}px;
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding section-padding">
+  <div class="page-width">
+    <div class="yd-cta yd-cta-{{ section.id }} yd-cta--{{ section.settings.text_alignment }} color-{{ section.settings.container_color_scheme }} gradient">
+      <div class="yd-cta__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="yd-cta__heading">
+            {{ section.settings.heading }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.subtext != blank -%}
+          <div class="yd-cta__subtext rte">
+            {{ section.settings.subtext }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.button_link != blank -%}
+          <a
+            href="{{ section.settings.button_link }}"
+            class="yd-cta__button"
+            {% if section.settings.open_in_new_tab %}
+              target="_blank" rel="noopener noreferrer"
+            {% endif %}
+          >
+            {%- if section.settings.show_icon -%}
+              <span class="yd-cta__icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </span>
+            {%- endif -%}
+            {{ section.settings.button_text }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YD CTA",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Unlock Exclusive Bulk Pricing"
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "<p>Chat on WhatsApp for special pricing for your custom merchandise orders.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Label",
+      "default": "Chat on WhatsApp"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open in new tab",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Show button icon",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Container Width (Desktop)",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Inner Vertical Padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Inner Horizontal Padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Corner Radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 16,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "subtext_size",
+      "label": "Subtext Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Button Style"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button Background",
+      "default": "#25D366"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_background_hover",
+      "label": "Button Background (Hover)",
+      "default": "#1DA851"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color_hover",
+      "label": "Button Text Color (Hover)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button Radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Section Color Scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "container_color_scheme",
+      "label": "Container Color Scheme",
+      "default": "background-2"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD CTA"
+    }
+  ]
+}
+{% endschema %}

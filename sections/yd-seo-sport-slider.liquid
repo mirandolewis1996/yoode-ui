@@ -1,0 +1,304 @@
+{%- assign half = section.blocks.size | plus: 1 | divided_by: 2 -%}
+
+<section
+  class="yd-seo-section yd-seo-sports"
+  aria-labelledby="yd-seo-sports-title-{{ section.id }}"
+  style="
+    --yd-seo-sports-min-h:{{ section.settings.min_height }}vh;
+    --yd-seo-jersey-h:clamp(150px,95vw,{{ section.settings.jersey_height }}px);
+  "
+>
+  <div class="yd-seo-container">
+    <div class="yd-seo-head yd-seo-reveal">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="yd-seo-title" id="yd-seo-sports-title-{{ section.id }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="yd-seo-subtitle">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="yd-seo-stage">
+      <!-- Left arc ---------------------------------------------------- -->
+      <div class="yd-seo-arc yd-seo-arc-start" role="group" aria-label="{{ section.settings.chooser_label | escape }}">
+        {%- for block in section.blocks -%}
+          {%- if forloop.index <= half -%}
+            <button
+              class="yd-seo-sport{% if forloop.first %} is-active{% endif %}"
+              type="button"
+              data-sport="{{ block.id }}"
+              data-sport-label="{{ block.settings.name | escape }}"
+              aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+              {% if block.settings.icon != blank %}
+                style="--yd-seo-sport-art:url({{ block.settings.icon | image_url: width: 96 }})"
+              {% endif %}
+              {{ block.shopify_attributes }}
+            >
+              <span class="yd-seo-sport-art" aria-hidden="true"></span>
+              <span class="yd-seo-sport-name">{{ block.settings.name }}</span>
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <!-- Jersey viewer ----------------------------------------------- -->
+      <div class="yd-seo-viewer">
+        <button
+          class="yd-seo-nav yd-seo-nav-prev yd-seo-nav-mobprev"
+          type="button"
+          aria-label="{{ section.settings.prev_label | escape }}"
+        >
+          <svg
+            class="yd-seo-nav-icon"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M13 8H3M7 4 3 8l4 4"/>
+          </svg>
+        </button>
+
+        <div class="yd-seo-panels" aria-live="polite">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.jersey_1 != blank
+              or block.settings.jersey_2 != blank
+              or block.settings.jersey_3 != blank
+            -%}
+              <div
+                class="yd-seo-panel"
+                data-sport="{{ block.id }}"
+                {% unless forloop.first %}
+                  hidden
+                {% endunless %}
+              >
+                {%- if block.settings.jersey_1 != blank -%}
+                  <img
+                    class="yd-seo-jersey"
+                    src="{{ block.settings.jersey_1 | image_url: width: 1600 }}"
+                    srcset="
+                      {{ block.settings.jersey_1 | image_url: width: 400 }} 400w,
+                      {{ block.settings.jersey_1 | image_url: width: 600 }} 600w,
+                      {{ block.settings.jersey_1 | image_url: width: 800 }} 800w,
+                      {{ block.settings.jersey_1 | image_url: width: 1200 }} 1200w,
+                      {{ block.settings.jersey_1 | image_url: width: 1600 }} 1600w,
+                      {{ block.settings.jersey_1 | image_url: width: 2000 }} 2000w
+                    "
+                    sizes="(max-width: 767px) 150vw, 50vw"
+                    alt="{{ block.settings.jersey_1_alt | escape }}"
+                    width="{{ block.settings.jersey_1.width }}"
+                    height="{{ block.settings.jersey_1.height }}"
+                    loading="lazy"
+                    decoding="async"
+                    title="{{ block.settings.front_image_title | escape }}"
+                  >
+                {%- endif -%}
+
+                {% comment %}
+                  {%- if block.settings.jersey_2 != blank -%}
+                    <img class="yd-seo-jersey"
+                         src="{{ block.settings.jersey_2 | image_url: width: 600 }}"
+                         srcset="{{ block.settings.jersey_2 | image_url: width: 300 }} 300w,
+                                 {{ block.settings.jersey_2 | image_url: width: 600 }} 600w"
+                         sizes="(max-width: 767px) 30vw, 15vw"
+                         alt="{{ block.settings.jersey_2_alt | escape }}"
+                         width="{{ block.settings.jersey_2.width }}"
+                         height="{{ block.settings.jersey_2.height }}"
+                         loading="lazy" decoding="async">
+                  {%- endif -%}
+
+                  {%- if block.settings.jersey_3 != blank -%}
+                    <img class="yd-seo-jersey"
+                         src="{{ block.settings.jersey_3 | image_url: width: 600 }}"
+                         srcset="{{ block.settings.jersey_3 | image_url: width: 300 }} 300w,
+                                 {{ block.settings.jersey_3 | image_url: width: 600 }} 600w"
+                         sizes="(max-width: 767px) 30vw, 15vw"
+                         alt="{{ block.settings.jersey_3_alt | escape }}"
+                         width="{{ block.settings.jersey_3.width }}"
+                         height="{{ block.settings.jersey_3.height }}"
+                         loading="lazy" decoding="async">
+                  {%- endif -%}
+                {% endcomment %}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+
+          <!-- fallback shown for any sport that has no images yet -->
+          <div class="yd-seo-panel yd-seo-panel-empty" data-sport="" hidden>
+            <p class="yd-seo-empty-text">
+              <strong class="yd-seo-empty-sport">These</strong> {{ section.settings.empty_text }}
+            </p>
+          </div>
+        </div>
+
+        <button
+          class="yd-seo-nav yd-seo-nav-next yd-seo-nav-mobnext"
+          type="button"
+          aria-label="{{ section.settings.next_label | escape }}"
+        >
+          <svg
+            class="yd-seo-nav-icon"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Right arc --------------------------------------------------- -->
+      <div class="yd-seo-arc yd-seo-arc-end" role="group" aria-label="{{ section.settings.more_label | escape }}">
+        {%- for block in section.blocks -%}
+          {%- if forloop.index > half -%}
+            <button
+              class="yd-seo-sport"
+              type="button"
+              data-sport="{{ block.id }}"
+              data-sport-label="{{ block.settings.name | escape }}"
+              aria-pressed="false"
+              {% if block.settings.icon != blank %}
+                style="--yd-seo-sport-art:url({{ block.settings.icon | image_url: width: 96 }})"
+              {% endif %}
+              {{ block.shopify_attributes }}
+            >
+              <span class="yd-seo-sport-art" aria-hidden="true"></span>
+              <span class="yd-seo-sport-name">{{ block.settings.name }}</span>
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="yd-seo-cta yd-seo-reveal">
+        <a class="yd-seo-btn yd-seo-btn-primary" href="{{ section.settings.button_url | default: '#' }}">
+          {{ section.settings.button_label }}
+          <svg
+            class="yd-seo-icon"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YD SEO Sport Slider",
+  "tag": "section",
+  "class": "yd-seo-shopify-section",
+  "settings": [
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop Custom Jerseys By Sport" },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Pick your sport, then choose a neck, sleeve and fit. Every style below can be fully printed with your design."
+    },
+
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Minimum section height",
+      "default": 100,
+      "info": "100 makes the section fill the screen. Content always grows past it rather than clipping."
+    },
+    {
+      "type": "range",
+      "id": "jersey_height",
+      "min": 200,
+      "max": 700,
+      "step": 10,
+      "unit": "px",
+      "label": "Maximum jersey height",
+      "default": 550
+    },
+
+    { "type": "header", "content": "Button" },
+    { "type": "text", "id": "button_label", "label": "Button text", "default": "Explore Jerseys" },
+    { "type": "url", "id": "button_url", "label": "Button link" },
+
+    { "type": "header", "content": "Labels" },
+    {
+      "type": "text",
+      "id": "chooser_label",
+      "label": "Left group label (screen readers)",
+      "default": "Choose a sport"
+    },
+    { "type": "text", "id": "more_label", "label": "Right group label (screen readers)", "default": "More sports" },
+    { "type": "text", "id": "prev_label", "label": "Previous button label", "default": "Previous sport" },
+    { "type": "text", "id": "next_label", "label": "Next button label", "default": "Next sport" },
+    {
+      "type": "textarea",
+      "id": "empty_text",
+      "label": "Text for sports with no images yet",
+      "default": "styles are being photographed right now. Send us your design on WhatsApp and we will mock it up on this kit.",
+      "info": "The sport name is added in front of this automatically."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "sport",
+      "name": "Sport",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Sport name",
+          "default": "Cricket Jersey",
+          "info": "Shown beside the icon when this sport is selected."
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Sport icon",
+          "info": "A solid silhouette works best - it is recoloured automatically for the selected state. Upload a PNG; the image picker does not accept SVG."
+        },
+        { "type": "header", "content": "Jersey views" },
+        { "type": "image_picker", "id": "jersey_1", "label": "Jersey image 1 (front)" },
+        {"type": "text", "id": "front_image_title", "label": "Front Image Title", "default": "Front View"},
+        { "type": "text", "id": "jersey_1_alt", "label": "Image 1 alt text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD SEO Sport Slider",
+      "blocks": [
+        { "type": "sport", "settings": { "name": "Cricket Jersey" } },
+        { "type": "sport", "settings": { "name": "Football Jersey" } },
+        { "type": "sport", "settings": { "name": "Basketball Jersey" } },
+        { "type": "sport", "settings": { "name": "Badminton Jersey" } },
+        { "type": "sport", "settings": { "name": "Cycling Jersey" } },
+        { "type": "sport", "settings": { "name": "Esports Jersey" } },
+        { "type": "sport", "settings": { "name": "Volleyball Jersey" } },
+        { "type": "sport", "settings": { "name": "Running Jersey" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

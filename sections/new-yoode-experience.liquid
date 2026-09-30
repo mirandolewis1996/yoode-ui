@@ -1,0 +1,846 @@
+{% style %}
+  {% render 'section-margin' %}
+  {% render 'section-padding' %}
+{% endstyle %}
+
+{%- liquid
+  assign is_slider = false
+  if section.settings.layout == 'slider' and section.blocks.size > 0
+    assign is_slider = true
+  endif
+-%}
+
+<!-- Experience Centres Section -->
+<section class="yoode-experience-section section-{{ section.id }}-padding section-padding">
+  <div class="yoode-container">
+    {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+      <header class="yoode-experience-header">
+        {% if section.settings.heading != blank %}
+          <h2 class="yoode-experience-title">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="yoode-experience-subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </header>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      {% if is_slider %}
+        <div
+          class="yoode-experience-slider"
+          data-yoode-slider
+          data-loop="{{ section.settings.enable_loop }}"
+          data-autoplay="{{ section.settings.enable_autoplay }}"
+          data-autoplay-speed="{{ section.settings.autoplay_speed }}"
+          style="
+            --yoode-slides-desktop: {{ section.settings.slides_desktop }};
+            --yoode-slides-tablet: {{ section.settings.slides_tablet }};
+            --yoode-slides-mobile: {{ section.settings.slides_mobile }};
+          "
+        >
+      {% endif %}
+
+      <div
+        class="{% if is_slider %}yoode-experience-track{% else %}yoode-experience-grid{% endif %}"
+        {% if is_slider %}
+          data-yoode-slider-track
+          role="list"
+        {% endif %}
+      >
+        {% for block in section.blocks %}
+          <article
+            class="yoode-location-card{% if is_slider %} yoode-location-slide{% endif %}"
+            {% if is_slider %}role="listitem"{% endif %}
+            {{ block.shopify_attributes }}
+          >
+            <div class="yoode-location-media">
+              {% if block.settings.image %}
+                {{ block.settings.image | image_url: width: 800 | image_tag: alt: block.settings.location_name, class: "yoode-location-img" }}
+              {% endif %}
+            </div>
+            <div class="yoode-location-content">
+              <div class="yoode-location-header">
+                {% if block.settings.location_name != blank %}
+                  <h3 class="yoode-location-name">{{ block.settings.location_name }}</h3>
+                {% endif %}
+                {% if block.settings.status_text != blank %}
+                  <span class="yoode-status-badge">{{ block.settings.status_text }}</span>
+                {% endif %}
+              </div>
+
+              {% if block.settings.address != blank %}
+                <p class="yoode-location-address">{{ block.settings.address }}</p>
+              {% endif %}
+              {% if block.settings.hours != blank %}
+                <p class="yoode-location-hours">{{ block.settings.hours }}</p>
+              {% endif %}
+
+              {% if block.settings.button_1_text != blank or block.settings.button_2_text != blank %}
+                <div class="yoode-location-actions">
+                  {% if block.settings.button_1_text != blank %}
+                    <a href="{{ block.settings.button_1_link }}" class="yoode-btn yoode-btn-primary yoode-location-btn">
+                      {{ block.settings.button_1_text }}
+                    </a>
+                  {% endif %}
+                  {% if block.settings.button_2_text != blank %}
+                    <a href="{{ block.settings.button_2_link }}" class="yoode-btn yoode-btn-secondary yoode-location-btn">
+                      {{ block.settings.button_2_text }}
+                    </a>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+
+      {% if is_slider %}
+        {% if section.settings.show_arrows %}
+          <button
+            type="button"
+            class="yoode-slider-arrow yoode-slider-arrow-prev"
+            data-yoode-slider-prev
+            aria-label="Previous location"
+            hidden
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <button
+            type="button"
+            class="yoode-slider-arrow yoode-slider-arrow-next"
+            data-yoode-slider-next
+            aria-label="Next location"
+            hidden
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        {% endif %}
+
+        {% if section.settings.show_dots %}
+          <div class="yoode-slider-dots" data-yoode-slider-dots></div>
+        {% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+
+{% if is_slider %}
+  <script>
+    (function () {
+      function initYoodeSlider(root) {
+        if (!root || root.dataset.yoodeSliderReady === 'true') return;
+        root.dataset.yoodeSliderReady = 'true';
+
+        var track = root.querySelector('[data-yoode-slider-track]');
+        if (!track) return;
+
+        var prev = root.querySelector('[data-yoode-slider-prev]');
+        var next = root.querySelector('[data-yoode-slider-next]');
+        var dotsWrap = root.querySelector('[data-yoode-slider-dots]');
+
+        /* Captured before any clones are inserted */
+        var realSlides = Array.prototype.slice.call(track.children);
+        var total = realSlides.length;
+
+        var wantsLoop = root.dataset.loop === 'true';
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        var index = 0; /* leading slide, in DOM order (clones included) */
+        var perView = 1;
+        var maxIndex = 0;
+        var cloneCount = 0;
+        var loopActive = false;
+        var autoplayTimer = null;
+        var idleTimer = null;
+        var scrollFrame = null;
+        var retryTimer = null;
+        var retries = 0;
+        var programmatic = false;
+
+        /*
+         * offsetLeft is integer-rounded, so measuring a single gap can be ~1px
+         * off the true fractional pitch. Average across every slide instead —
+         * multiplying a 1px error by the slide count visibly jars the wrap.
+         */
+        function step() {
+          var kids = track.children;
+          if (kids.length < 2) return track.clientWidth;
+
+          var span = kids.length - 1;
+          return (kids[span].offsetLeft - kids[0].offsetLeft) / span;
+        }
+
+        /* Width of one full set of real slides, measured directly when cloned */
+        function bandWidth() {
+          var kids = track.children;
+          if (cloneCount && kids[cloneCount + total]) {
+            return kids[cloneCount + total].offsetLeft - kids[cloneCount].offsetLeft;
+          }
+          return total * step();
+        }
+
+        /*
+         * Read the cards-per-view straight from CSS rather than dividing widths:
+         * each slide is one gap wider than its share of the track, so pixel math
+         * lands just under the real value (2 per view measures as ~1.96).
+         */
+        function slidesPerView() {
+          var raw = parseFloat(getComputedStyle(root).getPropertyValue('--yoode-slides'));
+          if (raw > 0) return raw;
+
+          var s = step();
+          return s > 0 ? track.clientWidth / s : 1;
+        }
+
+        /* Position within the real slides, ignoring clones */
+        function realIndex() {
+          if (!loopActive) return index;
+          return (((index - cloneCount) % total) + total) % total;
+        }
+
+        function makeClone(slide) {
+          var clone = slide.cloneNode(true);
+          clone.setAttribute('data-yoode-clone', '');
+          clone.setAttribute('aria-hidden', 'true');
+          clone.removeAttribute('role');
+
+          /* Don't hand the theme editor duplicate block ids */
+          Array.prototype.slice.call(clone.attributes).forEach(function (attr) {
+            if (attr.name.indexOf('data-shopify') === 0) clone.removeAttribute(attr.name);
+          });
+
+          /* Keep duplicated links out of the tab order */
+          Array.prototype.forEach.call(clone.querySelectorAll('a, button'), function (el) {
+            el.setAttribute('tabindex', '-1');
+          });
+
+          return clone;
+        }
+
+        function setClones(active) {
+          var existing = track.querySelectorAll('[data-yoode-clone]');
+
+          if (!active) {
+            Array.prototype.forEach.call(existing, function (el) {
+              el.parentNode.removeChild(el);
+            });
+            return;
+          }
+
+          if (existing.length) return;
+
+          var before = document.createDocumentFragment();
+          var after = document.createDocumentFragment();
+
+          realSlides.forEach(function (slide) {
+            before.appendChild(makeClone(slide));
+            after.appendChild(makeClone(slide));
+          });
+
+          track.appendChild(after);
+          track.insertBefore(before, track.firstChild);
+        }
+
+        /*
+         * Programmatic moves set the index up front instead of waiting for the
+         * scroll handler. Reading it back asynchronously meant a second click
+         * during a smooth scroll re-targeted the slide already being animated
+         * to, and left the slider stuck whenever scroll/rAF were throttled.
+         */
+        function scrollToIndex(i, smooth) {
+          index = i;
+          programmatic = true;
+
+          track.scrollTo({
+            left: i * step(),
+            behavior: smooth && !reduceMotion ? 'smooth' : 'auto'
+          });
+
+          syncState();
+          scheduleSettle();
+        }
+
+        function readIndex() {
+          var s = step();
+          index = s > 0 ? Math.round(track.scrollLeft / s) : 0;
+        }
+
+        /* Once motion stops, trust the real scroll position again */
+        function settle() {
+          programmatic = false;
+          readIndex();
+          normalize();
+          syncState();
+        }
+
+        function scheduleSettle() {
+          clearTimeout(idleTimer);
+          idleTimer = setTimeout(settle, 180);
+        }
+
+        /*
+         * Teleport back into the middle (real) band by a whole set width. The
+         * content either side is identical, so the jump is invisible. Shifting
+         * by pixels rather than snapping keeps it seamless mid-drag.
+         */
+        function normalize() {
+          if (!loopActive) return;
+
+          var s = step();
+          if (!s) return;
+
+          var band = bandWidth();
+          var start = cloneCount * s;
+          var left = track.scrollLeft;
+          var shifted = left;
+          var guard = 0;
+
+          while (shifted < start - 1 && guard++ < 8) shifted += band;
+          while (shifted > start + band - 1 && guard++ < 8) shifted -= band;
+
+          if (Math.abs(shifted - left) > 0.5) {
+            track.scrollLeft = shifted;
+            readIndex();
+          }
+        }
+
+        function move(delta) {
+          if (loopActive) {
+            /* Re-centre first so rapid clicks can never run off the clones */
+            normalize();
+            scrollToIndex(index + delta, true);
+            return;
+          }
+
+          var target = index + delta;
+          if (target > maxIndex) target = 0;
+          if (target < 0) target = maxIndex;
+          scrollToIndex(target, true);
+        }
+
+        function goToReal(target) {
+          if (!loopActive) {
+            scrollToIndex(Math.min(target, maxIndex), true);
+            return;
+          }
+
+          normalize();
+
+          var delta = target - realIndex();
+          if (delta > total / 2) delta -= total;
+          if (delta < -total / 2) delta += total;
+          scrollToIndex(index + delta, true);
+        }
+
+        function buildDots() {
+          if (!dotsWrap) return;
+
+          dotsWrap.innerHTML = '';
+
+          var count = loopActive ? total : maxIndex + 1;
+          if (count < 2) return;
+
+          for (var i = 0; i < count; i++) {
+            var dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'yoode-slider-dot';
+            dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+            dot.dataset.index = i;
+            dot.addEventListener('click', function (event) {
+              stopAutoplay();
+              goToReal(parseInt(event.currentTarget.dataset.index, 10));
+            });
+            dotsWrap.appendChild(dot);
+          }
+        }
+
+        function syncState() {
+          var current = realIndex();
+          var dots = dotsWrap ? dotsWrap.children : [];
+
+          for (var i = 0; i < dots.length; i++) {
+            var active = i === current;
+            dots[i].classList.toggle('is-active', active);
+            dots[i].setAttribute('aria-current', active ? 'true' : 'false');
+          }
+
+          if (prev) prev.disabled = !loopActive && index <= 0;
+          if (next) next.disabled = !loopActive && index >= maxIndex;
+        }
+
+        function measure() {
+          /*
+           * Layout can be unavailable at first paint (stylesheet or images still
+           * loading, section inside a hidden tab). Retry rather than give up —
+           * a zero step used to leave the slider permanently uninitialised.
+           */
+          if (!step()) {
+            if (retries < 20) {
+              retries++;
+              clearTimeout(retryTimer);
+              retryTimer = setTimeout(measure, 100);
+            }
+            return;
+          }
+
+          retries = 0;
+
+          var visible = slidesPerView();
+
+          perView = Math.max(1, Math.floor(visible + 0.02));
+
+          var hasOverflow = total > visible + 0.02;
+          var shouldLoop = wantsLoop && hasOverflow && total > 1;
+
+          maxIndex = Math.max(0, total - perView);
+
+          if (shouldLoop !== loopActive) {
+            var current = realIndex();
+
+            loopActive = shouldLoop;
+            setClones(shouldLoop);
+            cloneCount = shouldLoop ? total : 0;
+
+            index = shouldLoop ? cloneCount + current : Math.min(current, maxIndex);
+            scrollToIndex(index, false);
+          } else if (!loopActive) {
+            index = Math.min(index, maxIndex);
+          }
+
+          root.classList.toggle('yoode-slider-static', !hasOverflow);
+          if (prev) prev.hidden = !hasOverflow;
+          if (next) next.hidden = !hasOverflow;
+
+          buildDots();
+          syncState();
+        }
+
+        function startAutoplay() {
+          if (autoplayTimer || root.dataset.autoplay !== 'true' || reduceMotion) return;
+
+          var speed = parseInt(root.dataset.autoplaySpeed, 10) || 5;
+          autoplayTimer = setInterval(function () {
+            if (loopActive || maxIndex > 0) move(1);
+          }, speed * 1000);
+        }
+
+        function stopAutoplay() {
+          if (!autoplayTimer) return;
+          clearInterval(autoplayTimer);
+          autoplayTimer = null;
+        }
+
+        track.addEventListener(
+          'scroll',
+          function () {
+            /* While we're driving the scroll, index is already correct */
+            if (!programmatic && !scrollFrame) {
+              scrollFrame = requestAnimationFrame(function () {
+                scrollFrame = null;
+                readIndex();
+                syncState();
+              });
+            }
+            scheduleSettle();
+          },
+          { passive: true }
+        );
+
+        if (prev) {
+          prev.addEventListener('click', function () {
+            stopAutoplay();
+            move(-1);
+          });
+        }
+
+        if (next) {
+          next.addEventListener('click', function () {
+            stopAutoplay();
+            move(1);
+          });
+        }
+
+        root.addEventListener('mouseenter', stopAutoplay);
+        root.addEventListener('focusin', stopAutoplay);
+        root.addEventListener('mouseleave', startAutoplay);
+
+        if ('ResizeObserver' in window) {
+          new ResizeObserver(measure).observe(track);
+        } else {
+          window.addEventListener('resize', measure);
+        }
+
+        measure();
+        startAutoplay();
+      }
+
+      function initAll(scope) {
+        var roots = (scope || document).querySelectorAll('[data-yoode-slider]');
+        Array.prototype.forEach.call(roots, initYoodeSlider);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+          initAll();
+        });
+      } else {
+        initAll();
+      }
+
+      document.addEventListener('shopify:section:load', function (event) {
+        initAll(event.target);
+      });
+    })();
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "New Yoode Experience",
+  "class": "yoode-experience-section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "See it. Touch it. Make it yours.",
+      "label": "Heading Text"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "default": "Two Experience Centres — Chennai and Bangalore — where you can design your merchandise with us, in person.",
+      "label": "Subtitle Text"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "slider",
+          "label": "Slider"
+        }
+      ],
+      "default": "grid",
+      "label": "Layout Style",
+      "info": "Slider turns the locations into a swipeable carousel."
+    },
+    {
+      "type": "range",
+      "id": "slides_desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "label": "Cards Per View (Desktop)",
+      "info": "Slider layout only. Applies above 1024px."
+    },
+    {
+      "type": "range",
+      "id": "slides_tablet",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2,
+      "label": "Cards Per View (Tablet)",
+      "info": "Applies between 769px and 1024px."
+    },
+    {
+      "type": "select",
+      "id": "slides_mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 card"
+        },
+        {
+          "value": "1.15",
+          "label": "1 card + peek of next"
+        },
+        {
+          "value": "2",
+          "label": "2 cards"
+        }
+      ],
+      "default": "1.15",
+      "label": "Cards Per View (Mobile)",
+      "info": "Applies at 768px and below."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "default": true,
+      "label": "Show Slider Arrows"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "default": true,
+      "label": "Show Slider Dots"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_loop",
+      "default": false,
+      "label": "Loop Slider",
+      "info": "Scrolls endlessly in both directions instead of stopping at the last card. Recommended when autoplay is on."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "default": false,
+      "label": "Enable Autoplay"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5,
+      "label": "Autoplay Speed"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "location",
+      "name": "Location",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.all.image.label"
+        },
+        {
+          "type": "text",
+          "id": "location_name",
+          "default": "City Name",
+          "label": "Location Name"
+        },
+        {
+          "type": "text",
+          "id": "status_text",
+          "default": "Open now",
+          "label": "Status Badge Text"
+        },
+        {
+          "type": "text",
+          "id": "address",
+          "default": "Experience Centre Address",
+          "label": "Address"
+        },
+        {
+          "type": "text",
+          "id": "hours",
+          "default": "Open Mon–Sat · 10am–7pm",
+          "label": "Hours Text"
+        },
+        {
+          "type": "header",
+          "content": "Buttons"
+        },
+        {
+          "type": "text",
+          "id": "button_1_text",
+          "default": "Get directions",
+          "label": "Primary Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button_1_link",
+          "label": "Primary Button Link"
+        },
+        {
+          "type": "text",
+          "id": "button_2_text",
+          "default": "Book a visit",
+          "label": "Secondary Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button_2_link",
+          "label": "Secondary Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Yoode Experience",
+      "settings": {
+        "heading": "See it. Touch it. Make it yours.",
+        "subtitle": "Two Experience Centres — Chennai and Bangalore — where you can design your merchandise with us, in person."
+      },
+      "blocks": [
+        {
+          "type": "location",
+          "settings": {
+            "location_name": "Chennai",
+            "status_text": "Open now",
+            "address": "Koramangala-style Experience Centre",
+            "hours": "Open Mon–Sat · 10am–7pm",
+            "button_1_text": "Get directions",
+            "button_2_text": "Book a visit"
+          }
+        },
+        {
+          "type": "location",
+          "settings": {
+            "location_name": "Bangalore",
+            "status_text": "Open now",
+            "address": "5th Block, Koramangala Industrial Layout",
+            "hours": "Open Mon–Sat · 10am–7pm",
+            "button_1_text": "Get directions",
+            "button_2_text": "Book a visit"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

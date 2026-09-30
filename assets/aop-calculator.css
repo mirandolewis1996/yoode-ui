@@ -1,0 +1,382 @@
+/* AOP Calculator — scoped under .aop-calc-section */
+.aop-calc-section {
+  --aop-bg: #f5f6fb;
+  --aop-surface: #fff;
+  --aop-surface2: #f0f1f9;
+  --aop-surface3: #e8eaf5;
+  --aop-border: #dde0f0;
+  --aop-border2: #c8cce8;
+  --aop-text: #12141f;
+  --aop-text2: #3a3d55;
+  --aop-muted: #7b7fa0;
+  --aop-yblue: #2937cc;
+  --aop-yblue-lt: #eceffe;
+  --aop-yblue-mid: rgba(41, 55, 204, .12);
+  --aop-yorange: #f65e21;
+  --aop-yor-lt: #fff1ec;
+  --aop-yor-mid: rgba(246, 94, 33, .12);
+  --aop-ygreen: #12a259;
+  --aop-ygreen-lt: #e8f8ef;
+  --aop-shadow-sm: 0 1px 4px rgba(41, 55, 204, .06), 0 2px 16px rgba(41, 55, 204, .04);
+  --aop-shadow-md: 0 4px 24px rgba(41, 55, 204, .10);
+  --aop-ring: rgba(41, 55, 204, .18);
+  --aop-ring-or: rgba(246, 94, 33, .20);
+  --aop-radius: 16px;
+
+
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--aop-text);
+  background: var(--aop-bg);
+  line-height: 1.5;
+}
+
+.aop-calc-section * { box-sizing: border-box; }
+
+@keyframes aop-fadeUp {
+  from { opacity: 0; transform: translateY(18px) }
+  to   { opacity: 1; transform: translateY(0) }
+}
+@keyframes aop-popIn {
+  0%   { opacity: 0; transform: scale(.88) }
+  70%  { transform: scale(1.04) }
+  100% { opacity: 1; transform: scale(1) }
+}
+
+/* Page Title */
+.aop-calc-section .aop-page-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--aop-yblue);
+  text-align: center;
+  padding: 32px 20px 0;
+  letter-spacing: -0.5px;
+}
+
+
+/* Container */
+.aop-calc-section .aop-container { width: 100%; max-width: 100%; margin: 0 auto; padding: 36px 40px 80px }
+
+/* Card */
+.aop-calc-section .aop-card {
+  background: var(--aop-surface); border: 1px solid var(--aop-border); border-radius: var(--aop-radius);
+  padding: 28px 32px; margin-bottom: 18px; box-shadow: var(--aop-shadow-sm);
+  animation: aop-fadeUp .35s ease both;
+  transition: box-shadow .3s, border-color .3s, background .4s;
+  position: relative; overflow: hidden;
+}
+.aop-calc-section .aop-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: transparent; border-radius: 3px 0 0 3px; transition: background .3s;
+}
+.aop-calc-section .aop-card.active::before { background: var(--aop-yblue) }
+.aop-calc-section .aop-card:hover { box-shadow: var(--aop-shadow-md) }
+
+.aop-calc-section .card-title {
+  display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700;
+  color: var(--aop-text); margin-bottom: 22px; transition: color .4s;
+}
+.aop-calc-section .card-title .num {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--aop-yblue); color: #fff; width: 28px; height: 28px;
+  border-radius: 8px; font-size: 14px; font-weight: 800; flex-shrink: 0;
+}
+.aop-calc-section .card-sub { font-size: 13px; color: var(--aop-muted); font-weight: 500; margin-left: auto }
+
+/* Product grid */
+.aop-calc-section .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px }
+.aop-calc-section .prod-card {
+  padding: 13px 16px; border: 1.5px solid var(--aop-border); border-radius: 12px;
+  cursor: pointer; background: var(--aop-surface2); transition: all .2s; user-select: none; position: relative;
+}
+.aop-calc-section .prod-card:hover { border-color: var(--aop-yblue); background: var(--aop-yblue-lt) }
+.aop-calc-section .prod-card.selected { border-color: var(--aop-yblue); background: var(--aop-yblue-lt); box-shadow: 0 0 0 3px var(--aop-ring) }
+.aop-calc-section .prod-card-name { font-size: 13px; font-weight: 600; color: var(--aop-text); line-height: 1.35; padding-right: 22px }
+.aop-calc-section .prod-card.selected .prod-card-name { color: var(--aop-yblue) }
+.aop-calc-section .prod-check {
+  position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--aop-border2); background: var(--aop-surface); transition: all .2s;
+}
+.aop-calc-section .prod-card.selected .prod-check { background: var(--aop-yblue); border-color: var(--aop-yblue) }
+.aop-calc-section .prod-card.selected .prod-check::after {
+  content: '✓'; font-size: 10px; color: #fff; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; height: 100%;
+}
+
+/* Fabric grid */
+.aop-calc-section .fabric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px }
+.aop-calc-section .fab-card {
+  padding: 13px 16px; border: 1.5px solid var(--aop-border); border-radius: 12px;
+  cursor: pointer; background: var(--aop-surface2); transition: all .2s; user-select: none;
+}
+.aop-calc-section .fab-card:hover { border-color: var(--aop-yblue); background: var(--aop-yblue-lt) }
+.aop-calc-section .fab-card.selected { border-color: var(--aop-yblue); background: var(--aop-yblue-lt); box-shadow: 0 0 0 3px var(--aop-ring) }
+.aop-calc-section .fab-name { font-size: 13px; font-weight: 700; color: var(--aop-text) }
+.aop-calc-section .fab-gsm { font-size: 11px; color: var(--aop-muted); margin-top: 3px; font-weight: 500 }
+.aop-calc-section .fab-card.selected .fab-name { color: var(--aop-yblue) }
+.aop-calc-section .fab-treats { display: flex; gap: 5px; margin-top: 7px; flex-wrap: wrap }
+.aop-calc-section .treat-pill {
+  font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 20px;
+  background: var(--aop-ygreen-lt); color: var(--aop-ygreen); border: 1px solid rgba(18, 162, 89, .2);
+}
+
+/* Two-up step rows: Step 1+2 on one line, Step 3+4 on one line */
+.aop-calc-section .step-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; margin-bottom:20px;
+}
+.aop-calc-section .step-row > .aop-card { margin-bottom: 18px; height: 100%; }
+
+/* Locked card (waiting on a previous step) */
+.aop-calc-section .aop-card.card-locked { opacity: .6; }
+.aop-calc-section .aop-card.card-locked .card-title { color: var(--aop-muted); }
+.aop-calc-section .aop-card.card-locked .card-title .num { background: var(--aop-border2); }
+
+/* Hint shown inside a locked card */
+.aop-calc-section .step-hint {
+  font-size: 13px; font-weight: 500; color: var(--aop-muted);
+  background: var(--aop-surface2); border: 1px dashed var(--aop-border2);
+  border-radius: 10px; padding: 14px 16px;
+}
+
+/* Design chips */
+.aop-calc-section .design-grid { display: flex; gap: 8px; flex-wrap: wrap }
+.aop-calc-section .design-chip {
+  padding: 8px 16px; border: 1.5px solid var(--aop-border); border-radius: 10px;
+  cursor: pointer; background: var(--aop-surface2); font-size: 13px; font-weight: 600;
+  color: var(--aop-text2); transition: all .2s; white-space: nowrap;
+}
+.aop-calc-section .design-chip:hover { border-color: var(--aop-yblue); color: var(--aop-yblue) }
+.aop-calc-section .design-chip.selected { border-color: var(--aop-yblue); background: var(--aop-yblue-lt); color: var(--aop-yblue) }
+.aop-calc-section .design-charge-note {
+  margin-top: 14px; padding: 12px 16px; background: var(--aop-yor-lt);
+  border: 1.5px solid var(--aop-ring-or); border-radius: 10px;
+  font-size: 13px; font-weight: 600; color: var(--aop-yorange);
+  display: flex; align-items: center; gap: 8px;
+}
+
+
+/* QTY GRID */
+.aop-calc-section .qty-section { display: flex; flex-direction: column; gap: 16px }
+.aop-calc-section .sleeve-label {
+  display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800;
+  letter-spacing: 2.5px; text-transform: uppercase; color: var(--aop-yblue); margin-bottom: 2px;
+}
+.aop-calc-section .sleeve-label::before {
+  content: ''; width: 3px; height: 13px; background: var(--aop-yblue); border-radius: 2px; flex-shrink: 0;
+}
+.aop-calc-section .size-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px }
+/* In the two-up row the quantity card is only half width, so use 4 columns */
+.aop-calc-section .size-cell { display: flex; flex-direction: column; align-items: center; gap: 5px }
+.aop-calc-section .size-num { font-size: 12px; font-weight: 700; color: var(--aop-text2); letter-spacing: .3px }
+.aop-calc-section .size-rate { font-size: 10px; color: var(--aop-muted); font-weight: 500 }
+.aop-calc-section .qty-inp {
+  width: 100%; background: var(--aop-surface); border: 1.5px solid var(--aop-border);
+  color: var(--aop-text); border-radius: 10px; padding: 10px 4px; text-align: center;
+  font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 700;
+  outline: none; -moz-appearance: textfield; transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.aop-calc-section .qty-inp::-webkit-outer-spin-button,
+.aop-calc-section .qty-inp::-webkit-inner-spin-button { -webkit-appearance: none }
+.aop-calc-section .qty-inp:focus { border-color: var(--aop-yblue); box-shadow: 0 0 0 3px var(--aop-ring); background: var(--aop-yblue-lt) }
+.aop-calc-section .qty-inp.has-val { border-color: var(--aop-yblue); background: var(--aop-yblue-lt) }
+.aop-calc-section .size-sub { font-size: 10px; color: var(--aop-yblue); font-weight: 700; letter-spacing: .2px }
+
+/* Totals bar */
+.aop-calc-section .totals-bar {
+  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  padding: 14px 20px; background: var(--aop-yblue-lt); border: 1px solid var(--aop-ring);
+  border-radius: 12px; margin-top: 4px;
+}
+
+.aop-calc-section .tot-item { display: flex; flex-direction: column; gap: 2px }
+.aop-calc-section .tot-lbl { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--aop-yblue) }
+.aop-calc-section .tot-val { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 800; color: var(--aop-yblue); line-height: 1 }
+.aop-calc-section .tot-sub { font-size: 11px; color: var(--aop-muted); font-weight: 500 }
+.aop-calc-section .tot-div { width: 1px; height: 38px; background: var(--aop-ring); margin: 0 4px }
+
+/* Summary */
+.aop-calc-section .summary-card {
+  background: var(--aop-surface); border: 1px solid var(--aop-border); border-radius: var(--aop-radius);
+  padding: 30px 32px; margin: 24px auto 18px; box-shadow: var(--aop-shadow-md);
+  position: relative; overflow: hidden; animation: aop-fadeUp .35s ease both;
+  max-width: 900px;            /* keep summary readable even when the page is full width */
+  scroll-margin-top: 20px;
+}
+.aop-calc-section .summary-card::after {
+  content: ''; position: absolute; top: -80px; right: -80px; width: 200px; height: 200px;
+  border-radius: 50%; background: radial-gradient(circle, var(--aop-yblue-mid) 0%, transparent 70%); pointer-events: none;
+}
+
+/* KPI */
+.aop-calc-section .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px }
+.aop-calc-section .kpi-box {
+  background: var(--aop-surface2); border: 1px solid var(--aop-border);
+  border-radius: 14px; padding: 18px 20px; position: relative; overflow: hidden;
+}
+.aop-calc-section .kpi-box::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px }
+.aop-calc-section .kpi-box.blue::before { background: var(--aop-yblue) }
+.aop-calc-section .kpi-box.orange::before { background: var(--aop-yorange) }
+.aop-calc-section .kpi-box.green::before { background: var(--aop-ygreen) }
+.aop-calc-section .kpi-lbl { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--aop-muted); margin-bottom: 6px }
+.aop-calc-section .kpi-val { font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 800; line-height: 1 }
+.aop-calc-section .kpi-val.c-blue { color: var(--aop-yblue) }
+.aop-calc-section .kpi-val.c-orange { color: var(--aop-yorange) }
+.aop-calc-section .kpi-val.c-green { color: var(--aop-ygreen) }
+.aop-calc-section .kpi-unit { font-size: 14px; color: var(--aop-muted); font-weight: 400 }
+
+/* Shipping */
+.aop-calc-section .shipping-row {
+  display: flex; align-items: center; gap: 16px; padding: 14px 18px;
+  background: var(--aop-surface2); border: 1px solid var(--aop-border); border-radius: 12px; margin-bottom: 20px;
+}
+.aop-calc-section .shipping-row label { font-size: 14px; font-weight: 500; color: var(--aop-text2); flex: 1 }
+.aop-calc-section .shipping-inp {
+  background: var(--aop-surface); border: 1.5px solid var(--aop-border); color: var(--aop-text);
+  border-radius: 10px; padding: 9px 14px; font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600; outline: none; width: 160px;
+  -moz-appearance: textfield; transition: border-color .2s, box-shadow .2s; text-align: right;
+}
+.aop-calc-section .shipping-inp::-webkit-outer-spin-button,
+.aop-calc-section .shipping-inp::-webkit-inner-spin-button { -webkit-appearance: none }
+.aop-calc-section .shipping-inp:focus { border-color: var(--aop-yblue); box-shadow: 0 0 0 3px var(--aop-ring) }
+
+/* Breakdown table */
+.aop-calc-section .breakdown-wrap { border: 1px solid var(--aop-border); border-radius: 12px; overflow: hidden; margin-bottom: 22px }
+.aop-calc-section .bd-table { width: 100%; border-collapse: collapse; font-size: 14px }
+.aop-calc-section .bd-table th {
+  text-align: left; padding: 10px 16px; font-size: 10px; font-weight: 800;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--aop-muted);
+  background: var(--aop-surface2); border-bottom: 1px solid var(--aop-border);
+}
+.aop-calc-section .bd-table th:not(:first-child) { text-align: right }
+.aop-calc-section .bd-table td { padding: 11px 16px; border-bottom: 1px solid var(--aop-border); color: var(--aop-text2); font-weight: 500 }
+.aop-calc-section .bd-table td:not(:first-child) { text-align: right }
+.aop-calc-section .bd-table tr:last-child td { border-bottom: none }
+.aop-calc-section .bd-table tr:hover td { background: var(--aop-surface3) }
+.aop-calc-section .bd-table .grand td {
+  font-weight: 700; font-size: 15px; color: var(--aop-yorange);
+  background: var(--aop-yor-lt); border-top: 2px solid var(--aop-ring-or);
+}
+
+
+/* Final hero boxes */
+.aop-calc-section .final-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px }
+.aop-calc-section .final-hero {
+  border-radius: 16px; padding: 24px 26px; position: relative; overflow: hidden;
+  animation: aop-popIn .4s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+.aop-calc-section .final-hero.fblue { background: var(--aop-yblue); box-shadow: 0 6px 28px var(--aop-ring) }
+.aop-calc-section .final-hero.forange { background: var(--aop-yorange); box-shadow: 0 6px 28px var(--aop-ring-or) }
+.aop-calc-section .final-hero::after {
+  content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px;
+  border-radius: 50%; background: rgba(255, 255, 255, .08);
+}
+.aop-calc-section .f-lbl { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255, 255, 255, .65); margin-bottom: 8px }
+.aop-calc-section .f-val { font-family: 'Poppins', sans-serif; font-size: 40px; font-weight: 800; color: #fff; line-height: 1 }
+
+/* Animation delays */
+.aop-calc-section .aop-card:nth-child(1) { animation-delay: .05s }
+.aop-calc-section .aop-card:nth-child(2) { animation-delay: .10s }
+.aop-calc-section .aop-card:nth-child(3) { animation-delay: .15s }
+.aop-calc-section .aop-card:nth-child(4) { animation-delay: .20s }
+.aop-calc-section .aop-card:nth-child(5) { animation-delay: .25s }
+
+/* Sticky footer */
+.aop-calc-section .sticky-footer {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: var(--aop-surface); border-top: 1.5px solid var(--aop-border);
+  padding: 10px 20px; display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; box-shadow: 0 -4px 20px rgba(41,55,204,.10); transition: background .4s, border-color .4s;
+}
+.aop-calc-section .sf-meta { display: flex; align-items: center; gap: 18px; flex-wrap: wrap }
+.aop-calc-section .sf-item { display: flex; flex-direction: column; gap: 1px }
+.aop-calc-section .sf-lbl { font-size: 9px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--aop-muted) }
+.aop-calc-section .sf-val { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 800; color: var(--aop-yblue); line-height: 1 }
+.aop-calc-section .sf-val.orange { color: var(--aop-yorange) }
+.aop-calc-section .sf-reset {
+  background: var(--aop-surface2); border: 1.5px solid var(--aop-border2);
+  border-radius: 10px; padding: 8px 16px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--aop-muted);
+  cursor: pointer; transition: all .2s; white-space: nowrap; flex-shrink: 0;
+}
+.aop-calc-section .sf-reset:hover { border-color: var(--aop-yorange); color: var(--aop-yorange); background: var(--aop-yor-lt) }
+
+/* Export buttons */
+.aop-calc-section .export-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap }
+.aop-calc-section .export-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+  border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: opacity .15s, transform .1s; font-family: inherit;
+}
+.aop-calc-section .export-btn:hover { opacity: .88 }
+.aop-calc-section .export-btn:active { transform: scale(.97) }
+.aop-calc-section .export-btn svg { width: 18px; height: 18px; flex-shrink: 0 }
+.aop-calc-section .pdf-btn { background: var(--aop-yblue); color: #fff }
+.aop-calc-section .wa-btn { background: #25d366; color: #fff }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1200px) {
+ .aop-calc-section .step-row { grid-template-columns: 1fr;}
+}
+@media(max-width:960px) {
+ 
+  .aop-calc-section .aop-container { padding: 20px 14px 100px }
+  .aop-calc-section .aop-card { padding: 20px 18px }
+  .aop-calc-section .summary-card { padding: 22px 18px }
+  .aop-calc-section .kpi-grid { grid-template-columns: 1fr 1fr }
+  .aop-calc-section .final-grid { grid-template-columns: 1fr }
+  .aop-calc-section .size-grid { grid-template-columns: repeat(4, 1fr) }
+  .aop-calc-section .f-val { font-size: 32px }
+  .aop-calc-section .aop-page-title { font-size: 24px; padding: 24px 14px 0 }
+}
+@media(max-width:768px) {
+  .aop-calc-section .shipping-row { flex-direction: column; align-items: stretch; gap: 8px }
+  .aop-calc-section .shipping-inp { width: 100%; text-align: left }
+  .aop-calc-section .breakdown-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch }
+  .aop-calc-section .bd-table { min-width: 480px }
+  .aop-calc-section .kpi-val { font-size: 22px }
+  .aop-calc-section .totals-bar { gap: 14px }
+}
+@media(max-width:600px) {
+  .aop-calc-section .kpi-grid { grid-template-columns: 1fr }
+  .aop-calc-section .product-grid { grid-template-columns: repeat(2, 1fr) }
+  .aop-calc-section .fabric-grid { grid-template-columns: repeat(2, 1fr) }
+  .aop-calc-section .card-title { font-size: 16px; margin-bottom: 16px }
+  .aop-calc-section .totals-bar { flex-direction: column; align-items: flex-start; gap: 10px }
+  .aop-calc-section .tot-div { width: 100%; height: 1px; margin: 0 }
+  .aop-calc-section .tot-val { font-size: 20px }
+  .aop-calc-section .f-val { font-size: 28px }
+  .aop-calc-section .sf-meta { gap: 12px }
+  .aop-calc-section .sf-val { font-size: 16px }
+  /* full-width, easy-to-tap export buttons */
+  .aop-calc-section .export-row { flex-direction: column }
+  .aop-calc-section .export-btn { width: 100%; justify-content: center; padding: 14px 20px }
+}
+@media(max-width:480px) {
+  .aop-calc-section .aop-card { padding: 16px 14px; border-radius: 12px }
+  .aop-calc-section .summary-card { padding: 16px 14px; border-radius: 12px }
+  .aop-calc-section .card-title { font-size: 15px; gap: 8px }
+  .aop-calc-section .size-grid { grid-template-columns: repeat(4, 1fr); gap: 7px }
+  .aop-calc-section .qty-inp { font-size: 15px; padding: 9px 2px }
+  .aop-calc-section .size-num { font-size: 11px }
+  .aop-calc-section .size-rate { font-size: 9px }
+  .aop-calc-section .kpi-box { padding: 14px 14px }
+  .aop-calc-section .kpi-val { font-size: 20px }
+  .aop-calc-section .f-val { font-size: 26px }
+  .aop-calc-section .final-hero { padding: 18px 20px }
+  .aop-calc-section .aop-page-title { font-size: 20px }
+}
+@media(max-width:360px) {
+  .aop-calc-section .size-grid { gap: 5px }
+  .aop-calc-section .qty-inp { font-size: 14px; padding: 8px 1px }
+  .aop-calc-section .f-val { font-size: 22px }
+  .aop-calc-section .product-grid { grid-template-columns: repeat(2, 1fr); gap: 8px }
+  .aop-calc-section .fabric-grid { grid-template-columns: repeat(2, 1fr); gap: 8px }
+}
+@media(hover:none) {
+  .aop-calc-section .prod-card,
+  .aop-calc-section .fab-card,
+  .aop-calc-section .design-chip { min-height: 48px }
+  .aop-calc-section .qty-inp { min-height: 44px }
+}

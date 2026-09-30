@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-order",
+      "settings": {}
+    },
+    "popular-products": {
+      "type": "popular-products",
+      "settings": {
+        "padding_top": "no-indent",
+        "padding_bottom": "no-indent"
+      }
+    }
+  },
+  "order": ["main", "popular-products"]
+}

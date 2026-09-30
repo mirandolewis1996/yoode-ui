@@ -1,0 +1,5 @@
+/*
+Generated time: March 18, 2025 11:19
+This file was created by the app developer. Feel free to contact the original developer with any questions. It was minified (compressed) by AVADA. AVADA do NOT own this script.
+*/
+.totals{display:flex}.totals>*{font-family:var(--font-body-family);margin:0}.totals *{line-height:1}.totals>*+*{margin-left:.5rem}.totals__subtotal-value{color:rgba(var(--color-foreground))}.cart__ctas+.totals{margin-top:2rem}

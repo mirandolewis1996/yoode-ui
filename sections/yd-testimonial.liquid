@@ -1,0 +1,244 @@
+{% style %}
+  {% render 'section-padding' %}
+.yd-testimonial-section {
+  background: {{ section.settings.bg_color }};
+  color: {{ section.settings.text_color }};
+  text-align: center;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.yd-testimonial-section .yd-testimonial-wrapper {
+  max-width: 800px;
+  margin: auto;
+  position: relative;
+}
+
+.yd-testimonial-section .yd-testimonial-slide {
+  display: none;
+}
+
+.yd-testimonial-section .yd-testimonial-slide.active {
+  display: block;
+  min-height: 283px;
+}
+
+.yd-testimonial-section .yd-testimonial-title {
+  color: {{ section.settings.text_color }} ;
+  margin-bottom: 20px;
+}
+
+.yd-testimonial-section .yd-testimonial-text {
+  margin-bottom: 20px;
+  color: {{ section.settings.text_color }} ;
+}
+
+.yd-testimonial-section .yd-testimonial-author {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: {{ section.settings.text_color }} ;
+
+}
+
+.yd-testimonial-section .yd-stars {
+  color: #ffc107;
+  margin-bottom: 20px;
+}
+
+.yd-testimonial-section .yd-nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.yd-testimonial-section .yd-next,
+.yd-testimonial-section .yd-prev
+ {
+
+  cursor: pointer;
+
+}
+{% endstyle %}
+
+<div class="yd-testimonial-section section-{{ section.id }}-padding section-padding">
+  <div class="yd-testimonial-wrapper">
+
+    {% for block in section.blocks %}
+      <div class="yd-testimonial-slide {% if forloop.first %}active{% endif %}">
+        
+        <h2 class="yd-testimonial-title">
+          {{ section.settings.title }}
+        </h2>
+
+        <p class="yd-testimonial-text">
+          {{ block.settings.text }}
+        </p>
+
+        <div class="yd-testimonial-author">
+          {{ block.settings.author }}
+        </div>
+
+        <div class="yd-stars">
+          {% for i in (1..block.settings.stars) %}
+            ★
+          {% endfor %}
+        </div>
+
+      </div>
+    {% endfor %}
+
+    <!-- Navigation -->
+    {% if section.blocks.size > 1 %}
+    <div class="yd-nav">
+      <div class="yd-prev">
+         <img
+                class="prev-btn"
+                src="{{ 'print-on-demand-previous-sliding_arrow.png' | asset_url }}"
+                alt="Previous"
+                width="auto%"
+                height="auto%"
+              >
+      </div>
+      <div class="yd-next">
+         <img
+                class="next-btn"
+                src="{{ 'print-on-demand-next-sliding_arrow.png' | asset_url }}"
+                alt="Next"
+                width="auto%"
+                height="auto%"
+              >
+      </div>
+    </div>
+  {% endif %}
+
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  document.querySelectorAll('.yd-testimonial-section').forEach(section => {
+
+    const slides = section.querySelectorAll('.yd-testimonial-slide');
+    const nextBtn = section.querySelector('.yd-next');
+    const prevBtn = section.querySelector('.yd-prev');
+
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        if (i === index) slide.classList.add('active');
+      });
+    }
+
+    nextBtn.addEventListener('click', function () {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    });
+
+    prevBtn.addEventListener('click', function () {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    });
+
+  });
+
+});
+</script>
+
+{% schema %}
+{
+  "name": "YD Testimonial Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "TESTIMONIAL"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#3a3a3a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" }
+      ],
+      "default": "l",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" }
+      ],
+      "default": "l",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Testimonial Text"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author"
+        },
+        {
+          "type": "range",
+          "id": "stars",
+          "label": "Stars",
+          "min": 1,
+          "max": 5,
+          "default": 5
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Testimonial Slider",
+      "blocks": [
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" }
+      ]
+    }
+  ]
+}
+{% endschema %}

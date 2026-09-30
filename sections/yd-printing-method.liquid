@@ -1,0 +1,270 @@
+{% schema %}
+{
+  "name": "YD Printing Methods",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "PRINTING METHODS"
+    },
+    {
+      "type": "text",
+      "id": "highlight_text",
+      "label": "Highlight Text",
+      "default": "METHODS"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight Color",
+      "default": "#f05a28"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "method",
+      "name": "Method",
+      "settings": [
+        { "type": "image_picker", "id": "image1", "label": "Image 1" },
+        { "type": "image_picker", "id": "image2", "label": "Image 2" },
+        {
+          "type": "select",
+          "id": "layout",
+          "label": "Layout",
+          "options": [
+            { "value": "normal", "label": "Images Left" },
+            { "value": "reverse", "label": "Images Right" }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "color",
+          "id": "card_bg",
+          "label": "Card Background",
+          "default": "#f5f5f5"
+        },
+        {
+          "type": "select",
+          "id": "image_fit",
+          "label": "Image Fit",
+          "options": [
+            { "value": "cover", "label": "Cover" },
+            { "value": "contain", "label": "Contain" }
+          ],
+          "default": "cover"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Method Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        },
+       {
+  "type": "select",
+  "id": "text_align",
+  "label": "Desktop Text Align",
+  "options": [
+    { "value": "left", "label": "Left" },
+    { "value": "center", "label": "Center" },
+    { "value": "right", "label": "Right" }
+  ],
+  "default": "left"
+},
+{
+  "type": "select",
+  "id": "mobile_text_align",
+  "label": "Mobile Text Align",
+  "options": [
+    { "value": "left", "label": "Left" },
+    { "value": "center", "label": "Center" },
+    { "value": "right", "label": "Right" }
+  ],
+  "default": "center"
+}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Printing Methods"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="yd-printing-methods color-{{ section.settings.color_scheme }} section-padding">
+  <div class="yd-container">
+
+    <!-- Heading (safe highlight) -->
+    <h2 class="yd-printing-method-h2">
+      {% if section.settings.highlight_text != blank and section.settings.heading contains section.settings.highlight_text %}
+        {% assign parts = section.settings.heading | split: section.settings.highlight_text %}
+        {{ parts[0] }}
+        <span style="color: {{ section.settings.highlight_color }}">
+          {{ section.settings.highlight_text }}
+        </span>
+        {{ parts[1] }}
+      {% else %}
+        {{ section.settings.heading }}
+      {% endif %}
+    </h2>
+
+    <!-- Blocks -->
+    <div class="yd-method-list">
+      {% for block in section.blocks %}
+        <style>
+  .yd-content-{{ block.id }} {
+    text-align: {{ block.settings.text_align }};
+  }
+
+  @media (max-width: 768px) {
+    .yd-content-{{ block.id }} {
+      text-align: {{ block.settings.mobile_text_align }};
+    }
+  }
+</style>
+        <div class="yd-method-item {% if block.settings.layout == 'reverse' %}reverse{% endif %}">
+
+          <!-- Images -->
+          <div class="yd-images">
+
+            {% if block.settings.image1 %}
+              <div class="yd-img-card" style="background: {{ block.settings.card_bg }}">
+                <img
+                  src="{{ block.settings.image1 | image_url: width: 800 }}"
+                  alt="{{ block.settings.title | escape }}"
+                  loading="lazy"
+                  style="object-fit: {{ block.settings.image_fit }}; object-position: center;"
+                >
+              </div>
+            {% endif %}
+
+            {% if block.settings.image2 %}
+              <div class="yd-img-card" style="background: {{ block.settings.card_bg }}">
+                <img
+                  src="{{ block.settings.image2 | image_url: width: 800 }}"
+                  alt="{{ block.settings.title | escape }}"
+                  loading="lazy"
+                  style="object-fit: {{ block.settings.image_fit }}; object-position: center;"
+                >
+              </div>
+            {% endif %}
+
+          </div>
+
+          <!-- Content -->
+          <div class="yd-content yd-content-{{ block.id }}">
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.description }}</p>
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<style>
+.yd-printing-methods {
+  padding: 70px 20px;
+}
+
+.yd-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* Heading */
+.yd-printing-method-h2 {
+  margin-bottom: 50px;
+  text-align:center;
+}
+
+/* Layout */
+.yd-method-list {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.yd-method-item {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.yd-method-item.reverse {
+  flex-direction: row-reverse;
+}
+
+/* Images */
+.yd-images {
+  display: flex;
+  gap: 20px;
+  flex: 0 0 45%;
+}
+
+.yd-img-card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Content */
+.yd-content {
+  flex: 1;
+}
+
+.yd-content h3 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.yd-content p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(0,0,0,0.7);
+}
+
+/* 📱 Tablet */
+@media (max-width: 992px) {
+  .yd-method-item {
+    gap: 25px;
+  }
+}
+
+/* 📱 Mobile */
+@media (max-width: 768px) {
+  .yd-printing-methods {
+    padding: 45px 15px;
+  }
+  
+  .yd-method-item {
+    flex-direction: column !important;
+    {% comment %} text-align: center; {% endcomment %}
+    gap: 25px;
+  }
+
+  .yd-images {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .yd-img-card {
+    aspect-ratio: 1 / 1;
+  }
+}
+</style>

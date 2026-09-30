@@ -1,0 +1,386 @@
+{% doc %}
+  @prompt
+    a advance happy Christmas & happy new year with an animation glowing effect which suits for this, how about scrolling from left to right
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-festive-scroll-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.padding_vertical }}px 0;
+    background: {{ block.settings.background_gradient }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-festive-scroll-{{ ai_gen_id }} {
+      width: {{ block.settings.desktop_width_percent }}%;
+      margin: 0 auto;
+    }
+  }
+
+  .ai-festive-scroll-track-{{ ai_gen_id }} {
+    display: flex;
+    width: fit-content;
+    animation: ai-festive-scroll-{{ ai_gen_id }} {{ block.settings.scroll_speed }}s linear infinite;
+  }
+
+  @keyframes ai-festive-scroll-{{ ai_gen_id }} {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  .ai-festive-scroll-content-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0 {{ block.settings.item_spacing }}px;
+  }
+
+  .ai-festive-scroll-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    padding: 0 {{ block.settings.item_spacing }}px;
+    text-shadow: 0 0 {{ block.settings.glow_intensity }}px {{ block.settings.glow_color }},
+                 0 0 {{ block.settings.glow_intensity | times: 2 }}px {{ block.settings.glow_color }},
+                 0 0 {{ block.settings.glow_intensity | times: 3 }}px {{ block.settings.glow_color }};
+  }
+
+  {% if block.settings.enable_glow_animation %}
+    @keyframes ai-festive-glow-pulse-{{ ai_gen_id }} {
+      0%, 100% {
+        text-shadow: 0 0 {{ block.settings.glow_intensity }}px {{ block.settings.glow_color }},
+                     0 0 {{ block.settings.glow_intensity | times: 2 }}px {{ block.settings.glow_color }},
+                     0 0 {{ block.settings.glow_intensity | times: 3 }}px {{ block.settings.glow_color }};
+      }
+      50% {
+        text-shadow: 0 0 {{ block.settings.glow_intensity | times: 1.5 }}px {{ block.settings.glow_color }},
+                     0 0 {{ block.settings.glow_intensity | times: 3 }}px {{ block.settings.glow_color }},
+                     0 0 {{ block.settings.glow_intensity | times: 4.5 }}px {{ block.settings.glow_color }};
+      }
+    }
+
+    .ai-festive-scroll-text-{{ ai_gen_id }} {
+      animation: ai-festive-glow-pulse-{{ ai_gen_id }} {{ block.settings.glow_speed }}s ease-in-out infinite;
+    }
+  {% endif %}
+
+  .ai-festive-scroll-separator-{{ ai_gen_id }} {
+    display: inline-block;
+    width: {{ block.settings.separator_size }}px;
+    height: {{ block.settings.separator_size }}px;
+    margin: 0 {{ block.settings.item_spacing }}px;
+    background: {{ block.settings.separator_color }};
+    border-radius: 50%;
+    box-shadow: 0 0 {{ block.settings.glow_intensity | divided_by: 2 }}px {{ block.settings.separator_color }},
+                0 0 {{ block.settings.glow_intensity }}px {{ block.settings.separator_color }};
+  }
+
+  .ai-festive-sparkle-bg-{{ ai_gen_id }} {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: {{ block.settings.sparkle_color }};
+    border-radius: 50%;
+    box-shadow: 0 0 4px {{ block.settings.sparkle_color }},
+                0 0 8px {{ block.settings.sparkle_color }};
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  @keyframes ai-festive-sparkle-twinkle-{{ ai_gen_id }} {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  {% if block.settings.enable_sparkles %}
+    .ai-festive-sparkle-bg-{{ ai_gen_id }} {
+      animation: ai-festive-sparkle-twinkle-{{ ai_gen_id }} 2s ease-in-out infinite;
+    }
+  {% endif %}
+
+  .ai-festive-scroll-track-{{ ai_gen_id }}:hover {
+    animation-play-state: paused;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-festive-scroll-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.7 }}px;
+    }
+    .ai-festive-scroll-separator-{{ ai_gen_id }} {
+      width: {{ block.settings.separator_size | times: 0.7 }}px;
+      height: {{ block.settings.separator_size | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<festive-scroll-{{ ai_gen_id }} class="ai-festive-scroll-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-festive-scroll-track-{{ ai_gen_id }}">
+    <div class="ai-festive-scroll-content-{{ ai_gen_id }}">
+      {% if block.settings.message_1 != blank %}
+        <span class="ai-festive-scroll-text-{{ ai_gen_id }}">{{ block.settings.message_1 }}</span>
+        <span class="ai-festive-scroll-separator-{{ ai_gen_id }}"></span>
+      {% endif %}
+      
+      {% if block.settings.message_2 != blank %}
+        <span class="ai-festive-scroll-text-{{ ai_gen_id }}">{{ block.settings.message_2 }}</span>
+        <span class="ai-festive-scroll-separator-{{ ai_gen_id }}"></span>
+      {% endif %}
+      
+      {% if block.settings.message_3 != blank %}
+        <span class="ai-festive-scroll-text-{{ ai_gen_id }}">{{ block.settings.message_3 }}</span>
+        <span class="ai-festive-scroll-separator-{{ ai_gen_id }}"></span>
+      {% endif %}
+    </div>
+
+    <div class="ai-festive-scroll-content-{{ ai_gen_id }}" aria-hidden="true">
+      {% if block.settings.message_1 != blank %}
+        <span class="ai-festive-scroll-text-{{ ai_gen_id }}">{{ block.settings.message_1 }}</span>
+        <span class="ai-festive-scroll-separator-{{ ai_gen_id }}"></span>
+      {% endif %}
+      
+      {% if block.settings.message_2 != blank %}
+        <span class="ai-festive-scroll-text-{{ ai_gen_id }}">{{ block.settings.message_2 }}</span>
+        <span class="ai-festive-scroll-separator-{{ ai_gen_id }}"></span>
+      {% endif %}
+      
+      {% if block.settings.message_3 != blank %}
+        <span class="ai-festive-scroll-text-{{ ai_gen_id }}">{{ block.settings.message_3 }}</span>
+        <span class="ai-festive-scroll-separator-{{ ai_gen_id }}"></span>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if block.settings.enable_sparkles %}
+    {% for i in (1..20) %}
+      <span
+        class="ai-festive-sparkle-bg-{{ ai_gen_id }}"
+        style="
+          top: {{ i | times: 5 | modulo: 100 }}%;
+          left: {{ i | times: 5 | modulo: 100 }}%;
+          animation-delay: {{ i | times: 0.1 }}s;
+        "
+      ></span>
+    {% endfor %}
+  {% endif %}
+</festive-scroll-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FestiveScroll{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.setupAccessibility();
+      }
+
+      setupAccessibility() {
+        const track = this.querySelector('.ai-festive-scroll-track-{{ ai_gen_id }}');
+        if (track) {
+          track.setAttribute('role', 'marquee');
+          track.setAttribute('aria-live', 'off');
+        }
+      }
+    }
+
+    customElements.define('festive-scroll-{{ ai_gen_id }}', FestiveScroll{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Festive scrolling banner",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Messages"
+    },
+    {
+      "type": "text",
+      "id": "message_1",
+      "label": "Message 1",
+      "default": "Merry Christmas"
+    },
+    {
+      "type": "text",
+      "id": "message_2",
+      "label": "Message 2",
+      "default": "Happy New Year 2025"
+    },
+    {
+      "type": "text",
+      "id": "message_3",
+      "label": "Message 3",
+      "default": "Season's Greetings"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Text size",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background",
+      "default": "linear-gradient(90deg, #1a472a 0%, #8b0000 50%, #1a472a 100%)"
+    },
+    {
+      "type": "header",
+      "content": "Separator"
+    },
+    {
+      "type": "range",
+      "id": "separator_size",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Separator size",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Separator color",
+      "default": "#ffd700"
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Item spacing",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Glow effect"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_glow_animation",
+      "label": "Enable glow animation",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "glow_intensity",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Glow intensity",
+      "default": 10
+    },
+    {
+      "type": "color",
+      "id": "glow_color",
+      "label": "Glow color",
+      "default": "#ffd700"
+    },
+    {
+      "type": "range",
+      "id": "glow_speed",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "s",
+      "label": "Glow animation speed",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Sparkles"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sparkles",
+      "label": "Enable sparkles",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "sparkle_color",
+      "label": "Sparkle color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "s",
+      "label": "Scroll speed",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 30
+    }
+  ],
+  "presets": [
+    {
+      "name": "Festive scrolling banner"
+    }
+  ]
+}
+{% endschema %}

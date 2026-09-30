@@ -1,0 +1,318 @@
+{%- liquid
+  assign column_count = section.settings.columns | plus: 0
+  assign split_at = section.blocks.size
+  if column_count == 2
+    assign split_at = section.blocks.size | divided_by: 2.0 | ceil
+  endif
+  assign plus_icon = '<svg class="yn-faq__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line class="yn-faq__icon-vertical" x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
+-%}
+
+<div
+  class="yn-section yn-source yn-source--faq yn-faq color-{{ section.settings.color_scheme }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-source-background: {{ section.settings.source_background | default: '#f9fafb' }}; --yn-pt: {{ section.settings.padding_top | divided_by: 10.0 }}rem; --yn-pb: {{ section.settings.padding_bottom | divided_by: 10.0 }}rem;"
+>
+  <div class="yn-container">
+    <div class="yn-faq__header">
+      <h2 class="yn-title">{{ section.settings.subtitle | escape }}</h2>
+      <div class="yn-source-faq-intro">
+        <h3>{{ section.settings.title | escape }}</h3>
+        <div class="yn-description">{{ section.settings.description }}</div>
+        {% if section.settings.button_label != blank and section.settings.button_link != blank %}<a class="yn-faq__button" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }} &rarr;</a>{% endif %}
+      </div>
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <yoode-new-home-faq
+        class="yn-faq__grid{% if column_count == 2 %} yn-faq__grid--split{% endif %}"
+        {% if section.settings.single_open %}
+          data-single-open
+        {% endif %}
+      >
+        <div class="yn-faq__column">
+          {%- for block in section.blocks -%}
+            {%- if forloop.index0 == split_at -%}
+              </div>
+              <div class="yn-faq__column">
+            {%- endif -%}
+            <details
+              class="yn-faq__item"
+              {% if forloop.first and section.settings.open_first %}
+                open
+              {% endif %}
+              {{ block.shopify_attributes }}
+            >
+              <summary class="yn-faq__summary">
+                <span class="yn-faq__question">{{ block.settings.question | escape }}</span>
+                {{ plus_icon }}<span class="yn-source-faq-arrow" aria-hidden="true">{% render 'yoode-new-home-icon', icon: 'arrow-up-right' %}</span>
+              </summary>
+              <div class="yn-faq__content">
+                <div class="yn-faq__answer">{{ block.settings.answer }}</div>
+              </div>
+            </details>
+          {%- endfor -%}
+        </div>
+      </yoode-new-home-faq>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YN FAQ",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "max_blocks": 30,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "info": "Question cards use the scheme's secondary background.",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "FAQS"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Frequently asked question"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Here's everything you need to know to get started, manage your account, and troubleshoot the most frequent issues.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "View all"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Questions"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open first question",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "single_open",
+      "label": "Keep only one question open",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "color",
+      "id": "source_background",
+      "label": "Section background",
+      "default": "#f9fafb"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Question text here?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Answer text here.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN FAQ",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "question": "Do you offer bulk discounts?",
+            "answer": "<p>Yes! We specialize in bulk orders for businesses, teams, and events. Our tiered pricing means the more you order, the more you save. Contact our support team for a custom quote on large volume orders.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "What is your typical turnaround time?",
+            "answer": "<p>Our standard production time is 5-7 business days after design approval. We also offer expedited processing (2-3 days) for tight deadlines. Shipping times vary based on your location.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Can I mix and match apparel sizes and colors?",
+            "answer": "<p>Absolutely. You can mix sizes, colors, and even different apparel types (like t-shirts and hoodies) in a single order, as long as the printed design remains exactly the same across all items.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Which printing method is best for my design?",
+            "answer": "<p>It depends on your design and fabric. Screen printing is best for large batches with 1-3 colors. DTG is perfect for highly detailed, full-color designs on cotton. Embroidery is ideal for corporate polos, hats, and heavy jackets. Our team will automatically recommend the best method for your specific order.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Do you have a minimum order quantity (MOQ)?",
+            "answer": "<p>For DTG (Direct-to-Garment) and DTF printing, there is no minimum order—you can print just 1 item! For Screen Printing and Embroidery, we typically require a minimum of 24 pieces to ensure cost-effectiveness.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "How do I contact customer support?",
+            "answer": "<p>You can reach our dedicated support team via email, live chat on our website, or by calling our toll-free number during business hours.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

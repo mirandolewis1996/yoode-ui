@@ -1,0 +1,513 @@
+{% style %}
+  {% render 'section-margin' %}
+
+  /* --- Desktop (Default) Styles --- */
+  #Banner-{{ section.id }} {
+    position: relative;
+    overflow: hidden;
+    {% if section.settings.desktop_height_unit == 'vh' %}
+      height: {{ section.settings.banner_height_vh }}vh;
+    {% else %}
+      height: {{ section.settings.banner_height }}px;
+    {% endif %}
+  }
+
+  #Banner-{{ section.id }} .banner__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  #Banner-{{ section.id }} .banner__image.img-desktop { display: block; }
+  #Banner-{{ section.id }} .banner__image.img-ipad { display: none; }
+  #Banner-{{ section.id }} .banner__image.img-mobile { display: none; }
+
+
+  #Banner-{{ section.id }} .banner__content {
+    justify-content: {{ section.settings.vertical_position }};
+    align-items: {{ section.settings.horizontal_position }};
+    height: 100%;
+    display: flex;
+    position: relative;
+    z-index: 1;
+  }
+
+  #Banner-{{ section.id }} .banner__content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: {{ section.settings.horizontal_position_button }};
+  }
+
+  #Banner-{{ section.id }} .banner__heading {
+    font-size: 80px;
+    font-weight: 700;
+    color: {{ section.settings.text_color }};
+    font-family: {{ section.settings.font_family }}, sans-serif;
+    margin: 0 0 20px;
+    line-height: 1.2;
+  }
+
+  #Banner-{{ section.id }} .banner__button {
+    border: 1px solid {{ section.settings.button_color }};
+    color: {{ section.settings.button_color }};
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+
+  #Banner-{{ section.id }} .banner__button:hover {
+    background-color: {{ section.settings.text_color }};
+    color: {% if section.settings.text_color == '#ffffff' %}#000000{% else %}#ffffff{% endif %};
+  }
+
+  #Banner-{{ section.id }} .banner__overlay {
+    background-color: {{ section.settings.overlay_color }};
+    opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  /* --- iPad / Tablet Styles (Max 1024px) --- */
+  @media screen and (max-width: 1024px) {
+    #Banner-{{ section.id }} {
+      {% if section.settings.ipad_height_unit == 'vh' %}
+        height: {{ section.settings.banner_height_ipad_vh }}vh;
+      {% else %}
+        height: {{ section.settings.banner_height_ipad }}px;
+      {% endif %}
+    }
+    #Banner-{{ section.id }} .banner__image.img-desktop { display: none; }
+    #Banner-{{ section.id }} .banner__image.img-ipad { display: block; }
+    #Banner-{{ section.id }} .banner__image.img-mobile { display: none; }
+  }
+
+  /* --- Mobile Styles (Max 767px) --- */
+  @media screen and (max-width: 767px) {
+    #Banner-{{ section.id }} {
+      {% if section.settings.mobile_height_unit == 'vh' %}
+        height: {{ section.settings.banner_height_mobile_vh }}vh;
+      {% else %}
+        height: {{ section.settings.banner_height_mobile }}px;
+      {% endif %}
+    }
+    #Banner-{{ section.id }} .banner__heading {
+        font-size: {{ section.settings.mobile_heading_size }}px;
+    }
+    #Banner-{{ section.id }} .banner__image.img-desktop { display: none; }
+    #Banner-{{ section.id }} .banner__image.img-ipad { display: none; }
+    #Banner-{{ section.id }} .banner__image.img-mobile { display: block; }
+
+    #Banner-{{ section.id }} .banner__content .banner__content-container {
+      align-items: center;
+    }
+  }
+
+  /* --- Small Mobile Styles (Max 412px) --- */
+  @media screen and (max-width: 412px) {
+    #Banner-{{ section.id }} .banner__heading {
+        font-size: {{ section.settings.small_mobile_heading_size }}px;
+    }
+  }
+{% endstyle %}
+
+<div id="Banner-{{ section.id }}" class="banner yd-coll-media-banner yd-title-size section-padding">
+  {%- liquid
+    assign desktop_img = section.settings.banner_image
+
+    if section.settings.banner_image_ipad != blank
+      assign ipad_img = section.settings.banner_image_ipad
+    else
+      assign ipad_img = desktop_img
+    endif
+
+    if section.settings.banner_image_mobile != blank
+      assign mobile_img = section.settings.banner_image_mobile
+    else
+      assign mobile_img = ipad_img
+    endif
+  -%}
+
+  {%- # 1. Desktop Image -%}
+  {% if desktop_img %}
+    {{
+      desktop_img
+      | image_url: width: 2000
+      | image_tag: loading: 'lazy', class: 'banner__image img-desktop', alt: section.settings.heading
+      | escape
+    }}
+  {% else %}
+    {{ 'lifestyle-1' | placeholder_svg_tag: 'banner__image img-desktop placeholder' }}
+  {% endif %}
+
+  {%- # 2. iPad Image -%}
+  {% if ipad_img %}
+    {{
+      ipad_img
+      | image_url: width: 1400
+      | image_tag: loading: 'lazy', class: 'banner__image img-ipad', alt: section.settings.heading
+      | escape
+    }}
+  {% else %}
+    {{ 'lifestyle-1' | placeholder_svg_tag: 'banner__image img-ipad placeholder' }}
+  {% endif %}
+
+  {%- # 3. Mobile Image -%}
+  {% if mobile_img %}
+    {{
+      mobile_img
+      | image_url: width: 800
+      | image_tag: loading: 'lazy', class: 'banner__image img-mobile', alt: section.settings.heading
+      | escape
+    }}
+  {% else %}
+    {{ 'lifestyle-1' | placeholder_svg_tag: 'banner__image img-mobile placeholder' }}
+  {% endif %}
+
+  <div class="banner__overlay"></div>
+
+  <div class="banner__content">
+    <div class="banner__content-container">
+      {% if section.settings.heading != blank %}
+        <h2 class="banner__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+      {% if section.settings.button_text != blank %}
+        {% render 'button',
+          btn_link: section.settings.button_link,
+          btn_label: section.settings.button_text,
+          btn_style: section.settings.button_style,
+          btn_arrow: section.settings.button_arrow,
+          yd_global: section.settings.use_yd_global_button
+        %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YD Coll Media Banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Desktop Image"
+    },
+    {
+      "type": "select",
+      "id": "desktop_height_unit",
+      "label": "Desktop Height Unit",
+      "options": [
+        { "value": "px", "label": "Pixels" },
+        { "value": "vh", "label": "Viewport Height" }
+      ],
+      "default": "px"
+    },
+    {
+      "type": "range",
+      "id": "banner_height",
+      "min": 300,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "label": "Desktop Height (PX)",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "banner_height_vh",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Desktop Height (VH)",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "iPad / Tablet Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_ipad",
+      "label": "iPad Image",
+      "info": "Falls back to Desktop image if empty"
+    },
+    {
+      "type": "select",
+      "id": "ipad_height_unit",
+      "label": "iPad Height Unit",
+      "options": [
+        { "value": "px", "label": "Pixels" },
+        { "value": "vh", "label": "Viewport Height" }
+      ],
+      "default": "px"
+    },
+    {
+      "type": "range",
+      "id": "banner_height_ipad",
+      "min": 200,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "label": "iPad Height (PX)",
+      "default": 450
+    },
+    {
+      "type": "range",
+      "id": "banner_height_ipad_vh",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "iPad Height (VH)",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_mobile",
+      "label": "Mobile Image",
+      "info": "Falls back to iPad/Desktop image if empty"
+    },
+    {
+      "type": "select",
+      "id": "mobile_height_unit",
+      "label": "Mobile Height Unit",
+      "options": [
+        { "value": "px", "label": "Pixels" },
+        { "value": "vh", "label": "Viewport Height" }
+      ],
+      "default": "px"
+    },
+    {
+      "type": "range",
+      "id": "banner_height_mobile",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile Height (PX)",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "banner_height_mobile_vh",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Mobile Height (VH)",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Content Settings"
+    },
+    {
+      "type": "select",
+      "id": "font_family",
+      "label": "Font Family",
+      "options": [
+        { "value": "Inter", "label": "Inter" },
+        { "value": "Good Times", "label": "Good Times" },
+        { "value": "Jedira", "label": "Jedira" },
+        { "value": "Milkyway DEMO", "label": "Milkyway DEMO" }
+      ],
+      "default": "Inter"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FASHION MEN"
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "min": 20,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile Heading Font Size",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "small_mobile_heading_size",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Small Mobile Heading Font Size (below 412px)",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_yd_global_button",
+      "label": "Use YD Global Button Style",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "horizontal_position_button",
+      "label": "Button Horizontal Alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Label",
+      "default": "VIEW ALL"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "tertiary", "label": "Tertiary" },
+        { "value": "transparent", "label": "Transparent" }
+      ],
+      "default": "secondary",
+      "label": "Button Style"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow",
+      "default": false,
+      "label": "Show Button Arrow"
+    },
+    {
+      "type": "range",
+      "id": "button_bottom_offset",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Desktop Button Offset",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "button_bottom_offset_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile Button Offset",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay Opacity",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "vertical_position",
+      "label": "Content Vertical Position",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Middle" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "horizontal_position",
+      "label": "Content Horizontal Position",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        { "value": "no-indent", "label": "No indent" },
+        { "value": "xs", "label": "XS" },
+        { "value": "s", "label": "S" },
+        { "value": "m", "label": "M" },
+        { "value": "l", "label": "L" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "no-indent",
+      "label": "Margin Top"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        { "value": "no-indent", "label": "No indent" },
+        { "value": "xs", "label": "XS" },
+        { "value": "s", "label": "S" },
+        { "value": "m", "label": "M" },
+        { "value": "l", "label": "L" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "no-indent",
+      "label": "Margin Bottom"
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Coll Media Banner",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

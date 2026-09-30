@@ -1,0 +1,368 @@
+{%- liquid
+  assign bg_style = ''
+  assign bg = section.settings.background_color
+  if bg != blank and bg != 'rgba(0,0,0,0)'
+    if bg.alpha != 0
+      assign bg_style = '--yn-testimonials-bg: ' | append: bg | append: ';'
+    endif
+  endif
+-%}
+
+<div
+  class="yn-section yn-source yn-source--testimonials yn-testimonials color-{{ section.settings.color_scheme }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-pt: {{ section.settings.padding_top | divided_by: 10.0 }}rem; --yn-pb: {{ section.settings.padding_bottom | divided_by: 10.0 }}rem; --yn-testimonials-duration: {{ section.settings.speed }}s; {{ bg_style }}"
+>
+  <div class="yn-container">
+    {% render 'yoode-new-home-heading',
+      subtitle: section.settings.subtitle,
+      title: section.settings.title,
+      description: section.settings.description,
+      align: 'center'
+    %}
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="yn-testimonials__marquee">
+      <div class="yn-testimonials__track">
+        {%- for group in (1..2) -%}
+          <ul class="yn-testimonials__group" {% if group == 2 %}aria-hidden="true"{% endif %}>
+            {%- for block in section.blocks -%}
+              {%- liquid
+                assign rating = block.settings.rating | times: 1.0
+                assign rating_label = section.settings.rating_label | replace: '[rating]', block.settings.rating
+              -%}
+              <li
+                class="yn-testimonials__item"
+                style="--yn-rotate: {{ block.settings.rotation }}deg;"
+                {% if group == 1 %}{{ block.shopify_attributes }}{% endif %}
+              >
+                <article class="yn-testimonials__card yn-testimonials__card--{{ block.settings.card_style }}">
+                  <span class="yn-testimonials__glow" aria-hidden="true"></span>
+
+                  <div class="yn-testimonials__top">
+                    <div class="yn-testimonials__rating">
+                      <span class="yn-testimonials__stars" role="img" aria-label="{{ rating_label | escape }}">
+                        {%- for star in (1..5) -%}
+                          {%- liquid
+                            assign fill = 0
+                            assign star_before = star | minus: 1
+                            if rating >= star
+                              assign fill = 100
+                            elsif rating > star_before
+                              assign fill = rating | modulo: 1 | times: 100 | round
+                            endif
+                          -%}
+                          <span class="yn-testimonials__star" style="--yn-fill: {{ fill }}%;">
+                            {% render 'yoode-new-home-icon', icon: 'star' %}
+                            <span class="yn-testimonials__star-fill">
+                              {%- render 'yoode-new-home-icon', icon: 'star' -%}
+                            </span>
+                          </span>
+                        {%- endfor -%}
+                      </span>
+                      {%- if section.settings.show_rating_number -%}
+                        <span class="yn-testimonials__rating-number" aria-hidden="true">{{ block.settings.rating }}</span>
+                      {%- endif -%}
+                    </div>
+
+                    {%- if section.settings.badge_text != blank -%}
+                      <span class="yn-testimonials__badge">{{ section.settings.badge_text | escape }}</span>
+                    {%- endif -%}
+                  </div>
+
+                  {%- if block.settings.quote != blank -%}
+                    <blockquote class="yn-testimonials__quote">
+                      {%- if section.settings.show_quote_marks -%}&ldquo;{%- endif -%}
+                      {{- block.settings.quote | escape | newline_to_br -}}
+                      {%- if section.settings.show_quote_marks -%}&rdquo;{%- endif -%}
+                    </blockquote>
+                  {%- endif -%}
+
+                  <div class="yn-testimonials__author">
+                    {%- if block.settings.initials != blank -%}
+                      <span class="yn-testimonials__avatar" aria-hidden="true">{{ block.settings.initials | escape }}</span>
+                    {%- endif -%}
+                    {%- if block.settings.name != blank -%}
+                      <p class="yn-testimonials__name">{{ block.settings.name | escape }}</p>
+                    {%- endif -%}
+                  </div>
+                </article>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "YN Testimonials",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-2"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Custom background",
+      "info": "Optional. Overrides the color scheme background."
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Testimonials"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Loved by people who care about quality."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Real experiences from teams who turned ambitious ideas into products people enjoy using.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Cards"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "info": "Shown on every card. Leave empty to hide.",
+      "default": "Verified"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating_number",
+      "label": "Show rating number",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "rating_label",
+      "label": "Rating label for screen readers",
+      "info": "[rating] is replaced with the card's rating.",
+      "default": "Rated [rating] out of 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quote_marks",
+      "label": "Wrap quotes in quotation marks",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll duration",
+      "info": "Seconds for one full loop. Higher is slower. Pauses on hover.",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "s",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 112
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 112
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "John Doe"
+        },
+        {
+          "type": "text",
+          "id": "initials",
+          "label": "Initials",
+          "default": "JD"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "The quality of the products exceeded all our expectations."
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating",
+          "min": 1,
+          "max": 5,
+          "step": 0.1,
+          "default": 5
+        },
+        {
+          "type": "select",
+          "id": "card_style",
+          "label": "Card color",
+          "options": [
+            { "value": "purple", "label": "Purple" },
+            { "value": "white", "label": "White" },
+            { "value": "lime", "label": "Lime" },
+            { "value": "dark", "label": "Dark" },
+            { "value": "beige", "label": "Beige" }
+          ],
+          "default": "white"
+        },
+        {
+          "type": "select",
+          "id": "rotation",
+          "label": "Tilt",
+          "options": [
+            { "value": "-6", "label": "-6°" },
+            { "value": "-3", "label": "-3°" },
+            { "value": "-2", "label": "-2°" },
+            { "value": "0", "label": "None" },
+            { "value": "2", "label": "2°" },
+            { "value": "3", "label": "3°" },
+            { "value": "6", "label": "6°" }
+          ],
+          "default": "-3"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Testimonials",
+      "settings": {
+        "background_color": "#e4d7bd"
+      },
+      "blocks": [
+        { "type": "testimonial", "settings": { "name": "Maya Collins", "initials": "MC", "quote": "The print quality on our custom team hoodies was absolutely phenomenal. Every detail was sharp and the fabric is premium.", "rating": 5, "card_style": "purple", "rotation": "-6" } },
+        { "type": "testimonial", "settings": { "name": "Rahul Verma", "initials": "RV", "quote": "Ordered 500 personalized welcome kits for our new hires. They were delivered ahead of schedule and the packaging was stunning.", "rating": 4.2, "card_style": "white", "rotation": "-2" } },
+        { "type": "testimonial", "settings": { "name": "Priya Patel", "initials": "PP", "quote": "Finding good quality corporate gifts is hard, but Yoode made it effortless. The custom engraving on the bottles was perfect.", "rating": 3.8, "card_style": "lime", "rotation": "3" } },
+        { "type": "testimonial", "settings": { "name": "Ethan Brooks", "initials": "EB", "quote": "I ordered custom embroidered polos for our sales team. The stitching is flawless and they look incredibly professional.", "rating": 4.5, "card_style": "dark", "rotation": "6" } },
+        { "type": "testimonial", "settings": { "name": "Sofia Martinez", "initials": "SM", "quote": "From selecting the products to the final delivery, the process was seamless. The personalized notebooks were a huge hit!", "rating": 4.7, "card_style": "beige", "rotation": "-3" } },
+        { "type": "testimonial", "settings": { "name": "Rohan Kapoor", "initials": "RK", "quote": "The bulk order process was so easy. The custom backpacks we got for our annual offsite look fantastic and are super durable.", "rating": 3.9, "card_style": "white", "rotation": "2" } },
+        { "type": "testimonial", "settings": { "name": "Olivia Bennett", "initials": "OB", "quote": "I loved how easy it was to customize my design. The colors on the final printed t-shirts popped exactly like they did on screen.", "rating": 4.8, "card_style": "purple", "rotation": "-3" } },
+        { "type": "testimonial", "settings": { "name": "Vikram Reddy", "initials": "VR", "quote": "We needed last-minute personalized awards for our team. Yoode delivered on time without compromising a single detail.", "rating": 5, "card_style": "dark", "rotation": "-6" } },
+        { "type": "testimonial", "settings": { "name": "Kavya Nair", "initials": "KN", "quote": "The premium feel of the corporate gift boxes blew our clients away. Definitely our go-to partner for all company merch now.", "rating": 4.4, "card_style": "lime", "rotation": "6" } },
+        { "type": "testimonial", "settings": { "name": "James Anderson", "initials": "JA", "quote": "The sizing on the custom jerseys was spot-on, and the fabric is incredibly breathable. Will definitely be ordering again for our next event.", "rating": 4.6, "card_style": "beige", "rotation": "3" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

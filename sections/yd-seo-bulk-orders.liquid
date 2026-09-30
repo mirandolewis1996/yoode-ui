@@ -1,0 +1,245 @@
+{%- assign half = section.blocks.size | plus: 1 | divided_by: 2 -%}
+{%- assign rows = half | at_least: 1 -%}
+
+<section
+  class="yd-seo-section yd-seo-bulk"
+  aria-labelledby="yd-seo-bulk-title-{{ section.id }}"
+  style="
+    --yd-seo-dark:{{ section.settings.bg_colour }};
+    --yd-seo-bulk-rows:{{ rows }};
+    --yd-seo-bulk-side-w:clamp(144px,20vw,{{ section.settings.side_width }}px);
+  "
+>
+  <div class="yd-seo-container">
+    {%- if section.blocks.size == 0 and request.design_mode -%}
+      <p class="yd-seo-editor-hint">{{ section.settings.empty_hint }}</p>
+    {%- endif -%}
+
+    <div class="yd-seo-head yd-seo-reveal">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="yd-seo-title" id="yd-seo-bulk-title-{{ section.id }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="yd-seo-subtitle">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="yd-seo-bulk-stage">
+      <!--
+        Every point, in order. The list box is dissolved by the CSS
+        (display:contents) so each card becomes a grid item of the stage.
+      -->
+      <ul class="yd-seo-bulk-list" role="list">
+        {%- for block in section.blocks -%}
+          {%- if forloop.index <= half -%}
+            {%- assign side = 'yd-seo-bulk-card-start' -%}
+            {%- assign row = forloop.index -%}
+          {%- else -%}
+            {%- assign side = 'yd-seo-bulk-card-end' -%}
+            {%- assign row = forloop.index | minus: half -%}
+          {%- endif -%}
+
+          <li
+            class="yd-seo-bulk-card {{ side }} yd-seo-reveal"
+            style="--yd-seo-row:{{ row }};--yd-seo-i:{{ row | minus: 1 }};"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.title != blank -%}
+              <h3 class="yd-seo-bulk-title">{{ block.settings.title | newline_to_br }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="yd-seo-bulk-text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <!-- Centre column: photo + buttons, spanning every card row --------- -->
+      <div class="yd-seo-bulk-media yd-seo-reveal">
+        {%- if section.settings.image != blank -%}
+          <img
+            class="yd-seo-bulk-photo"
+            src="{{ section.settings.image | image_url: width: 1200 }}"
+            srcset="
+              {{ section.settings.image | image_url: width: 600 }} 600w,
+              {{ section.settings.image | image_url: width: 1200 }} 1200w
+            "
+            sizes="(max-width: 991px) 92vw, 50vw"
+            title="{{ section.settings.front_image_title | escape }}"
+            alt="{{ section.settings.image_alt | escape }}"
+            width="{{ section.settings.image.width }}"
+            height="{{ section.settings.image.height }}"
+            style="--yd-seo-bulk-photo-ratio:{{ section.settings.image.width }} / {{ section.settings.image.height }};"
+            loading="lazy"
+            decoding="async"
+          >
+        {%- endif -%}
+
+        <div class="yd-seo-btn-group yd-seo-bulk-actions ">
+          {%- if section.settings.button_1_label != blank -%}
+            <button
+              class="yd-seo-btn yd-seo-btn-primary"
+              id="yd-seo-modal-open-{{ section.id }}"
+              aria-haspopup="dialog"
+              aria-controls="yd-enquiry-modal"
+              data-yd-enquiry-open
+            >
+              {{ section.settings.button_1_label }}
+              <svg
+                class="yd-seo-icon"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"/>
+              </svg>
+            </button>
+          {%- endif -%}
+          {%- if section.settings.button_2_label != blank -%}
+            <a class="yd-seo-btn yd-seo-btn-outline" target="_blank" href="https://wa.me/{{ section.settings.button_2_num}}?text=I’d like to know more about custom sports jerseys. Please share the details." >
+              {{ section.settings.button_2_label }}
+              <svg
+                class="yd-seo-icon"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"/>
+              </svg>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YD SEO Bulk Orders",
+  "tag": "section",
+  "class": "yd-seo-shopify-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "empty_hint",
+      "label": "Empty-state hint (theme editor only)",
+      "default": "No \"Point\" blocks yet - add one per card using Add block below."
+    },
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Bulk & Team Orders" },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Built for squads, schools, colleges and company leagues."
+    },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "color", "id": "bg_colour", "label": "Background", "default": "#1e1e1e" },
+    {
+      "type": "range",
+      "id": "side_width",
+      "min": 140,
+      "max": 360,
+      "step": 10,
+      "unit": "px",
+      "label": "Side column width",
+      "default": 240
+    },
+
+    { "type": "header", "content": "Image" },
+    { "type": "image_picker", "id": "image", "label": "Centre image" },
+    { "type": "text", "id": "front_image_title", "label": "Front Image Title", "default": "Front View" },
+
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "A full team kit shown on a player and mannequins with cap, jersey and track pants"
+    },
+
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "button_1_label", "label": "Primary button text", "default": "Request Bulk Pricing" },
+    { "type": "url", "id": "button_1_url", "label": "Primary button link" },
+    { "type": "text", "id": "button_2_label", "label": "Secondary button text", "default": "Email the Team" },
+    { "type": "text", "id": "button_2_num", "label": "Secondary whatsapp number","default":"+918069750293" }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Point",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "Title",
+          "default": "Minimum\nOrder",
+          "info": "Press Enter to split the title across two lines."
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "No high minimum — order a single jersey or a full squad set."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD SEO Bulk Orders",
+      "blocks": [
+        {
+          "type": "point",
+          "settings": {
+            "title": "Minimum\nOrder",
+            "text": "No high minimum — order a single jersey or a full squad set."
+          }
+        },
+        {
+          "type": "point",
+          "settings": {
+            "title": "Bulk\nPricing",
+            "text": "Per-piece price drops as quantity rises. Slabs start at 11 pieces."
+          }
+        },
+        {
+          "type": "point",
+          "settings": {
+            "title": "Team\nCustomisation",
+            "text": "Home and away sets, captain and goalkeeper variants, staff and supporter kit."
+          }
+        },
+        {
+          "type": "point",
+          "settings": { "title": "Sizes", "text": "22 to 52, covering juniors through to adults, in one order." }
+        },
+        {
+          "type": "point",
+          "settings": {
+            "title": "Names\n& Numbers",
+            "text": "A unique name and number on every jersey, included in the price."
+          }
+        },
+        {
+          "type": "point",
+          "settings": {
+            "title": "Turnaround",
+            "text": "Mockup within a day of your brief; production scheduled once you approve."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

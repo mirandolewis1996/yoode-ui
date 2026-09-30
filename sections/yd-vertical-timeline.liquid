@@ -1,0 +1,452 @@
+{{ 'yd-vertical-timeline.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .yd-vertical-timeline-{{ section.id }} {
+    /* Color Scheme Fallback or Override */
+    --bg-color: {{ section.settings.background_color | default: 'transparent' }};
+
+    /* Timeline Colors */
+    --line-color: {{ section.settings.line_color }};
+    --dot-color: {{ section.settings.dot_color }};
+    --dot-border-color: {{ section.settings.dot_border_color }};
+
+    /* Text Colors */
+    --title-color: {{ section.settings.title_color }};
+    --subtitle-color: {{ section.settings.subtitle_color }};
+    --date-color: {{ section.settings.date_color }};
+    --desc-color: {{ section.settings.description_color }};
+    --main-title-color: {{ section.settings.heading_color }};
+    --main-subtitle-color: {{ section.settings.description_color_main }};
+
+    /* Card Style */
+    --card-bg: {{ section.settings.card_background }};
+    --card-border-color: {{ section.settings.card_border_color }};
+
+    /* Dimensions */
+    --line-width: {{ section.settings.line_width }}px;
+    --dot-size: {{ section.settings.dot_size }}px;
+    --dot-border-width: {{ section.settings.dot_border_width }}px;
+    --dot-top-offset: {{ section.settings.dot_top_offset }}px;
+    --content-gap: {{ section.settings.content_gap }}px;
+    --item-spacing: {{ section.settings.item_spacing }}px;
+    --card-padding: {{ section.settings.card_padding }}px;
+    --card-radius: {{ section.settings.card_border_radius }}px;
+    --card-border-width: {{ section.settings.card_border_width }}px;
+    --header-spacing: {{ section.settings.header_spacing }}px;
+
+    /* Typography Sizes (calculated if needed or direct) */
+    --main-title-size: 32px; /* Default fallback */
+
+    {% if section.settings.container_width == 'custom' %}
+      --container-width: {{ section.settings.custom_width }}px;
+    {% elsif section.settings.container_width == 'full' %}
+      --container-width: 100%;
+    {% else %}
+      --container-width: 1200px;
+    {% endif %}
+  }
+{%- endstyle -%}
+
+<div class="yd-vertical-timeline yd-vertical-timeline-{{ section.id }} color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding section-padding">
+  <div class="page-width container">
+    {% if section.settings.heading != blank or section.settings.description != blank %}
+      <div class="timeline-header" style="text-align: {{ section.settings.header_alignment }}">
+        {% if section.settings.heading != blank %}
+          <h2 class="timeline-main-title {{ section.settings.heading_size }}" style="color: var(--main-title-color);">
+            {{ section.settings.heading }}
+          </h2>
+        {% endif %}
+        {% if section.settings.description != blank %}
+          <div class="timeline-main-subtitle rte" style="color: var(--main-subtitle-color);">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="timeline-wrapper layout-{{ section.settings.desktop_content_position }}">
+      <div class="timeline-line"></div>
+
+      {%- for block in section.blocks -%}
+        <div class="timeline-item" {{ block.shopify_attributes }}>
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            {% if block.settings.date != blank %}
+              <div class="timeline-date">{{ block.settings.date }}</div>
+            {% endif %}
+            {% if block.settings.title != blank %}
+              <h3 class="timeline-title">{{ block.settings.title }}</h3>
+            {% endif %}
+            {% if block.settings.subtitle != blank %}
+              <p class="timeline-subtitle">{{ block.settings.subtitle }}</p>
+            {% endif %}
+            {% if block.settings.description != blank %}
+              <div class="timeline-description rte">{{ block.settings.description }}</div>
+            {% endif %}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('.section-{{ section.id }}-padding .timeline-item').forEach((item) => {
+      observer.observe(item);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "YD Vertical Timeline",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "container_width",
+      "label": "Container Width",
+      "options": [
+        { "value": "container", "label": "Container" },
+        { "value": "full", "label": "Full Width" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "container"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Custom Max Width",
+      "min": 400,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "select",
+      "id": "desktop_content_position",
+      "label": "Desktop Content Position",
+      "options": [
+        { "value": "alternating", "label": "Alternating" },
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "alternating"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Custom Background Color",
+      "info": "Overrides color scheme background if set."
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Journey"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>A timeline of our milestones</p>"
+    },
+    {
+      "type": "text_alignment",
+      "id": "header_alignment",
+      "label": "Alignment",
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#262d33"
+    },
+    {
+      "type": "color",
+      "id": "description_color_main",
+      "label": "Description Color",
+      "default": "#676c70"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Bottom Spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Timeline Style"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Line Color",
+      "default": "#dee0e0"
+    },
+    {
+      "type": "range",
+      "id": "line_width",
+      "label": "Line Width",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "dot_color",
+      "label": "Dot Color",
+      "default": "#262d33"
+    },
+    {
+      "type": "color",
+      "id": "dot_border_color",
+      "label": "Dot Border Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "dot_size",
+      "label": "Dot Size",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "dot_border_width",
+      "label": "Dot Border Width",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "dot_top_offset",
+      "label": "Dot Top Offset",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "label": "Gap from Center Line",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "label": "Space Between Items",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Card Style"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card Border Color",
+      "default": "#dee0e0"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card Padding",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card Border Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "label": "Card Border Width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Typography Colors"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Card Title Color",
+      "default": "#262d33"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Card Subtitle Color",
+      "default": "#676c70"
+    },
+    {
+      "type": "color",
+      "id": "date_color",
+      "label": "Date Color",
+      "default": "#676c70"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Color",
+      "default": "#676c70"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "timeline_item",
+      "name": "Timeline Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "date",
+          "label": "Date",
+          "default": "January 2024"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Milestone Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Subtitle or short description"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Details about this milestone.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Vertical Timeline",
+      "blocks": [{ "type": "timeline_item" }, { "type": "timeline_item" }, { "type": "timeline_item" }]
+    }
+  ]
+}
+{% endschema %}

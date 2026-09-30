@@ -1,0 +1,101 @@
+<section class="yd-seo-section yd-seo-outro" aria-labelledby="yd-seo-outro-title-{{ section.id }}"
+         style="--yd-seo-cream:{{ section.settings.bg_colour }};
+                --yd-seo-outro-min-h:{{ section.settings.min_height }}px;
+                --yd-seo-outro-card-w:clamp(128px,20vw,{{ section.settings.card_width }}px);">
+  <div class="yd-seo-container">
+    <div class="yd-seo-outro-stage">
+
+      {%- if section.settings.card_image != blank -%}
+        <figure class="yd-seo-outro-card yd-seo-reveal"
+                style="--yd-seo-outro-card-ratio:{{ section.settings.card_image.width }} / {{ section.settings.card_image.height }};">
+          <img class="yd-seo-outro-kit"
+               src="{{ section.settings.card_image | image_url: width: 800 }}"
+               srcset="{{ section.settings.card_image | image_url: width: 400 }} 400w,
+                       {{ section.settings.card_image | image_url: width: 800 }} 800w"
+               sizes="(max-width: 767px) 90vw, 20vw"
+               alt="{{ section.settings.card_image_alt | escape }}"
+               title="{{ section.settings.front_image_title | escape }}"
+               width="{{ section.settings.card_image.width }}"
+               height="{{ section.settings.card_image.height }}"
+               loading="lazy" decoding="async">
+        </figure>
+      {%- endif -%}
+
+      <div class="yd-seo-outro-copy yd-seo-reveal" style="--yd-seo-i:1">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="yd-seo-title" id="yd-seo-outro-title-{{ section.id }}">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="yd-seo-subtitle">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank -%}
+          <a class="yd-seo-btn yd-seo-btn-primary" href="{{ section.settings.button_url | default: '#' }}">
+            {{ section.settings.button_label }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.player_image != blank -%}
+        <div class="yd-seo-outro-figure" aria-hidden="true">
+          <img class="yd-seo-outro-player"
+               src="{{ section.settings.player_image | image_url: width: 700 }}"
+               title="{{ section.settings.front_image_title1 | escape }}"
+               alt="{{ section.settings.player_image_alt | escape }}"
+               width="{{ section.settings.player_image.width }}"
+               height="{{ section.settings.player_image.height }}"
+               loading="lazy" decoding="async">
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YD SEO Outro Banner",
+  "tag": "section",
+  "class": "yd-seo-shopify-section",
+  "settings": [
+    { "type": "header", "content": "Copy" },
+    { "type": "text",     "id": "heading",    "label": "Heading", "default": "Ready To Wear Something Different?" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading",
+      "default": "Join the Yoode movement and turn your team's identity into kit you'll actually want to wear." },
+    { "type": "text", "id": "button_label", "label": "Button text", "default": "Customize Yours" },
+    { "type": "url",  "id": "button_url",   "label": "Button link" },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "color", "id": "bg_colour", "label": "Background", "default": "#fdf0e4" },
+    { "type": "range", "id": "min_height", "min": 140, "max": 400, "step": 10, "unit": "px",
+      "label": "Minimum band height", "default": 250 },
+
+    { "type": "header", "content": "Left card" },
+    { "type": "image_picker", "id": "card_image", "label": "Kit display image" },
+    {
+  "type": "text",
+  "id": "front_image_title",
+  "label": "Front Image Title",
+  "default": "Front View"
+},
+    { "type": "text", "id": "card_image_alt", "label": "Card image alt text",
+      "default": "A custom kit displayed on a hanger and mannequin with shorts and socks" },
+    { "type": "range", "id": "card_width", "min": 120, "max": 400, "step": 10, "unit": "px",
+      "label": "Card width", "default": 290 },
+
+    { "type": "header", "content": "Right cut-out" },
+    { "type": "image_picker", "id": "player_image", "label": "Player cut-out",
+      "info": "A transparent cut-out. It fills the band height and bleeds off the bottom edge, and is hidden below 992px so it never crowds the copy." },
+          {
+  "type": "text",
+  "id": "front_image_title1",
+  "label": "Front Image Title",
+  "default": "Front View"
+},
+    { "type": "text", "id": "player_image_alt", "label": "Cut-out alt text",
+      "info": "Leave empty if the cut-out is purely decorative." }
+  ],
+  "presets": [
+    { "name": "YD SEO Outro Banner" }
+  ]
+}
+{% endschema %}

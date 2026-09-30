@@ -1,0 +1,76 @@
+
+<section class="yd-seo-section yd-seo-features" aria-label="{{ section.settings.aria_label | escape }}"
+         style="--yd-seo-features-cols:{{ section.settings.columns }};
+                --yd-seo-dark:{{ section.settings.bg_colour }};
+                --yd-seo-dark-ghost:{{ section.settings.numeral_colour }};
+                --yd-seo-on-dark:{{ section.settings.title_colour }};
+                --yd-seo-on-dark-muted:{{ section.settings.text_colour }};
+                --yd-seo-num-size:clamp(4.5rem,2rem + 10.5vw,{{ section.settings.numeral_size }}px);">
+  <div class="yd-seo-container">
+    <ul class="yd-seo-grid">
+
+      {%- for block in section.blocks -%}
+        <li class="yd-seo-feature yd-seo-reveal"
+            style="--yd-seo-i:{{ forloop.index0 }};{% if block.settings.numeral != blank %}--yd-seo-num-art:url({{ block.settings.numeral | image_url: width: 300 }});{% endif %}"
+            {{ block.shopify_attributes }}>
+          {%- if block.settings.title != blank -%}
+            <h2 class="yd-seo-feature-title">{{ block.settings.title }}</h2>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <p class="yd-seo-feature-text">{{ block.settings.text }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YD SEO Feature Strip",
+  "tag": "section",
+  "class": "yd-seo-shopify-section",
+  "settings": [
+    { "type": "text", "id": "aria_label", "label": "Section label (screen readers)",
+      "default": "Why teams order from Yoode" },
+    { "type": "range", "id": "columns", "min": 1, "max": 6, "step": 1,
+      "label": "Columns (desktop)", "default": 4 },
+
+    { "type": "header", "content": "Colours" },
+    { "type": "color", "id": "bg_colour",      "label": "Background",       "default": "#1e1e1e" },
+    { "type": "color", "id": "title_colour",   "label": "Title colour",     "default": "#ffffff" },
+    { "type": "color", "id": "text_colour",    "label": "Body colour",      "default": "#8e8e8e" },
+    { "type": "color", "id": "numeral_colour", "label": "Watermark numeral colour", "default": "#3a3a3a" },
+
+    { "type": "header", "content": "Watermark numerals" },
+    { "type": "range", "id": "numeral_size", "min": 60, "max": 220, "step": 4, "unit": "px",
+      "label": "Maximum numeral size", "default": 128 }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "limit": 8,
+      "settings": [
+        { "type": "text",     "id": "title", "label": "Title", "default": "We Make It Ourselves" },
+        { "type": "textarea", "id": "text",  "label": "Description",
+          "default": "Produced at our Tirupur facility, so quality and timelines stay in our hands." },
+        { "type": "image_picker", "id": "numeral", "label": "Watermark numeral image",
+          "info": "Outlined numeral shown behind the text. Upload 01, 02, 03… one per feature." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD SEO Feature Strip",
+      "blocks": [
+        { "type": "feature", "settings": { "title": "We Make It Ourselves",   "text": "Produced at our Tirupur facility, so quality and timelines stay in our hands." } },
+        { "type": "feature", "settings": { "title": "One Piece Or A Thousand","text": "No high minimum. A single jersey gets the same print quality as a full squad order." } },
+        { "type": "feature", "settings": { "title": "Free Design Mockup",     "text": "Send your idea on WhatsApp, approve the mockup, then pay." } },
+        { "type": "feature", "settings": { "title": "4 Experience Centres",   "text": "Bangalore, Chennai, Trivandrum and Marthandam — or order online." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,96 @@
+{% comment %}
+  Location card for yoode-new-home-experience-centers (styles: yoode-new-home.css).
+
+  Accepts:
+  - block {Object} "location" block of the section
+  - is_bottom {Boolean} anchor the card to the bottom of its slot (image opens upwards)
+  - open_label {String} badge text for open locations
+  - soon_label {String} badge text for "coming soon" locations
+
+  Usage:
+  {% render 'yoode-new-home-experience-card', block: block, is_bottom: false, open_label: section.settings.open_label, soon_label: section.settings.soon_label %}
+{% endcomment %}
+
+{%- liquid
+  assign coming_soon = block.settings.coming_soon
+  assign image_alt = block.settings.image.alt | default: block.settings.title
+-%}
+
+{%- capture card_content -%}
+  <div class="yn-experience__card-head">
+    <span class="yn-experience__card-icon">
+      {%- if coming_soon -%}
+        {% render 'yoode-new-home-icon', icon: 'hard-hat' %}
+      {%- else -%}
+        {% render 'yoode-new-home-icon', icon: 'map-pin' %}
+      {%- endif -%}
+    </span>
+    {%- if coming_soon and soon_label != blank -%}
+      <span class="yn-experience__badge yn-experience__badge--soon">{{ soon_label | escape }}</span>
+    {%- elsif coming_soon == false and open_label != blank -%}
+      <span class="yn-experience__badge yn-experience__badge--open">{{ open_label | escape }}</span>
+    {%- endif -%}
+  </div>
+  {%- if block.settings.title != blank -%}
+    <h3 class="yn-experience__card-title">{{ block.settings.title | escape }}</h3>
+  {%- endif -%}
+  {%- if block.settings.region != blank -%}
+    <p class="yn-experience__card-region">{{ block.settings.region | escape }}</p>
+  {%- endif -%}
+  {%- if coming_soon == false and block.settings.address != blank -%}
+    <p class="yn-experience__card-address">{{ block.settings.address | escape | newline_to_br }}</p>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture card_media -%}
+  {%- if block.settings.image != blank -%}
+    <div class="yn-experience__card-media">
+      {{
+        block.settings.image
+        | image_url: width: 800
+        | image_tag:
+          loading: 'lazy',
+          widths: '300, 400, 600, 800',
+          sizes: '(min-width: 990px) 340px, (min-width: 750px) 50vw, 100vw',
+          alt: image_alt,
+          class: 'yn-experience__card-img'
+      }}
+    </div>
+  {%- elsif block.settings.fallback_image != blank -%}
+    <div class="yn-experience__card-media">
+      <img
+        class="yn-experience__card-img"
+        src="{{ block.settings.fallback_image | strip | asset_url }}"
+        alt="{{ image_alt | escape }}"
+        width="800"
+        height="533"
+        loading="lazy"
+      >
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+<div
+  class="yn-experience__item{% if is_bottom %} yn-experience__item--bottom{% endif %}"
+  data-yn-experience-item="{{ block.id }}"
+  {{ block.shopify_attributes }}
+>
+  {%- comment -%} Invisible copy that reserves the collapsed card height (desktop) {%- endcomment -%}
+  <div class="yn-experience__ghost" aria-hidden="true">
+    <div class="yn-experience__card-content">{{ card_content }}</div>
+  </div>
+
+  {% if block.settings.link != blank %}
+    <a class="yn-experience__card{% if coming_soon %} yn-experience__card--soon{% endif %}" href="{{ block.settings.link | escape }}">
+  {% else %}
+    <div class="yn-experience__card{% if coming_soon %} yn-experience__card--soon{% endif %}" tabindex="0">
+  {% endif %}
+    {%- if is_bottom -%}{{ card_media }}{%- endif -%}
+    <div class="yn-experience__card-content">{{ card_content }}</div>
+    {%- unless is_bottom -%}{{ card_media }}{%- endunless -%}
+  {% if block.settings.link != blank %}
+    </a>
+  {% else %}
+    </div>
+  {% endif %}
+</div>

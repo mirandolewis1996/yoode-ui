@@ -1,0 +1,23 @@
+/* ==========================================================================
+   yd-global-typography
+   --------------------------------------------------------------------------
+   Site-wide heading spacing standards. Loaded last in <head> so its
+   !important declarations win on source order.
+
+   h2 titles carry no top margin anywhere on the site. Several rules used to
+   add one and had to be overridden rather than removed, because they are
+   shared with other heading levels:
+
+     component-rte.css  .rte h1, .rte h2, .rte h3, .rte h4 { margin-top: 3.2rem }
+                        (also 4.8rem / 5.6rem at wider breakpoints)
+     custom.css         .richtext-content h1, h2, h3, ...  { margin-top: 15px }
+     base-vars-styles / popular-products {% style %} blocks
+
+   Only the TOP margin is standardised. Bottom margins, and every other
+   heading level, are left exactly as they were.
+   ========================================================================== */
+
+h2,
+.h2 {
+  margin-top: 0 !important;
+}

@@ -1,0 +1,72 @@
+.yd-brand-logos {
+    .title-section {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 40px;
+
+        .title {
+            line-height: 1.2;
+            font-size: calc(var(--font-heading-h2-scale)* 3.2rem);
+            padding-right: 40px;
+            color: var(--title-color);
+        }
+    }
+
+    .brand-logo-grid {
+        display: grid;
+        grid-template-columns: repeat(var(--grid-cols-desktop), 1fr);
+        gap: 20px;
+
+        .brand-logo-card {
+            background-color: var(--card-bg-color);
+            border-radius: 8px;
+            /* Optional: Rounded corners */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            height: 120px;
+            /* Fixed height for consistency */
+            overflow: hidden;
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: translateY(-5px);
+                /* Optional: hover effect */
+            }
+
+            a.brand-logo-link {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+            }
+
+            img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                display: block;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .brand-logo-grid {
+            grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
+            gap: 10px;
+        }
+
+        .title-section {
+            .title {
+                font-size: 32px;
+                padding-right: 0;
+            }
+        }
+    }
+}
+
+/* new changes 30-09-2026 */
+
+/* end */

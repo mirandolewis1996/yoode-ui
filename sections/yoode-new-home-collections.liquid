@@ -1,0 +1,433 @@
+{%- liquid
+  case section.settings.image_ratio
+    when 'square'
+      assign card_ratio = '1 / 1'
+    when 'tall'
+      assign card_ratio = '3 / 4'
+    else
+      assign card_ratio = '4 / 5'
+  endcase
+  assign cols = section.settings.columns_desktop
+  assign cols_tablet = cols
+  if cols_tablet > 3
+    assign cols_tablet = 3
+  endif
+  assign arrow_icon = '<svg viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 8 8 2M3.5 2H8v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+-%}
+
+<div
+  class="yn-section yn-source yn-source--collections yn-collections color-{{ section.settings.color_scheme }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-source-background: {{ section.settings.source_background | default: '#faf9f6' }}; --yn-pt: {{ section.settings.padding_top | divided_by: 10.0 }}rem; --yn-pb: {{ section.settings.padding_bottom | divided_by: 10.0 }}rem;"
+>
+  <div class="yn-container">
+    {% render 'yoode-new-home-heading',
+      subtitle: section.settings.subtitle,
+      title: section.settings.title,
+      description: section.settings.description
+    %}
+
+    {%- if section.blocks.size > 0 -%}
+      <yoode-new-home-reveal>
+        <ul
+          class="yn-collections__grid"
+          style="--yn-cols-desktop: {{ cols }}; --yn-cols-tablet: {{ cols_tablet }}; --yn-cols-mobile: {{ section.settings.columns_mobile }}; --yn-card-ratio: {{ card_ratio }};"
+        >
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign collection_item = block.settings.collection
+              assign product_item = block.settings.product
+              assign card_title = block.settings.title | default: product_item.title | default: collection_item.title
+
+              assign card_image = block.settings.image | default: product_item.featured_media.preview_image
+              if card_image == blank and collection_item != blank
+                assign card_image = collection_item.products.first.featured_media.preview_image
+                if card_image == blank
+                  assign card_image = collection_item.featured_image
+                endif
+              endif
+
+              assign card_link = block.settings.link | default: product_item.url | default: collection_item.url
+              if block.type == 'explore_more'
+                assign card_title = block.settings.title | default: 'Explore All'
+                assign card_link = card_link | default: routes.collections_url
+              endif
+              assign card_link = card_link | default: '#'
+
+              # First word on its own line, rest below (e.g. "Custom / Sports kit")
+              assign title_words = card_title | strip | split: ' '
+              assign title_first = title_words | first
+              assign title_rest = title_words | slice: 1, title_words.size | join: ' '
+            -%}
+            <li
+              data-yn-reveal
+              style="--yn-step: {{ forloop.index0 | modulo: cols }};"
+              {{ block.shopify_attributes }}
+            >
+              <a class="yn-collection-card{% if block.type == 'explore_more' %} yn-collection-card--explore{% endif %}" href="{{ card_link | escape }}">
+                <span class="yn-collection-card__media">
+                  {%- if card_image != blank -%}
+                    {{
+                      card_image
+                      | image_url: width: 1200
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '300, 450, 600, 800, 1000, 1200',
+                        sizes: '(min-width: 990px) calc(100vw / 4), (min-width: 750px) calc(100vw / 3), calc(100vw / 2)',
+                        alt: card_title
+                    }}
+                  {%- elsif block.settings.fallback_image != blank -%}
+                    <img src="{{ block.settings.fallback_image | asset_url }}" alt="{{ card_title | escape }}" loading="lazy" width="600" height="750">
+                  {%- else -%}
+                    {%- assign placeholder_index = forloop.index0 | modulo: 4 | plus: 1 -%}
+                    {{ 'collection-apparel-' | append: placeholder_index | placeholder_svg_tag: 'placeholder-svg' }}
+                  {%- endif -%}
+                </span>
+                <span class="yn-collection-card__content">
+                  <span class="yn-collection-card__title">
+                    {{- title_first | escape -}}
+                    {%- if title_rest != blank -%}<br>{{ title_rest | escape }}{%- endif -%}
+                  </span>
+                  <span class="yn-collection-card__arrow" aria-hidden="true">{{ arrow_icon }}</span>
+                </span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </yoode-new-home-reveal>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YN Collections Grid",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-2"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Our collection"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Explore Our Collections"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Discover the perfect fit for your style, from everyday staples to premium corporate wear.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Card shape",
+      "options": [
+        {
+          "value": "portrait",
+          "label": "Portrait (4:5)"
+        },
+        {
+          "value": "tall",
+          "label": "Tall (3:4)"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "color",
+      "id": "source_background",
+      "label": "Section background",
+      "default": "#faf9f6"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "explore_more",
+      "name": "Explore more",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection (optional)"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product (optional)",
+          "info": "Takes priority over the collection. A custom link overrides both."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Explore All"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "fallback_image",
+          "label": "Demo image file (used when no image is uploaded)",
+          "default": "yoode-new-home-img-apparels.webp"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Choose any page, product, collection or external URL. Leave empty to use the selected product or collection, or show all collections."
+        }
+      ]
+    },
+    {
+      "type": "collection",
+      "name": "Collection or custom card",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection (optional)"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product (optional)",
+          "info": "Takes priority over the collection. A custom link overrides both."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Overrides the selected product or collection image. Upload an image for a custom link card."
+        },
+        {
+          "type": "text",
+          "id": "fallback_image",
+          "label": "Demo image file (used when no image is uploaded)",
+          "info": "Used when no uploaded, product or collection image is available. Enter a theme asset file name."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Leave empty to use the product or collection name. Enter a title for a custom link card."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Choose any page, product, collection or external URL. Leave empty to link to the selected product or collection."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN Collections Grid",
+      "blocks": [
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Apparels"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Best Sellers"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Custom Sports kit"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Custom T-shirts"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Oversized Tees"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Corporate Gifting"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Premium Polos"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "title": "Active Wear"
+          }
+        },
+        {
+          "type": "explore_more"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

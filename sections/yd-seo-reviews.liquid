@@ -1,0 +1,134 @@
+<section class="yd-seo-section yd-seo-reviews" aria-labelledby="yd-seo-reviews-title-{{ section.id }}"
+         style="--yd-seo-reviews-cols:{{ section.settings.columns }};
+                --yd-seo-star-on:{{ section.settings.star_colour }};
+                --yd-seo-review-bg:{{ section.settings.card_colour }};
+                --yd-seo-dark:{{ section.settings.score_bg }};
+                {% if section.settings.quote_mark != blank %}--yd-seo-quote-art:url({{ section.settings.quote_mark | image_url: width: 160 }});{% endif %}">
+  <div class="yd-seo-container">
+
+    <div class="yd-seo-head yd-seo-reveal">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="yd-seo-title" id="yd-seo-reviews-title-{{ section.id }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="yd-seo-subtitle">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="yd-seo-reviews-grid">
+
+      {%- if section.settings.show_score -%}
+        <div class="yd-seo-reviews-aside yd-seo-reveal">
+          <div class="yd-seo-score">
+            {%- if section.settings.score != blank -%}
+              <p class="yd-seo-score-value">{{ section.settings.score }}</p>
+            {%- endif -%}
+            <span class="yd-seo-stars" style="--yd-seo-rating:{{ section.settings.score_rating }}"
+                  role="img" aria-label="{{ section.settings.score_rating }} {{ section.settings.rating_suffix }}"></span>
+            {%- if section.settings.score_label != blank -%}
+              <p class="yd-seo-score-label">{{ section.settings.score_label }}</p>
+            {%- endif -%}
+          </div>
+
+          {%- if section.settings.button_label != blank -%}
+            <a class="yd-seo-btn yd-seo-btn-primary" href="{{ section.settings.button_url | default: '#' }}" target="_blank">
+              {{ section.settings.button_label }}
+              <svg class="yd-seo-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"/>
+              </svg>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        <figure class="yd-seo-review yd-seo-reveal" style="--yd-seo-i:{{ forloop.index }}"
+                {{ block.shopify_attributes }}>
+          <span class="yd-seo-review-mark" aria-hidden="true"></span>
+          <blockquote class="yd-seo-review-text">{{ block.settings.quote }}</blockquote>
+          <figcaption class="yd-seo-review-meta">
+            {%- if block.settings.name != blank -%}
+              <p class="yd-seo-review-name">{{ block.settings.name }}</p>
+            {%- endif -%}
+            {%- if block.settings.role != blank -%}
+              <p class="yd-seo-review-role">{{ block.settings.role }}</p>
+            {%- endif -%}
+            <span class="yd-seo-stars" style="--yd-seo-rating:{{ block.settings.rating }}"
+                  role="img" aria-label="{{ block.settings.rating }} {{ section.settings.rating_suffix }}"></span>
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YD SEO Reviews",
+  "tag": "section",
+  "class": "yd-seo-shopify-section",
+  "settings": [
+    { "type": "header", "content": "Heading" },
+    { "type": "text",     "id": "heading",    "label": "Heading", "default": "What Teams Say After The Kit Arrives" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading",
+      "default": "Clubs, colleges, schools and companies come back to us for their next season's kit — usually because the first order turned up on time and looked like the mockup." },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "columns", "min": 2, "max": 5, "step": 1,
+      "label": "Columns (desktop)", "default": 4,
+      "info": "Counts the score card as one column." },
+    { "type": "color", "id": "card_colour", "label": "Review card background", "default": "#f2f2f2" },
+    { "type": "color", "id": "star_colour", "label": "Star colour",            "default": "#f7b500" },
+
+    { "type": "header", "content": "Score card" },
+    { "type": "checkbox", "id": "show_score", "label": "Show score card", "default": true },
+    { "type": "color", "id": "score_bg", "label": "Score card background", "default": "#1e1e1e" },
+    { "type": "text",  "id": "score", "label": "Score", "default": "4.8" },
+    { "type": "range", "id": "score_rating", "min": 0, "max": 5, "step": 0.1,
+      "label": "Stars shown", "default": 4.8,
+      "info": "Fractions are supported — 4.8 shows a partial fifth star." },
+    { "type": "textarea", "id": "score_label", "label": "Score caption",
+      "default": "Google reviews across our Experience Centres" },
+    { "type": "text", "id": "button_label", "label": "Button text", "default": "Read All Reviews" },
+    { "type": "url",  "id": "button_url",   "label": "Button link" },
+
+    { "type": "header", "content": "Quote mark" },
+    { "type": "image_picker", "id": "quote_mark", "label": "Quote mark image",
+      "info": "A flat single-colour glyph. It is recoloured from the stylesheet, so the file colour does not matter." },
+
+    { "type": "header", "content": "Accessibility" },
+    { "type": "text", "id": "rating_suffix", "label": "Rating label suffix", "default": "out of 5 stars",
+      "info": "Read by screen readers after the number." }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "limit": 8,
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Review text",
+          "default": "They've become our default for custom shirts. Fair price, solid quality and a bulk order that moved through without any back-and-forth." },
+        { "type": "text",  "id": "name", "label": "Customer name", "default": "Kirthik K" },
+        { "type": "text",  "id": "role", "label": "Order type",    "default": "Bulk order" },
+        { "type": "range", "id": "rating", "min": 0, "max": 5, "step": 0.5,
+          "label": "Rating", "default": 5 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD SEO Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "name": "Kirthik K", "role": "Bulk order",   "rating": 5,
+          "quote": "They've become our default for custom shirts. Fair price, solid quality and a bulk order that moved through without any back-and-forth." } },
+        { "type": "review", "settings": { "name": "J Jeflin",  "role": "Event order",  "rating": 5,
+          "quote": "Ordered a set of custom shirts for a family function. The finish was good and they arrived exactly when they said they would." } },
+        { "type": "review", "settings": { "name": "Nahla K",   "role": "School event", "rating": 4,
+          "quote": "Bulk order for a school event. Helpful staff and shirts we were happy with. The store was busy the day we visited, but delivery still landed on time." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

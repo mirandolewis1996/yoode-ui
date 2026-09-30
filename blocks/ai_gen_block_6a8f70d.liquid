@@ -1,0 +1,543 @@
+{% doc %}
+  @prompt
+    add a horizontal scrollable section where it have 4 section. each section shoul;d take full height and width of view port. at a time one section from this is displayed for eache scroll next section cam be displayed
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-horizontal-scroll-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .ai-horizontal-scroll-{{ ai_gen_id }}::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ai-horizontal-scroll-container-{{ ai_gen_id }} {
+    display: flex;
+    height: 100%;
+    width: 400%;
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }} {
+    flex: 0 0 100vw;
+    height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    box-sizing: border-box;
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(1) {
+    background-color: {{ block.settings.section_1_bg_color }};
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(2) {
+    background-color: {{ block.settings.section_2_bg_color }};
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(3) {
+    background-color: {{ block.settings.section_3_bg_color }};
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(4) {
+    background-color: {{ block.settings.section_4_bg_color }};
+  }
+
+  .ai-horizontal-scroll-content-{{ ai_gen_id }} {
+    max-width: 800px;
+    text-align: center;
+  }
+
+  .ai-horizontal-scroll-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    margin: 0 0 20px;
+    color: {{ block.settings.section_1_text_color }};
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(2) .ai-horizontal-scroll-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.section_2_text_color }};
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(3) .ai-horizontal-scroll-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.section_3_text_color }};
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(4) .ai-horizontal-scroll-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.section_4_text_color }};
+  }
+
+  .ai-horizontal-scroll-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.section_1_text_color }};
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(2) .ai-horizontal-scroll-text-{{ ai_gen_id }} {
+    color: {{ block.settings.section_2_text_color }};
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(3) .ai-horizontal-scroll-text-{{ ai_gen_id }} {
+    color: {{ block.settings.section_3_text_color }};
+  }
+
+  .ai-horizontal-scroll-section-{{ ai_gen_id }}:nth-child(4) .ai-horizontal-scroll-text-{{ ai_gen_id }} {
+    color: {{ block.settings.section_4_text_color }};
+  }
+
+  .ai-horizontal-scroll-image-{{ ai_gen_id }} {
+    max-width: 100%;
+    max-height: 60vh;
+    margin-bottom: 30px;
+    border-radius: {{ block.settings.image_border_radius }}px;
+  }
+
+  .ai-horizontal-scroll-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+    margin-bottom: 30px;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-horizontal-scroll-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-horizontal-scroll-nav-{{ ai_gen_id }} {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+  }
+
+  .ai-horizontal-scroll-nav-dot-{{ ai_gen_id }} {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+  }
+
+  .ai-horizontal-scroll-nav-dot-{{ ai_gen_id }}.active {
+    background-color: #ffffff;
+    transform: scale(1.2);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-horizontal-scroll-section-{{ ai_gen_id }} {
+      padding: 20px;
+    }
+
+    .ai-horizontal-scroll-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.7);
+    }
+
+    .ai-horizontal-scroll-text-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.text_size }}px * 0.9);
+    }
+
+    .ai-horizontal-scroll-image-placeholder-{{ ai_gen_id }} {
+      height: 300px;
+    }
+  }
+{% endstyle %}
+
+<horizontal-scroll-{{ ai_gen_id }}
+  class="ai-horizontal-scroll-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-horizontal-scroll-container-{{ ai_gen_id }}">
+    <div class="ai-horizontal-scroll-section-{{ ai_gen_id }}" data-section="1">
+      <div class="ai-horizontal-scroll-content-{{ ai_gen_id }}">
+        {% if block.settings.section_1_image %}
+          <img
+            src="{{ block.settings.section_1_image | image_url: width: 1200 }}"
+            alt="{{ block.settings.section_1_image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.section_1_image.width }}"
+            height="{{ block.settings.section_1_image.height }}"
+            class="ai-horizontal-scroll-image-{{ ai_gen_id }}"
+          >
+        {% else %}
+          <div class="ai-horizontal-scroll-image-placeholder-{{ ai_gen_id }}">
+            {{ 'lifestyle-1' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+        {% if block.settings.section_1_heading != blank %}
+          <h2 class="ai-horizontal-scroll-heading-{{ ai_gen_id }}">{{ block.settings.section_1_heading }}</h2>
+        {% endif %}
+        {% if block.settings.section_1_text != blank %}
+          <div class="ai-horizontal-scroll-text-{{ ai_gen_id }}">{{ block.settings.section_1_text }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-horizontal-scroll-section-{{ ai_gen_id }}" data-section="2">
+      <div class="ai-horizontal-scroll-content-{{ ai_gen_id }}">
+        {% if block.settings.section_2_image %}
+          <img
+            src="{{ block.settings.section_2_image | image_url: width: 1200 }}"
+            alt="{{ block.settings.section_2_image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.section_2_image.width }}"
+            height="{{ block.settings.section_2_image.height }}"
+            class="ai-horizontal-scroll-image-{{ ai_gen_id }}"
+          >
+        {% else %}
+          <div class="ai-horizontal-scroll-image-placeholder-{{ ai_gen_id }}">
+            {{ 'lifestyle-2' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+        {% if block.settings.section_2_heading != blank %}
+          <h2 class="ai-horizontal-scroll-heading-{{ ai_gen_id }}">{{ block.settings.section_2_heading }}</h2>
+        {% endif %}
+        {% if block.settings.section_2_text != blank %}
+          <div class="ai-horizontal-scroll-text-{{ ai_gen_id }}">{{ block.settings.section_2_text }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-horizontal-scroll-section-{{ ai_gen_id }}" data-section="3">
+      <div class="ai-horizontal-scroll-content-{{ ai_gen_id }}">
+        {% if block.settings.section_3_image %}
+          <img
+            src="{{ block.settings.section_3_image | image_url: width: 1200 }}"
+            alt="{{ block.settings.section_3_image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.section_3_image.width }}"
+            height="{{ block.settings.section_3_image.height }}"
+            class="ai-horizontal-scroll-image-{{ ai_gen_id }}"
+          >
+        {% else %}
+          <div class="ai-horizontal-scroll-image-placeholder-{{ ai_gen_id }}">
+            {{ 'collection-1' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+        {% if block.settings.section_3_heading != blank %}
+          <h2 class="ai-horizontal-scroll-heading-{{ ai_gen_id }}">{{ block.settings.section_3_heading }}</h2>
+        {% endif %}
+        {% if block.settings.section_3_text != blank %}
+          <div class="ai-horizontal-scroll-text-{{ ai_gen_id }}">{{ block.settings.section_3_text }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-horizontal-scroll-section-{{ ai_gen_id }}" data-section="4">
+      <div class="ai-horizontal-scroll-content-{{ ai_gen_id }}">
+        {% if block.settings.section_4_image %}
+          <img
+            src="{{ block.settings.section_4_image | image_url: width: 1200 }}"
+            alt="{{ block.settings.section_4_image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.section_4_image.width }}"
+            height="{{ block.settings.section_4_image.height }}"
+            class="ai-horizontal-scroll-image-{{ ai_gen_id }}"
+          >
+        {% else %}
+          <div class="ai-horizontal-scroll-image-placeholder-{{ ai_gen_id }}">
+            {{ 'collection-2' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+        {% if block.settings.section_4_heading != blank %}
+          <h2 class="ai-horizontal-scroll-heading-{{ ai_gen_id }}">{{ block.settings.section_4_heading }}</h2>
+        {% endif %}
+        {% if block.settings.section_4_text != blank %}
+          <div class="ai-horizontal-scroll-text-{{ ai_gen_id }}">{{ block.settings.section_4_text }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-horizontal-scroll-nav-{{ ai_gen_id }}">
+    <button
+      class="ai-horizontal-scroll-nav-dot-{{ ai_gen_id }} active"
+      data-index="0"
+      aria-label="Go to section 1"
+    ></button>
+    <button
+      class="ai-horizontal-scroll-nav-dot-{{ ai_gen_id }}"
+      data-index="1"
+      aria-label="Go to section 2"
+    ></button>
+    <button
+      class="ai-horizontal-scroll-nav-dot-{{ ai_gen_id }}"
+      data-index="2"
+      aria-label="Go to section 3"
+    ></button>
+    <button
+      class="ai-horizontal-scroll-nav-dot-{{ ai_gen_id }}"
+      data-index="3"
+      aria-label="Go to section 4"
+    ></button>
+  </div>
+</horizontal-scroll-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class HorizontalScroll{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.sections = null;
+        this.dots = null;
+        this.currentIndex = 0;
+      }
+
+      connectedCallback() {
+        this.sections = this.querySelectorAll('.ai-horizontal-scroll-section-{{ ai_gen_id }}');
+        this.dots = this.querySelectorAll('.ai-horizontal-scroll-nav-dot-{{ ai_gen_id }}');
+        
+        this.setupScrollListener();
+        this.setupDotNavigation();
+      }
+
+      setupScrollListener() {
+        let scrollTimeout;
+        this.addEventListener('scroll', () => {
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            this.updateActiveSection();
+          }, 100);
+        });
+      }
+
+      setupDotNavigation() {
+        this.dots.forEach((dot) => {
+          dot.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            this.scrollToSection(index);
+          });
+        });
+      }
+
+      scrollToSection(index) {
+        const section = this.sections[index];
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        }
+      }
+
+      updateActiveSection() {
+        const scrollLeft = this.scrollLeft;
+        const sectionWidth = this.sections[0].offsetWidth;
+        const newIndex = Math.round(scrollLeft / sectionWidth);
+
+        if (newIndex !== this.currentIndex) {
+          this.currentIndex = newIndex;
+          this.updateDots();
+        }
+      }
+
+      updateDots() {
+        this.dots.forEach((dot, index) => {
+          if (index === this.currentIndex) {
+            dot.classList.add('active');
+          } else {
+            dot.classList.remove('active');
+          }
+        });
+      }
+    }
+
+    customElements.define('horizontal-scroll-{{ ai_gen_id }}', HorizontalScroll{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Horizontal scroll",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Text size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Section 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "section_1_heading",
+      "label": "Heading",
+      "default": "First Section"
+    },
+    {
+      "type": "textarea",
+      "id": "section_1_text",
+      "label": "Text",
+      "default": "Scroll horizontally to explore more sections"
+    },
+    {
+      "type": "color",
+      "id": "section_1_bg_color",
+      "label": "Background color",
+      "default": "#f2f1ef"
+    },
+    {
+      "type": "color",
+      "id": "section_1_text_color",
+      "label": "Text color",
+      "default": "#262d33"
+    },
+    {
+      "type": "header",
+      "content": "Section 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "section_2_heading",
+      "label": "Heading",
+      "default": "Second Section"
+    },
+    {
+      "type": "textarea",
+      "id": "section_2_text",
+      "label": "Text",
+      "default": "Each section takes full viewport width and height"
+    },
+    {
+      "type": "color",
+      "id": "section_2_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "section_2_text_color",
+      "label": "Text color",
+      "default": "#262d33"
+    },
+    {
+      "type": "header",
+      "content": "Section 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_3_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "section_3_heading",
+      "label": "Heading",
+      "default": "Third Section"
+    },
+    {
+      "type": "textarea",
+      "id": "section_3_text",
+      "label": "Text",
+      "default": "Smooth scroll snapping between sections"
+    },
+    {
+      "type": "color",
+      "id": "section_3_bg_color",
+      "label": "Background color",
+      "default": "#262d33"
+    },
+    {
+      "type": "color",
+      "id": "section_3_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Section 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_4_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "section_4_heading",
+      "label": "Heading",
+      "default": "Fourth Section"
+    },
+    {
+      "type": "textarea",
+      "id": "section_4_text",
+      "label": "Text",
+      "default": "Navigate using scroll or dots below"
+    },
+    {
+      "type": "color",
+      "id": "section_4_bg_color",
+      "label": "Background color",
+      "default": "#31383d"
+    },
+    {
+      "type": "color",
+      "id": "section_4_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Horizontal scroll"
+    }
+  ]
+}
+{% endschema %}

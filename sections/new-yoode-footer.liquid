@@ -1,0 +1,603 @@
+{% style %}
+  {% render 'section-margin' %}
+  {% render 'section-padding' %}
+
+  #shopify-section-{{ section.id }} .yoode-footer-bottom {
+    --yoode-footer-bottom-bg: {{ section.settings.bottom_bg_color }};
+    --yoode-footer-bottom-text: {{ section.settings.bottom_text_color }};
+  }
+{% endstyle %}
+
+{{ 'yoode-footer-contact.css' | asset_url | stylesheet_tag }}
+
+<!-- Footer Section -->
+<footer class="yoode-footer">
+  <div class="yoode-footer-main section-{{ section.id }}-padding">
+    <div class="yoode-container">
+    <div class="yoode-footer-divider"></div>
+
+    <div class="yoode-footer-content">
+      <!-- Brand -->
+      <div class="yoode-footer-brand">
+        {% if section.settings.logo_image %}
+          <a href="{{ routes.root_url }}" class="yoode-footer-logo-link" style="width: {{ section.settings.logo_width }}px;">
+            {{ section.settings.logo_image | image_url: width: 480 | image_tag: alt: section.settings.logo_text, class: "yoode-footer-logo-img" }}
+          </a>
+        {% elsif section.settings.logo_text != blank %}
+          <h2 class="yoode-footer-logo">{{ section.settings.logo_text }}</h2>
+        {% endif %}
+        {% if section.settings.brand_text != blank %}
+          <p class="yoode-footer-brand-text">{{ section.settings.brand_text }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Link Columns -->
+      {% if section.blocks.size > 0 %}
+        <div class="yoode-footer-links-grid">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'contact_column' %}
+                <div
+                  class="yoode-footer-column yoode-footer-column--contact{% if block.settings.full_width %} yoode-footer-column--wide{% endif %}"
+                  {{ block.shopify_attributes }}
+                >
+                  {% if block.settings.heading != blank %}
+                    <h3 class="yoode-footer-heading">{{ block.settings.heading }}</h3>
+                  {% endif %}
+
+                  <ul class="yoode-footer-contact-list">
+                    {% if block.settings.address != blank %}
+                      <li class="yoode-footer-contact-item">
+                        <span class="yoode-footer-contact-icon">{% render 'icon-location' %}</span>
+                        {% if block.settings.map_url != blank %}
+                          <a
+                            href="{{ block.settings.map_url }}"
+                            class="yoode-footer-contact-text yoode-footer-contact-text--link"
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            {{- block.settings.address -}}
+                          </a>
+                        {% else %}
+                          <span class="yoode-footer-contact-text">{{ block.settings.address }}</span>
+                        {% endif %}
+                      </li>
+                    {% endif %}
+
+                    {% if block.settings.menu != blank %}
+                      {% for link in block.settings.menu.links %}
+                        <li class="yoode-footer-contact-item">
+                          <span class="yoode-footer-contact-icon">
+                            {%- render 'yoode-footer-link-icon', url: link.url -%}
+                          </span>
+                          <a
+                            href="{{ link.url }}"
+                            class="yoode-footer-contact-text yoode-footer-contact-text--link"
+                            {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener"{% endif %}
+                          >
+                            {{- link.title -}}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    {% endif %}
+                  </ul>
+                </div>
+
+              {% when 'contact_social' %}
+                <div
+                  class="yoode-footer-column yoode-footer-column--contact"
+                  style="--yoode-footer-social-color: {{ block.settings.icon_color }};"
+                  {{ block.shopify_attributes }}
+                >
+                  {% if block.settings.heading != blank %}
+                    <h3 class="yoode-footer-heading">{{ block.settings.heading }}</h3>
+                  {% endif %}
+
+                  <ul class="yoode-footer-contact-list">
+                    {% if block.settings.phone != blank %}
+                      {%- liquid
+                        assign phone_href = block.settings.phone_url
+                        if phone_href == blank
+                          assign phone_href = block.settings.phone | remove: ' ' | remove: '-' | remove: '(' | remove: ')' | prepend: 'tel:'
+                        endif
+                      -%}
+                      <li class="yoode-footer-contact-item">
+                        <span class="yoode-footer-contact-icon">{% render 'icon-phone' %}</span>
+                        <a href="{{ phone_href }}" class="yoode-footer-contact-text yoode-footer-contact-text--link">
+                          {{- block.settings.phone -}}
+                        </a>
+                      </li>
+                    {% endif %}
+                    {% if block.settings.phone_2 != blank %}
+                      {%- liquid
+                        assign phone_href = block.settings.phone_url_2
+                        if phone_href == blank
+                          assign phone_href = block.settings.phone | remove: ' ' | remove: '-' | remove: '(' | remove: ')' | prepend: 'tel:'
+                        endif
+                      -%}
+                      <li class="yoode-footer-contact-item">
+                        <span class="yoode-footer-contact-icon">{% render 'icon-phone' %}</span>
+                        <a href="{{ phone_href }}" class="yoode-footer-contact-text yoode-footer-contact-text--link">
+                          {{- block.settings.phone_2 -}}
+                        </a>
+                      </li>
+                    {% endif %}
+
+                    {% if block.settings.email != blank %}
+                      {%- liquid
+                        assign email_href = block.settings.email_url
+                        if email_href == blank
+                          assign email_href = block.settings.email | strip | prepend: 'mailto:'
+                        endif
+                      -%}
+                      <li class="yoode-footer-contact-item">
+                        <span class="yoode-footer-contact-icon">{% render 'icon-mail' %}</span>
+                        <a href="{{ email_href }}" class="yoode-footer-contact-text yoode-footer-contact-text--link">
+                          {{- block.settings.email -}}
+                        </a>
+                      </li>
+                    {% endif %}
+                  </ul>
+
+                  {% if block.settings.social_menu != blank %}
+                    <ul class="yoode-footer-social-list">
+                      {% for link in block.settings.social_menu.links %}
+                        <li>
+                          <a
+                            href="{{ link.url }}"
+                            class="yoode-footer-social-link"
+                            aria-label="{{ link.title | escape }}"
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            {%- render 'yoode-footer-link-icon', url: link.url -%}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+
+              {% else %}
+                <div class="yoode-footer-column" {{ block.shopify_attributes }}>
+                  {% if block.settings.heading != blank %}
+                    <h3 class="yoode-footer-heading">{{ block.settings.heading }}</h3>
+                  {% endif %}
+
+                  {% if block.settings.menu != blank %}
+                    <ul class="yoode-footer-list">
+                      {% for link in block.settings.menu.links %}
+                        <li>
+                          <a
+                            href="{{ link.url }}"
+                            class="yoode-footer-link"
+                            {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener"{% endif %}
+                          >
+                            {{- link.title -}}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+            {% endcase %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      {% if section.settings.copyright_text != blank or section.settings.bottom_menu != blank %}
+        <div class="yoode-footer-divider yoode-footer-divider--bottom"></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  {% if section.settings.copyright_text != blank or section.settings.bottom_menu != blank %}
+    <div class="yoode-footer-bottom">
+      <div class="yoode-container yoode-footer-bottom-inner">
+        {% if section.settings.copyright_text != blank %}
+          <p class="yoode-footer-copyright">
+            {%- if section.settings.show_copyright_year -%}
+              &copy; {{ 'now' | date: '%Y' }}
+            {%- endif %}
+            {{ section.settings.copyright_text }}
+          </p>
+        {% endif %}
+
+        {% if section.settings.bottom_menu != blank %}
+          <nav class="yoode-footer-policies">
+            {% for link in section.settings.bottom_menu.links %}
+              <a
+                href="{{ link.url }}"
+                class="yoode-footer-policy-link"
+                {% if link.current %}aria-current="page"{% endif %}
+              >
+                {{- link.title -}}
+              </a>
+            {% endfor %}
+          </nav>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</footer>
+
+{% schema %}
+{
+  "name": "New Yoode Footer",
+  "class": "yoode-footer-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo Image",
+      "info": "If set, the image is used instead of the logo text."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 60,
+      "max": 240,
+      "step": 10,
+      "unit": "px",
+      "default": 120,
+      "label": "Logo Image Width"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "default": "YOODE",
+      "label": "Logo Text",
+      "info": "Used when no logo image is set. Also serves as the image alt text."
+    },
+    {
+      "type": "textarea",
+      "id": "brand_text",
+      "default": "Creating meaningful brand experiences through premium custom products.",
+      "label": "Brand Description"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Bar"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "default": "Yoode Promotions Pvt. Ltd. All Rights Reserved.",
+      "label": "Copyright Text",
+      "info": "Leave blank to hide the copyright."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_copyright_year",
+      "default": true,
+      "label": "Show © and current year"
+    },
+    {
+      "type": "link_list",
+      "id": "bottom_menu",
+      "label": "Policy Menu",
+      "info": "Select a menu (e.g. Privacy policy, Terms of service) to show on the right of the bottom bar."
+    },
+    {
+      "type": "color",
+      "id": "bottom_bg_color",
+      "default": "#242C33",
+      "label": "Bottom Bar Background"
+    },
+    {
+      "type": "color",
+      "id": "bottom_text_color",
+      "default": "#FFFFFF",
+      "label": "Bottom Bar Text"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu_column",
+      "name": "Menu Column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Column Heading",
+          "label": "Column Heading"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "info": "Select a navigation menu to display its links."
+        },
+        {
+          "type": "checkbox",
+          "id": "open_in_new_tab",
+          "label": "Open these links in a new tab",
+          "info": "Off means the links open in the same tab. Useful for external sites.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "contact_social",
+      "name": "Phone, Email & Social",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Get in touch",
+          "label": "Column Heading"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "default": "+91 98765 43210",
+          "label": "Phone Number",
+          "info": "The text shown next to the phone icon. Leave blank to hide."
+        },
+        {
+          "type": "url",
+          "id": "phone_url",
+          "label": "Phone Link",
+          "info": "Optional. Paste a tel: link, e.g. tel:+919876543210. Left blank, the number above is dialled as typed."
+        },
+        {
+          "type": "text",
+          "id": "phone_2",
+          "default": "+91 9025 927 014",
+          "label": "Phone Number",
+          "info": "The text shown next to the phone icon. Leave blank to hide."
+        },
+        {
+          "type": "url",
+          "id": "phone_url_2",
+          "label": "Phone Link",
+          "info": "Optional. Paste a tel: link, e.g. tel:+919876543210. Left blank, the number above is dialled as typed."
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "default": "hello@yoode.in",
+          "label": "Email Address",
+          "info": "The text shown next to the mail icon. Leave blank to hide."
+        },
+        {
+          "type": "url",
+          "id": "email_url",
+          "label": "Email Link",
+          "info": "Optional. Paste a mailto: link, e.g. mailto:hello@yoode.in. Left blank, the address above is used."
+        },
+        {
+          "type": "link_list",
+          "id": "social_menu",
+          "label": "Social Icons Menu",
+          "info": "Shown as an icon row below the phone and email. Each link gets an icon picked from its URL: Facebook, Instagram, X, Pinterest, YouTube, LinkedIn, WhatsApp, TikTok, Snapchat, Vimeo and Tumblr. Anything else gets a globe icon."
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "default": "#000000",
+          "label": "Social Icon Color"
+        }
+      ]
+    },
+    {
+      "type": "contact_column",
+      "name": "Contact Column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Corporate Office",
+          "label": "Column Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "address",
+          "default": "Ground floor, #68, Transpade Tower, Jyoti Nivas College Rd, Koramangala Industrial Layout, 5th Block, Koramangala, Bengaluru, Karnataka 560095.",
+          "label": "Address",
+          "info": "Shown with a location pin icon. Leave blank to hide."
+        },
+        {
+          "type": "url",
+          "id": "map_url",
+          "label": "Address Link",
+          "info": "Optional. Links the address to Google Maps or similar."
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Contact / Social Menu",
+          "info": "Each link gets an icon picked from its URL: tel: = phone, mailto: = email, wa.me = WhatsApp, plus Facebook, Instagram, LinkedIn, YouTube, X, Pinterest, TikTok, Snapchat, Vimeo and Tumblr. Anything else gets a globe icon."
+        },
+        {
+          "type": "checkbox",
+          "id": "open_in_new_tab",
+          "label": "Open these links in a new tab",
+          "info": "Off means the links open in the same tab. Useful for external sites.",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "full_width",
+          "label": "Make this column double width",
+          "info": "Gives the address room to breathe next to the menu columns.",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Yoode Footer",
+      "settings": {
+        "logo_text": "YOODE",
+        "brand_text": "Creating meaningful brand experiences through premium custom products."
+      },
+      "blocks": [
+        {
+          "type": "menu_column",
+          "settings": {
+            "heading": "Shop"
+          }
+        },
+        {
+          "type": "menu_column",
+          "settings": {
+            "heading": "Our centres"
+          }
+        },
+        {
+          "type": "menu_column",
+          "settings": {
+            "heading": "Company"
+          }
+        },
+        {
+          "type": "menu_column",
+          "settings": {
+            "heading": "Connect"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

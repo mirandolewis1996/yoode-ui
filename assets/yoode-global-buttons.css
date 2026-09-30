@@ -1,0 +1,81 @@
+/*
+ * YOODE GLOBAL ACTION BUTTONS
+ * One presentation layer for theme, homepage and SEO-page CTAs. Utility
+ * controls (search, sliders, quantity, accordions and icon-only buttons) are
+ * intentionally excluded so their interaction patterns remain unchanged.
+ */
+
+:is(.button, .yn-button, .yd-seo-section .yd-seo-btn, .yd-enquiry-form .yd-seo-btn, .shopify-payment-button__button--unbranded) {
+  min-height: var(--yd-button-height);
+  padding: 1.2rem var(--yd-button-padding-inline);
+  border: 1px solid var(--yd-button-border);
+  border-radius: var(--yd-button-radius);
+  background: var(--yd-button-bg);
+  color: var(--yd-button-text);
+  font-family: var(--yn-font-body, var(--font-button-family, inherit));
+  font-size: var(--yd-button-font-size);
+  font-weight: var(--yd-button-font-weight);
+  line-height: 1.2;
+  letter-spacing: var(--yd-button-letter-spacing);
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: var(--yd-button-shadow);
+  transition: transform var(--yd-button-transition),
+    background-color var(--yd-button-transition), color var(--yd-button-transition),
+    border-color var(--yd-button-transition), box-shadow var(--yd-button-transition);
+}
+
+/* Legacy landing-page CTAs keep their component-specific colors and sizing,
+   but consume the same global pill shape as the shared button component. */
+:is(.yd-btn, .yoode-btn) {
+  border-radius: var(--yd-button-radius) !important;
+}
+
+:is(.button, .yn-button, .yd-seo-section .yd-seo-btn, .yd-enquiry-form .yd-seo-btn, .shopify-payment-button__button--unbranded):where(:hover, :focus-visible) {
+  border-color: var(--yd-button-hover-border);
+  background: var(--yd-button-hover-bg);
+  color: var(--yd-button-hover-text);
+  box-shadow: var(--yd-button-hover-shadow);
+  transform: translateY(-2px);
+}
+
+:is(.button, .yn-button, .yd-seo-section .yd-seo-btn, .yd-enquiry-form .yd-seo-btn, .shopify-payment-button__button--unbranded):focus-visible {
+  outline: 2px solid var(--yd-button-hover-bg);
+  outline-offset: 3px;
+}
+
+/* Secondary/light actions retain their hierarchy but share the same shape,
+   type, sizing and interaction language as the primary action. */
+:is(.button--secondary, .button--transparent, .yn-button--light, .yd-seo-section .yd-seo-btn-outline) {
+  border-color: var(--yd-button-border);
+  background: #ffffff;
+  color: var(--yd-button-bg);
+  box-shadow: none;
+}
+
+:is(.button--secondary, .button--transparent, .yn-button--light, .yd-seo-section .yd-seo-btn-outline):where(:hover, :focus-visible) {
+  border-color: var(--yd-button-bg);
+  background: var(--yd-button-bg);
+  color: var(--yd-button-text);
+  box-shadow: var(--yd-button-shadow);
+}
+
+:is(.button--tertiary, .yd-seo-section .yd-seo-btn-sm) {
+  min-height: 4rem;
+  padding: 0.9rem 1.8rem;
+  font-size: 1.2rem;
+  box-shadow: none;
+}
+
+:is(.button, .yn-button, .yd-seo-section .yd-seo-btn, .yd-enquiry-form .yd-seo-btn, .shopify-payment-button__button--unbranded):where(:disabled, [aria-disabled='true'], .disabled) {
+  cursor: not-allowed;
+  opacity: 0.48;
+  box-shadow: none;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.button, .yn-button, .yd-seo-section .yd-seo-btn, .yd-enquiry-form .yd-seo-btn, .shopify-payment-button__button--unbranded) {
+    transition: none;
+  }
+}

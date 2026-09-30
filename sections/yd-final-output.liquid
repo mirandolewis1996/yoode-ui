@@ -1,0 +1,209 @@
+{% style %}
+  {% render 'section-padding' %}
+.yd-final-output-section {
+  padding-left: 20px;
+  padding-right: 20px;
+  background: {{ section.settings.bg_color }};
+}
+
+.yd-final-output-section .yd-container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.yd-final-output-section .yd-left {
+  flex: 1;
+  min-width: 300px;
+}
+
+.yd-final-output-section .yd-title {
+  display: inline-block;
+  padding: 5px 10px;
+}
+
+.yd-final-output-section .yd-list {
+  margin-bottom: 20px;
+}
+
+.yd-final-output-section .yd-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.yd-final-output-section .yd-icon {
+  width: 20px;
+  height: 20px;
+  background: #f4a261;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yd-final-output-section .yd-text {
+  line-height: 1.5;
+  font-size:14px;
+      width: 90%;
+}
+
+.yd-final-output-section .yd-description {
+  font-size: 14px;
+  color: #666;
+  margin-top: 20px;
+}
+
+.yd-final-output-section .yd-right {
+  flex: 1;
+  min-width: 300px;
+  text-align: center;
+}
+
+.yd-final-output-section .yd-image {
+  max-width: 100%;
+  border-radius: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .yd-final-output-section .yd-container {
+    flex-direction: column-reverse;
+  }
+}
+{% endstyle %}
+
+<div class="yd-final-output-section section-{{ section.id }}-padding section-padding">
+  <div class="yd-container">
+
+    <!-- LEFT CONTENT -->
+    <div class="yd-left">
+
+      <h2 class="yd-title">
+        {{ section.settings.title }}
+      </h2>
+
+      <div class="yd-list">
+        {% for block in section.blocks %}
+          <div class="yd-item">
+            <div class="yd-icon">✔</div>
+            <div class="yd-text">
+              {{ block.settings.text }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="yd-description">
+        {{ section.settings.description }}
+      </div>
+
+    </div>
+
+    <!-- RIGHT IMAGE -->
+    <div class="yd-right">
+      {% if section.settings.image != blank %}
+        <img 
+          src="{{ section.settings.image | image_url: width: 600 }}" 
+          alt="final-output"
+          class="yd-image"
+        >
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YD Final Output",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "FINAL OUTPUT"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Bottom Description",
+      "default": "Every team had a jersey that looked intentional..."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Right Image"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" }
+      ],
+      "default": "l",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+        { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+        { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+        { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+        { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+        { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" }
+      ],
+      "default": "l",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Point",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Point Text",
+          "default": "150 jerseys produced and delivered on time"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Final Output",
+      "blocks": [
+        { "type": "point" },
+        { "type": "point" },
+        { "type": "point" },
+        { "type": "point" }
+      ]
+    }
+  ]
+}
+{% endschema %}

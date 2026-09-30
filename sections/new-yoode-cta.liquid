@@ -1,0 +1,245 @@
+{% style %}
+  {% render 'section-margin' %}
+  {% render 'section-padding' %}
+{% endstyle %}
+
+<!-- Call to Action Section -->
+<section class="yoode-cta-section section-{{ section.id }}-padding section-padding">
+  <div class="yoode-cta-container">
+    <div class="yoode-cta-border{% unless section.settings.show_border %} yoode-cta-border--flat{% endunless %}">
+    {% if section.settings.heading != blank %}
+      <h2 class="yoode-cta-heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    {% if section.settings.description != blank %}
+      <p class="yoode-cta-description">{{ section.settings.description }}</p>
+    {% endif %}
+
+    {% if section.settings.primary_button_text != blank or section.settings.secondary_button_text != blank %}
+      <div class="yoode-cta-buttons">
+        {% if section.settings.primary_button_text != blank %}
+          <a href="{{ section.settings.primary_button_link }}" class="yoode-btn yoode-btn-primary">
+            {{ section.settings.primary_button_text }}
+            {% if section.settings.show_arrow %}
+              <span class="yoode-btn-arrow">↗</span>
+            {% endif %}
+          </a>
+        {% endif %}
+
+        {% if section.settings.secondary_button_text != blank %}
+          <a href="{{ section.settings.secondary_button_link }}" class="yoode-btn yoode-btn-secondary">
+            {{ section.settings.secondary_button_text }}
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "New Yoode CTA",
+  "class": "yoode-cta-section",
+  "settings": [
+    {
+  "type": "checkbox",
+  "id": "show_border",
+  "default": true,
+  "label": "Show Border & Shadow"
+},
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Your brand deserves more than ordinary merchandise.",
+      "label": "Heading Text"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "default": "Tell us what you need — we'll get back to you within 2 hours.",
+      "label": "Description Text"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.button.header_button.content"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "default": "Chat with us on WhatsApp",
+      "label": "Primary Button Text"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Primary Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrow",
+      "default": true,
+      "label": "Show Arrow Icon"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "default": "Browse the catalogue",
+      "label": "Secondary Button Text"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary Button Link"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Yoode CTA",
+      "settings": {
+        "heading": "Your brand deserves more than ordinary merchandise.",
+        "description": "Tell us what you need — we'll get back to you within 2 hours.",
+        "primary_button_text": "Chat with us on WhatsApp",
+        "secondary_button_text": "Browse the catalogue",
+        "show_arrow": true
+      }
+    }
+  ]
+}
+{% endschema %}

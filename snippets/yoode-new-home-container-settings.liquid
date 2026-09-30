@@ -1,0 +1,10 @@
+{% doc %}
+  @param {object} container_settings - Container controls from the current section settings.
+{% enddoc %}
+{%- if container_settings.custom_container -%}
+  --yn-layout-width: {{ container_settings.container_width | default: 1600 }}px;
+  --yn-layout-gutter-desktop: {{ container_settings.container_gutter_desktop | default: 32 }}px;
+  --yn-layout-gutter-tablet: {{ container_settings.container_gutter_tablet | default: 24 }}px;
+  --yn-layout-gutter-small-tablet: {{ container_settings.container_gutter_small_tablet | default: 20 }}px;
+  --yn-layout-gutter-mobile: {{ container_settings.container_gutter_mobile | default: 16 }}px;
+{%- endif -%}

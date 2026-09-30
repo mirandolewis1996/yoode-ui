@@ -1,0 +1,3702 @@
+<style>
+  /* ================================================================ tokens */
+  .yd-chennai {
+    --blue: #0047ab;
+    --orange: #ff591f;
+    --cream: #fff7f4;
+    --ink: #101114;
+
+    /* Swap these two for the real brand faces — nothing else needs to change. */
+    --font-display: 'Outfit', system-ui, sans-serif;
+    --font-body: 'Kumbh Sans', system-ui, sans-serif;
+  }
+
+  .yd-chennai *,
+  .yd-chennai *::before,
+  .yd-chennai *::after {
+    box-sizing: border-box;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  .yd-chennai {
+    margin: 0;
+    background: #fff;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 28px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .yd-chennai img {
+    display: block;
+    max-width: 100%;
+  }
+  .yd-chennai a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .yd-chennai h1,
+  .yd-chennai h2,
+  .yd-chennai h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .yd-chennai p {
+    margin: 0;
+  }
+
+  /* 1440-wide design stage, centred */
+  .stage {
+    position: relative;
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  /* ------------------------------------------------------------- container
+       One gutter for the whole page. Every section drops this class on its
+       content wrapper, so every block starts and ends on the same line. */
+  .yoode-chennai-container {
+    width: 100%;
+    max-width: 1850px;
+    margin-inline: auto;
+    padding-inline: 90px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 12px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+  .eyebrow--light {
+    color: #fff;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 51px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+    background: var(--orange);
+    color: #fff;
+    transition: background 0.18s ease;
+  }
+  .btn:hover {
+    background: #ec4a12;
+  }
+  .yoode-primary-btn:hover {
+    color: #fff !important;
+  }
+  .btn--ghost {
+    background: transparent;
+    color: var(--ink);
+    padding: 0 10px;
+  }
+  .btn--ghost:hover {
+    background: transparent;
+    opacity: 0.72;
+  }
+  .btn--ghost img {
+    width: 28px;
+    height: 28px;
+  }
+  .on-blue {
+    color: #fff;
+  }
+  :where(a, button, input, textarea, summary):focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 4px;
+  }
+
+  /* ================================================================ header */
+  .site-header {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 40;
+    height: 105px;
+    display: flex;
+    align-items: center;
+    padding: 0 90px;
+  }
+  .site-header .logo {
+    height: 45px;
+    width: auto;
+  }
+  .site-header nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  /* ================================================================== hero */
+  .hero {
+    position: relative;
+    padding-top: 186px;
+  }
+  .hero h1 {
+    font-size: 72px;
+    line-height: 86px;
+    letter-spacing: -0.012em;
+    text-align: center;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--orange);
+  }
+
+  .hero-stage {
+    height: 571px;
+    margin-top: -54px;
+  }
+  .hero-stage figure {
+    position: absolute;
+    margin: 0;
+    overflow: hidden;
+  }
+  .hero-stage figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .h-a {
+    left: 0;
+    top: 18.21%;
+    width: 18.125%;
+    height: 67.77%;
+  }
+  .h-b {
+    left: 22.361%;
+    top: 32.22%;
+    width: 28.264%;
+    height: 32.92%;
+  }
+  .h-c {
+    left: 59.167%;
+    top: 23.12%;
+    width: 15.278%;
+    height: 38.53%;
+  }
+  .h-d {
+    left: 82.986%;
+    top: 0;
+    width: 17.014%;
+    height: 76.18%;
+  }
+  .scroll-cue {
+    position: absolute;
+    left: 50%;
+    top: 540px;
+    transform: translateX(-50%);
+    z-index: 2;
+    text-align: center;
+  }
+  .scroll-cue img {
+    width: 40px;
+    margin-inline: auto;
+  }
+  .scroll-cue span {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .hero-lede {
+    max-width: 1120px;
+    margin: 98px auto 0;
+    padding: 0 30px;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 54px;
+    line-height: 64px;
+    font-weight: 700;
+    letter-spacing: -0.012em;
+  }
+  .hero-note {
+    margin-top: 37px;
+    text-align: center;
+    color: #232428;
+  }
+  .hero-cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-top: 37px;
+  }
+
+  /* ================================================================= trust */
+  .trust {
+    padding-top: 248px;
+  }
+  .trust .stage {
+    min-height: 608px;
+  }
+  .trust-copy {
+    max-width: 520px;
+    padding: 158px 0 0;
+  }
+  .trust h2 {
+    font-size: 54px;
+    line-height: 57px;
+    letter-spacing: -0.012em;
+    margin-top: 20px;
+  }
+  .trust-copy > p:not(.eyebrow) {
+    margin-top: 30px;
+    max-width: 486px;
+    color: #232428;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 52px 0;
+    margin-top: 45px;
+    max-width: 460px;
+  }
+  .stats b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 51px;
+    font-weight: 700;
+    line-height: 47px;
+    letter-spacing: -0.01em;
+  }
+  .stats span {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1;
+    margin-top: 12px;
+  }
+
+  .trust-media figure {
+    position: absolute;
+    margin: 0;
+    overflow: hidden;
+  }
+  .trust-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tm-big {
+    left: 58.333%;
+    top: 0;
+    width: 35.417%;
+    height: 578px;
+  }
+  .tm-small {
+    left: 49.861%;
+    top: 194px;
+    width: 28.194%;
+    height: 414px;
+    box-shadow: 0 26px 60px rgba(0, 0, 0, 0.22);
+  }
+
+  /* =============================================================== clients */
+  .clients {
+    margin-top: 249px;
+    overflow: hidden;
+  }
+  .clients-track {
+    display: flex;
+    align-items: center;
+    gap: 85px;
+    width: max-content;
+    padding-left: 90px;
+    animation: march 32s linear infinite;
+  }
+  .clients-track img {
+    height: 50px;
+    width: auto;
+    flex: none;
+  }
+  @keyframes march {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* =============================================================== contact */
+  .contact {
+    background: var(--cream);
+    margin-top: 162px;
+    padding: 93px 0 0;
+    min-height: 614px;
+  }
+  .contact .inner {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 31px;
+  }
+  .contact h2 {
+    font-size: 54px;
+    line-height: 57px;
+    letter-spacing: -0.012em;
+    margin-top: 21px;
+  }
+  .contact-copy > p:not(.eyebrow) {
+    margin-top: 33px;
+    max-width: 442px;
+    color: #232428;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 52px 31px;
+    margin-top: 43px;
+  }
+  .field {
+    position: relative;
+  }
+  .field--full {
+    grid-column: 1/-1;
+    margin-top: 9px;
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid #dccfc9;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--ink);
+    padding: 0 0 11px;
+    resize: none;
+  }
+  .field textarea {
+    height: 83px;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: #5f5b59;
+    opacity: 1;
+  }
+  .field :is(input, textarea):focus {
+    outline: 0;
+    border-bottom-color: var(--orange);
+  }
+  .form-grid .btn {
+    margin-top: 24px;
+    justify-self: start;
+  }
+
+  /* --------------------------------------------- form validation + toast */
+  .field .field-msg {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 7px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 16px;
+    color: #d92d20;
+    opacity: 0;
+    transform: translateY(-3px);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+  .field.is-invalid .field-msg {
+    opacity: 1;
+    transform: none;
+  }
+  .field.is-invalid :is(input, textarea) {
+    border-bottom-color: #d92d20;
+  }
+
+  .yd-form .btn {
+    gap: 12px;
+  }
+  .yd-form .btn[aria-busy='true'] {
+    pointer-events: none;
+    opacity: 0.75;
+  }
+  .yd-spin {
+    display: none;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    border-top-color: #fff;
+    animation: yd-spin 0.7s linear infinite;
+  }
+  .yd-form .btn[aria-busy='true'] .yd-spin {
+    display: block;
+  }
+  @keyframes yd-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  #yd-toasts {
+    position: fixed;
+    z-index: 9999;
+    top: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: min(380px, calc(100vw - 32px));
+    pointer-events: none;
+  }
+  .yd-toast {
+    pointer-events: auto;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 15px 44px 16px 16px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(16, 17, 20, 0.07);
+    box-shadow: 0 18px 44px rgba(16, 17, 20, 0.16), 0 2px 8px rgba(16, 17, 20, 0.06);
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+    transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.3, 1), transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  .yd-toast.is-in {
+    opacity: 1;
+    transform: none;
+  }
+  .yd-toast.is-out {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  .yd-toast i {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+  }
+  .yd-toast--ok i {
+    background: rgba(14, 143, 80, 0.12);
+    color: #0e8f50;
+  }
+  .yd-toast--err i {
+    background: rgba(217, 45, 32, 0.12);
+    color: #d92d20;
+  }
+  .yd-toast b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 21px;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .yd-toast p {
+    margin-top: 3px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #5f5b59;
+  }
+  .yd-toast button {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #8b8683;
+    cursor: pointer;
+    transition: background 0.16s ease, color 0.16s ease;
+  }
+  .yd-toast button:hover {
+    background: rgba(16, 17, 20, 0.06);
+  }
+  .yd-toast::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    transform-origin: left;
+    background: #0e8f50;
+    animation: yd-timer 5.2s linear forwards;
+  }
+  .yd-toast--err::after {
+    background: #d92d20;
+  }
+  @keyframes yd-timer {
+    from {
+      transform: scaleX(1);
+    }
+    to {
+      transform: scaleX(0);
+    }
+  }
+  @media (max-width: 640px) {
+    #yd-toasts {
+      top: auto;
+      right: 16px;
+      bottom: 16px;
+      left: 16px;
+      width: auto;
+    }
+    .yd-toast {
+      transform: translateY(12px) scale(0.97);
+    }
+  }
+
+  /* ============================================================ categories */
+  .cats {
+    padding-top: 176px;
+    text-align: center;
+  }
+  .cats h2 {
+    font-size: 54px;
+    line-height: 57px;
+    letter-spacing: -0.012em;
+    margin-top: 20px;
+  }
+  .cats-intro {
+    margin: 24px auto 0;
+    max-width: 700px;
+    color: #232428;
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 60px;
+    margin-top: 53px;
+    text-align: left;
+  }
+  .cat--mid {
+    margin-top: 72px;
+  }
+  .cat figure {
+    margin: 0;
+    aspect-ratio: 380/451;
+    overflow: hidden;
+  }
+  .cat figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cat h3 {
+    font-size: 27px;
+    line-height: 30px;
+    letter-spacing: -0.012em;
+    margin-top: 32px;
+  }
+  .cat .lead {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 22px;
+    margin-top: 16px;
+  }
+  .cat p:not(.lead) {
+    font-size: 16px;
+    line-height: 22px;
+    margin-top: 3px;
+    color: #232428;
+  }
+  .link-u {
+    display: inline-block;
+    margin-top: 23px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 3px;
+  }
+
+  /* =============================================================== marquee */
+  .marquee {
+    margin-top: 251px;
+    overflow: hidden;
+  }
+  .marquee-track {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    width: max-content;
+    font-family: var(--font-display);
+    font-size: 108px;
+    font-weight: 700;
+    line-height: 114px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    animation: march 26s linear infinite;
+  }
+  .marquee-track--rev {
+    gap: 24px;
+    animation-direction: reverse;
+  }
+  .marquee-track img {
+    width: 78px;
+    height: 78px;
+    flex: none;
+  }
+  .scroll-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    margin: 118px auto 0;
+  }
+
+  /* ================================================================== blue */
+  .blue {
+    background: var(--blue);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-top: 202px;
+  }
+  .blue::before,
+  .blue::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 50%;
+  }
+  .blue::before {
+    width: 1240px;
+    height: 1240px;
+    right: -360px;
+    top: 180px;
+  }
+  .blue::after {
+    width: 1620px;
+    height: 1620px;
+    left: -820px;
+    top: 1180px;
+  }
+
+  .why {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 245px;
+  }
+  .why-img {
+    height: 650px;
+    overflow: hidden;
+  }
+  .why-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .why-body {
+    padding: 206px 0 0 64px;
+  }
+  .why-body h2 {
+    font-size: 54px;
+    line-height: 57px;
+    letter-spacing: -0.012em;
+    margin-top: 18px;
+    color: #fff;
+  }
+  .why-body > p {
+    margin-top: 23px;
+    color: rgba(255, 255, 255, 0.88);
+  }
+  .feature {
+    margin-top: 38px;
+  }
+  .feature img {
+    width: 26px;
+    height: 26px;
+  }
+  .feature h3 {
+    font-size: 27px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    margin-top: 22px;
+    color: #fff;
+  }
+  .feature p {
+    margin-top: 12px;
+    color: rgba(255, 255, 255, 0.84);
+  }
+  .feature + .feature {
+    margin-top: 47px;
+  }
+
+  /* process */
+  .process {
+    position: relative;
+    z-index: 1;
+    padding-top: 384px;
+    padding-bottom: 145px;
+  }
+  .process-head {
+    position: relative;
+  }
+  .process-head h2 {
+    font-size: 54px;
+    line-height: 58px;
+    letter-spacing: -0.012em;
+    color: #fff;
+  }
+  .pill {
+    position: absolute;
+    background: var(--orange);
+    color: #fff;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.2;
+    padding: 9px 22px;
+    white-space: nowrap;
+  }
+  .pill-1 {
+    left: 87px;
+    top: -39px;
+    transform: rotate(-9deg);
+  }
+  .pill-2 {
+    left: 851px;
+    top: -41px;
+    transform: rotate(-9deg);
+  }
+  .pill-3 {
+    left: 228px;
+    top: 185px;
+    transform: rotate(-9deg);
+  }
+  .pill-4 {
+    left: 687px;
+    top: 174px;
+    transform: rotate(0deg);
+  }
+  .float {
+    position: absolute;
+    margin: 0;
+    overflow: hidden;
+  }
+  .float img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .float-1 {
+    left: 522px;
+    top: -131px;
+    width: 104px;
+    height: 104px;
+    transform: rotate(-11deg);
+  }
+  .float-2 {
+    left: 986px;
+    top: 105px;
+    width: 120px;
+    height: 120px;
+    transform: rotate(10deg);
+  }
+
+  .steps {
+    margin-top: 128px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 300px 450px 1fr;
+    align-items: start;
+    min-height: 160px;
+    padding: 42px 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .step:first-child {
+    border-top: 0;
+  }
+  .step b {
+    font-family: var(--font-display);
+    font-size: 54px;
+    font-weight: 700;
+    line-height: 54px;
+    color: var(--orange);
+    letter-spacing: -0.01em;
+  }
+  .step h3 {
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 34px;
+    letter-spacing: -0.01em;
+    margin-top: 6px;
+    color: #fff;
+  }
+  .step p {
+    margin-top: 0;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  /* =========================================================== testimonial */
+  .testi {
+    position: relative;
+  }
+  .testi-bg {
+    width: 100%;
+    height: 903px;
+    object-fit: cover;
+  }
+  .testi-card {
+    position: absolute;
+    top: 215px;
+    width: 734px;
+    height: 867px;
+    /* sits on the page gutter, so the card lines up with every other
+         section once the viewport is wider than the 1440 stage */
+
+    padding: 242px 90px 0 90px;
+    color: #fff;
+    background: #241b1c center/cover no-repeat;
+  }
+  .testi-card .eyebrow {
+    color: #fff;
+    padding-top: 8px;
+  }
+  .testi-card h2 {
+    font-size: 54px;
+    line-height: 57px;
+    letter-spacing: -0.012em;
+    margin-top: 20px;
+    color: #fff;
+  }
+  .testi-card blockquote {
+    margin: 47px 0 0;
+    font-size: 19px;
+    color: #fff;
+    line-height: 34px;
+    max-width: 430px;
+  }
+  .testi-who {
+    display: flex;
+    align-items: center;
+    gap: 19px;
+    margin: 74px 0 0;
+  }
+  .testi-who img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: none;
+  }
+  .testi-who b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .testi-who span {
+    display: block;
+    font-size: 16px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.84);
+  }
+
+  /* every slide sits in the same grid cell, so the card is as tall as the
+       longest quote and the dots never jump as slides change */
+  .testi-slides {
+    display: grid;
+  }
+  .testi-slide {
+    grid-area: 1/1;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.45s ease, transform 0.45s ease, visibility 0s linear 0.45s;
+  }
+  .testi-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+
+  .dots {
+    display: flex;
+    gap: 15px;
+    margin: 83px 0 0;
+  }
+  .dots button {
+    position: relative;
+    width: 11px;
+    height: 11px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .dots button::before {
+    content: '';
+    position: absolute;
+    inset: -9px;
+    border-radius: 50%;
+  }
+  .dots button:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  .dots button.is-active {
+    background: var(--orange);
+    border-color: var(--orange);
+  }
+
+  /* ============================================================== products */
+  .products {
+    padding-top: 354px;
+    text-align: center;
+  }
+  .products h2 {
+    font-size: 54px;
+    line-height: 57px;
+    letter-spacing: -0.012em;
+    margin-top: 21px;
+  }
+  .products-intro {
+    margin: 23px auto 0;
+    max-width: 690px;
+    color: #232428;
+  }
+  .prod-grid {
+    display: flex;
+    gap: 26px 30px;
+    margin-top: 85px;
+    text-align: center;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .prod-grid article.prod {
+    width: 32%;
+  }
+
+  .prod figure {
+    margin: 0;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+  .prod figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .prod h3 {
+    font-size: 27px;
+    font-weight: 600;
+    margin-top: 14px;
+    transition: color 0.2s ease;
+  }
+  .prod p {
+    font-size: 16px;
+    margin-top: 2px;
+    color: #232428;
+  }
+  .prod-link {
+    display: block;
+    color: inherit;
+  }
+  .prod-link figure img {
+    transition: transform 0.5s ease;
+  }
+  .prod-link:hover figure img {
+    transform: scale(1.045);
+  }
+  .prod-link:hover h3 {
+    color: var(--orange);
+  }
+  .products .btn {
+    margin-top: 96px;
+  }
+
+  /* =================================================================== faq */
+  .faq {
+    padding-top: 150px;
+  }
+  .faq-inner {
+    display: grid;
+    gap: 70px;
+    grid-template-columns: 650px 1fr;
+  }
+  .faq-img {
+    width: 650px;
+    height: 651px;
+    overflow: hidden;
+  }
+  .faq-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .faq-body .eyebrow {
+    letter-spacing: 0.14em;
+    font-size: 15px;
+    color: var(--blue);
+  }
+  .faq-body h2 {
+    font-size: 54px;
+    line-height: 57px;
+    letter-spacing: -0.012em;
+    margin-top: 28px;
+  }
+  .acc {
+    border-bottom: 0;
+  }
+  .acc:first-of-type {
+    margin-top: 47px;
+  }
+  .acc:last-of-type {
+    border-bottom: 0;
+  }
+  .acc summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 22px 0;
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 28px;
+    letter-spacing: -0.01em;
+  }
+  .acc summary::-webkit-details-marker {
+    display: none;
+  }
+  .acc .ar {
+    margin-left: auto;
+    flex: none;
+    color: var(--orange);
+    margin-top: 9px;
+    transition: transform 0.25s ease;
+  }
+  .acc[open] .ar {
+    transform: rotate(45deg);
+  }
+  .acc[open] summary {
+    padding-bottom: 11px;
+  }
+  .acc p {
+    margin: 0 0 17px;
+    color: #232428;
+    max-width: 620px;
+  }
+
+  /* ================================================================= strip */
+  .strip {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 92px auto 0;
+  }
+  .strip img {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+  }
+  .ig {
+    position: absolute;
+    left: 50%;
+    top: 39.7%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ================================================================ footer */
+  .site-footer {
+    background: var(--blue);
+    color: #fff;
+    padding-top: 116px;
+    padding-bottom: 116px;
+    text-align: center;
+  }
+  .site-footer h2 {
+    font-size: 54px;
+    line-height: 64px;
+    color: #fff;
+    letter-spacing: -0.012em;
+  }
+  .site-footer .sub {
+    margin-top: 32px;
+    line-height: 32px;
+    color: rgba(255, 255, 255, 0.94);
+  }
+  .site-footer .sub b {
+    font-weight: 700;
+  }
+  .footer-cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-top: 57px;
+  }
+  .footer-logo {
+    width: 663px;
+    max-width: 78%;
+    margin: 130px auto 0;
+  }
+  .footer-bar {
+    max-width: 1440px;
+    margin: 32px auto 0;
+    padding: 0 90px;
+  }
+  .footer-bar-in {
+    border-top: 1px solid rgba(255, 255, 255, 0.34);
+    padding: 37px 0 37px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-bar a {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* ============================================================ responsive */
+  @media (max-width: 1439px) {
+    .yoode-chennai-container {
+      padding-inline: 6.25vw;
+    }
+    .trust .stage {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 46%;
+      gap: 40px;
+      align-items: start;
+    }
+    .trust-media {
+      position: relative;
+      height: 608px;
+    }
+    .tm-big {
+      left: auto;
+      right: 5.5%;
+      width: 80%;
+    }
+    .tm-small {
+      left: -22%;
+      width: 64%;
+    }
+    .why-img {
+      width: auto;
+      max-width: 650px;
+    }
+    .why-body {
+      padding-left: 4.8vw;
+      padding-right: 0;
+    }
+    .faq-inner {
+      grid-template-columns: 51.6% 1fr;
+    }
+    .faq-img {
+      width: auto;
+      max-width: 650px;
+    }
+  }
+  @media (max-width: 1100px) {
+    .site-header {
+      padding: 0 30px;
+    }
+    .hero {
+      padding-top: 150px;
+    }
+    .hero h1 {
+      font-size: 48px;
+      line-height: 1.16;
+    }
+    .hero-stage {
+      height: 380px;
+      margin-top: 24px;
+    }
+    .scroll-cue {
+      top: auto;
+      bottom: -14px;
+    }
+    .hero-lede {
+      font-size: 34px;
+      line-height: 1.25;
+      margin-top: 58px;
+    }
+    .hero-lede br {
+      display: none;
+    }
+    .hero-note {
+      margin-top: 44px;
+      padding-inline: 30px;
+    }
+    .trust {
+      padding-top: 75px;
+    }
+    .yoode-chennai-container {
+      padding-inline: 30px;
+    }
+    .trust .stage {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .trust-copy {
+      padding: 0;
+      max-width: none;
+    }
+    .trust h2,
+    .contact h2,
+    .cats h2,
+    .products h2,
+    .why-body h2,
+    .testi-card h2,
+    .faq-body h2,
+    .site-footer h2 {
+      font-size: 38px;
+      line-height: 1.14;
+    }
+    .trust-media {
+      height: 520px;
+      margin-top: 70px;
+    }
+    .tm-big {
+      position: relative;
+      right: auto;
+      left: auto;
+      width: 100%;
+      height: 400px;
+    }
+    .tm-small {
+      position: absolute;
+      left: auto;
+      right: 4%;
+      top: 290px;
+      width: 56%;
+      height: 300px;
+    }
+    .clients {
+      margin-top: 110px;
+    }
+    .clients-track {
+      gap: 50px;
+      padding-left: 30px;
+    }
+    .clients-track img {
+      height: 56px;
+    }
+    .contact {
+      margin-top: 110px;
+      padding: 70px 0;
+    }
+    .contact .inner {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .form-grid {
+      gap: 30px 20px;
+    }
+    .cats {
+      padding-top: 110px;
+    }
+    .cat-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 52px;
+      margin-top: 48px;
+    }
+    .cat--mid {
+      margin-top: 0;
+    }
+    .marquee {
+      margin-top: 90px;
+    }
+    .marquee-track {
+      font-size: 56px;
+      line-height: 1.1;
+      gap: 30px;
+    }
+    .marquee-track img {
+      width: 44px;
+      height: 44px;
+    }
+    .scroll-dot {
+      margin-top: 70px;
+    }
+    .blue {
+      margin-top: 110px;
+    }
+    .why {
+      grid-template-columns: 1fr;
+      padding-top: 90px;
+    }
+    .why-img {
+      margin: 0;
+      height: auto;
+      aspect-ratio: 1;
+    }
+    .why-body {
+      padding: 64px 0 0;
+    }
+    .feature,
+    .feature + .feature {
+      margin-top: 30px;
+    }
+    .process-head h2 {
+      font-size: 34px;
+      line-height: 1.2;
+    }
+    .pill,
+    .float {
+      display: none;
+    }
+    .steps {
+      margin-top: 70px;
+    }
+    .step {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 34px 0 36px;
+    }
+    .step b {
+      font-size: 44px;
+      line-height: 1;
+    }
+    .step h3 {
+      margin-top: 0;
+    }
+    .step p {
+      max-width: none;
+    }
+    .testi-bg {
+      height: 380px;
+    }
+    .testi-card {
+      position: static;
+      width: 100%;
+      height: auto;
+      padding: 64px 30px 72px;
+    }
+    .products {
+      padding-top: 110px;
+    }
+    .prod-grid {
+      gap: 56px 24px;
+      margin-top: 56px;
+    }
+    .prod-grid article.prod {
+      width: 48%;
+    }
+    .products .btn {
+      margin-top: 60px;
+    }
+    .faq {
+      padding-top: 110px;
+    }
+    .faq-inner {
+      grid-template-columns: 1fr;
+    }
+    .faq-img {
+      margin: 0;
+      height: auto;
+      aspect-ratio: 1;
+    }
+    .faq-body {
+      padding: 56px 0 0;
+      max-width: none;
+    }
+    .acc:first-of-type {
+      margin-top: 44px;
+    }
+    .link-u {
+      margin-top: 11px;
+      padding-top: 12px;
+    }
+    .footer-bar a {
+      padding: 9px 0;
+    }
+    .strip {
+      margin-top: 100px;
+    }
+    .strip img {
+      height: 200px;
+    }
+    .site-footer {
+      padding-top: 90px;
+    }
+    .footer-logo {
+      margin-top: 90px;
+    }
+    .footer-bar {
+      padding: 0 30px;
+      margin-top: 40px;
+    }
+  }
+  @media (max-width: 900px) {
+    .clients-track img {
+      height: 29px;
+    }
+  }
+  @media (max-width: 520px) {
+    /* let the headline reflow instead of orphaning the ampersand */
+    .hero h1 br {
+      display: none;
+    }
+  }
+  @media (max-width: 640px) {
+    .trust-copy > p:not(.eyebrow),
+    .contact-copy > p:not(.eyebrow) {
+      margin-top: 14px;
+    }
+    .eyebrow {
+      margin-bottom: 10px;
+    }
+    .contact .inner {
+      gap: 0;
+    }
+    .form-grid {
+      margin-top: 22px;
+    }
+    .contact .field input,
+    .contact .field textarea {
+      min-height: 3rem !important;
+      font-size: 1.2rem !important;
+    }
+    .contact .field input::placeholder,
+    .contact .field textarea::placeholder {
+      font-size: 1.2rem !important;
+    }
+    .form-grid {
+      gap: 24px 20px;
+    }
+    .cat figure {
+      margin-bottom: 10px;
+    }
+    .why-body > p {
+      margin-top: 15px;
+    }
+    .feature,
+    .feature + .feature {
+      margin-top: 20px;
+    }
+
+    .steps {
+      margin-top: 18px;
+    }
+    .step b {
+      font-size: 35px;
+    }
+    .step h3 {
+      font-size: 28px;
+    }
+    .prod-grid {
+      gap: 38px 24px;
+    }
+      .prod-grid article.prod {
+      width: 46%;
+    }
+
+    .prod figure {
+      margin-bottom: 10px;
+    }
+    .products .btn {
+      margin-top: 39px;
+    }
+    .acc:first-of-type {
+      margin-top: 24px;
+    }
+    .strip {
+      margin-top: 61px;
+    }
+    .site-footer {
+      padding-top: 77px;
+      padding-bottom: 70px;
+    }
+    .yoode-chennai-container {
+      padding-inline: 20px;
+    }
+    .cat-grid {
+        grid-template-columns: 1fr;
+    }
+    .testi-card {
+      padding-inline: 20px;
+    }
+    body {
+      font-size: 16px;
+      line-height: 26px;
+    }
+    .site-header {
+      height: 80px;
+    }
+    .site-header .logo {
+      height: 32px;
+    }
+    .site-header nav {
+      gap: 6px;
+    }
+    .site-header .btn {
+      height: 42px;
+      padding: 0 14px;
+      font-size: 14px;
+    }
+    .site-header .btn--ghost span {
+      display: none;
+    }
+    .hero {
+      padding-top: 45px;
+    }
+    .hero h1 {
+      font-size: 34px;
+    }
+    .hero-stage {
+      height: 210px;
+    }
+    .hero-lede {
+      font-size: 25px;
+    }
+    .hero-cta,
+    .footer-cta {
+      flex-direction: column;
+      gap: 14px;
+    }
+    .stats {
+      grid-template-columns: 1fr 1fr;
+      gap: 26px 16px;
+    }
+    .stats b {
+      font-size: 32px;
+      line-height: 1.1;
+    }
+    .stats span {
+      font-size: 16px;
+    }
+    .trust-media {
+      height: 380px;
+    }
+    .tm-big {
+      height: 280px;
+    }
+    .tm-small {
+      top: 200px;
+      width: 60%;
+      height: 210px;
+    }
+    .trust h2,
+    .contact h2,
+    .cats h2,
+    .products h2,
+    .why-body h2,
+    .testi-card h2,
+    .faq-body h2,
+    .site-footer h2 {
+      font-size: 30px;
+    }
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    .marquee-track {
+      font-size: 34px;
+    }
+
+    .acc summary {
+      font-size: 19px;
+      line-height: 1.3;
+    }
+    .strip img {
+      height: 128px;
+    }
+    .ig {
+      width: 72px;
+      height: 72px;
+    }
+    .footer-bar-in {
+      flex-direction: column;
+      gap: 14px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* =====================================================================
+       YD Yoode Chennai
+       Section styles, organised section by section:
+       .yd-chennai (page wrapper) → .yd-chennai-<section>__<element>
+       ===================================================================== */
+
+  /* ================================================================ banner */
+  .yd-chennai .yd-chennai-banner {
+    width: 100%;
+    background: #fafafa;
+    padding: 40px 0 80px;
+  }
+
+  .yd-chennai .yd-chennai-banner__container {
+    width: 100%;
+    max-width: 1850px;
+    margin-inline: auto;
+    padding-inline: 90px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 800px);
+    gap: 80px;
+    align-items: start;
+  }
+
+  /* ---------------------------------------------------------- left content */
+  .yd-chennai .yd-chennai-banner__content {
+    padding-top: 8px;
+  }
+
+  .yd-chennai .yd-chennai-banner__badge {
+    display: inline-block;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #fff1ea;
+    color: #c2410c;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .yd-chennai .yd-chennai-banner__title {
+    font-size: 56px;
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+  }
+
+  .yd-chennai .yd-chennai-banner__title em {
+    font-style: normal;
+    color: var(--orange);
+  }
+
+  .yd-chennai .yd-chennai-banner__text {
+    margin-top: 22px;
+    max-width: 760px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #5f5b59;
+  }
+
+  .yd-chennai .yd-chennai-banner__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 40px 0 0;
+    padding: 0 0 44px;
+    list-style: none;
+    border-bottom: 1px solid #dcdcdc;
+    max-width: 880px;
+  }
+
+  .yd-chennai .yd-chennai-banner__stat {
+    padding: 0 24px;
+    border-left: 1px solid #dcdcdc;
+  }
+
+  .yd-chennai .yd-chennai-banner__stat:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .yd-chennai .yd-chennai-banner__stat b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+
+  .yd-chennai .yd-chennai-banner__stat span {
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.3;
+    color: #8b8683;
+  }
+
+  .yd-chennai .yd-chennai-banner__talk {
+    margin-top: 30px;
+  }
+
+  .yd-chennai .yd-chennai-banner__talk-label {
+    font-size: 16px;
+    line-height: 1.4;
+    color: #8b8683;
+  }
+
+  .yd-chennai .yd-chennai-banner__whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 10px;
+    padding: 14px 42px 14px 26px;
+    border: 2px solid #25d366;
+    border-radius: 999px;
+    background: #fff;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ink);
+    transition: background 0.18s ease;
+  }
+
+  .yd-chennai .yd-chennai-banner__whatsapp:hover {
+    background: #effcf4;
+  }
+
+  .yd-chennai .yd-chennai-banner__whatsapp img {
+    width: 28px;
+    height: 28px;
+    flex: none;
+  }
+
+  .yd-chennai .yd-chennai-banner__trusted {
+    margin-top: 26px;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.5;
+    color: #8b8683;
+  }
+
+  /* ------------------------------------------------------------- form card */
+  .yd-chennai .yd-chennai-banner__card {
+    position: relative;
+    padding: 28px 36px 28px;
+    border: 1px solid #e4e4e4;
+    border-radius: 20px;
+    background: #fff;
+  }
+
+  .yd-chennai .yd-chennai-banner__card-tag {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: #fff1ea;
+    color: #c2410c;
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .yd-chennai .yd-chennai-banner__card-title {
+    margin-top: 8px;
+    font-size: 32px;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+
+  .yd-chennai .yd-chennai-banner__card-text {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #5f5b59;
+  }
+
+  .yd-chennai .yd-chennai-banner__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 13px;
+  }
+
+  .yd-chennai .yd-chennai-banner__label {
+    display: block;
+    margin-bottom: 10px;
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .yd-chennai .yd-chennai-banner__label small {
+    margin-left: 6px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #8b8683;
+  }
+
+  /* inputs — overrides the underline style of the contact-section .field */
+  .yd-chennai .yd-chennai-banner__field input {
+    width: 100%;
+    height: 40px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background: #f5f5f5;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1;
+    color: var(--ink);
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+
+  .yd-chennai .yd-chennai-banner__field input::placeholder {
+    font-size: 14px;
+    color: #a3a09e;
+    opacity: 1;
+  }
+
+  .yd-chennai .yd-chennai-banner__field input:focus {
+    outline: 0;
+    border-color: var(--orange);
+    background: #fff;
+  }
+
+  .yd-chennai .yd-chennai-banner__field.is-invalid input {
+    border-color: #d92d20;
+  }
+
+  .yd-chennai .yd-chennai-banner__field .field-msg {
+    position: static;
+    display: none;
+    margin-top: 6px;
+  }
+
+  .yd-chennai .yd-chennai-banner__field.is-invalid .field-msg {
+    display: block;
+  }
+
+  /* chip groups (radio buttons) */
+  .yd-chennai .yd-chennai-banner__group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .yd-chennai .yd-chennai-banner__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .yd-chennai .yd-chennai-banner__chips--half {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .yd-chennai .yd-chennai-banner__chip {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+
+  .yd-chennai .yd-chennai-banner__chip input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .yd-chennai .yd-chennai-banner__chip span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 35px;
+    padding: 8px 16px;
+    border: 1px solid #dcdcdc;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 14px;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--ink);
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+  }
+
+  .yd-chennai .yd-chennai-banner__chip:hover span {
+    border-color: #f5a37f;
+  }
+
+  .yd-chennai .yd-chennai-banner__chip input:checked + span {
+    border-color: var(--orange);
+    background: #fff1ea;
+    color: #c2410c;
+  }
+
+  .yd-chennai .yd-chennai-banner__chip input:focus-visible + span {
+    outline: 2px solid var(--orange);
+    outline-offset: 2px;
+  }
+
+  .yd-chennai .yd-chennai-banner__submit {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .yd-chennai .yd-chennai-banner__note {
+    margin-top: -4px;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+    color: #8b8683;
+  }
+
+  /* ============================================================ responsive */
+  /* laptop */
+  @media (max-width: 1439px) {
+    .yd-chennai .yd-chennai-banner__container {
+      padding-inline: 6.25vw;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 620px);
+      gap: 56px;
+    }
+
+    .yd-chennai .yd-chennai-banner__title {
+      font-size: 46px;
+    }
+
+    .yd-chennai .yd-chennai-banner__stat b {
+      font-size: 32px;
+    }
+  }
+
+  /* small laptop */
+  @media (max-width: 1280px) {
+    .yd-chennai .yd-chennai-banner__container {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
+      gap: 40px;
+    }
+
+    .yd-chennai .yd-chennai-banner__title {
+      font-size: 40px;
+    }
+
+    .yd-chennai .yd-chennai-banner__text {
+      font-size: 17px;
+    }
+
+    .yd-chennai .yd-chennai-banner__stat {
+      padding: 0 16px;
+    }
+
+    .yd-chennai .yd-chennai-banner__stat b {
+      font-size: 28px;
+    }
+
+    .yd-chennai .yd-chennai-banner__stat span {
+      font-size: 14px;
+    }
+
+    .yd-chennai .yd-chennai-banner__card {
+      padding: 26px 26px;
+    }
+
+    .yd-chennai .yd-chennai-banner__card-title {
+      font-size: 28px;
+    }
+  }
+
+  /* tablet - form card drops below the content */
+  @media (max-width: 1100px) {
+    .yd-chennai .yd-chennai-banner {
+      padding: 35px 0 60px;
+    }
+
+    .yd-chennai .yd-chennai-banner__container {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding-inline: 30px;
+    }
+
+    .yd-chennai .yd-chennai-banner__title {
+      font-size: 40px;
+    }
+
+    .yd-chennai .yd-chennai-banner__text {
+      max-width: none;
+    }
+
+    .yd-chennai .yd-chennai-banner__stats {
+      max-width: none;
+      padding-bottom: 32px;
+    }
+
+    .yd-chennai .yd-chennai-banner__card {
+      width: 100%;
+      max-width: 720px;
+      margin-inline: auto;
+    }
+    .yd-chennai  .prod h3 {
+      font-size: 15px;
+    font-weight: 600;
+    line-height: normal; 
+    letter-spacing: normal;
+    }
+    .yd-chennai  .prod p{
+      font-size: 14px;
+      line-height: normal;
+    }
+  }
+
+  /* mobile */
+  @media (max-width: 640px) {
+    .yd-chennai .yd-chennai-banner {
+      padding: 20px 0 40px;
+    }
+
+    .yd-chennai .yd-chennai-banner__container {
+      padding-inline: 16px;
+      gap: 32px;
+    }
+
+    .yd-chennai .yd-chennai-banner__title {
+      margin-top: 12px;
+      font-size: 30px;
+    }
+
+    .yd-chennai .yd-chennai-banner__title br {
+      display: none;
+    }
+
+    .yd-chennai .yd-chennai-banner__text {
+      margin-top: 14px;
+      font-size: 16px;
+    }
+
+    .yd-chennai .yd-chennai-banner__stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px 0;
+      margin-top: 24px;
+      padding-bottom: 24px;
+    }
+
+    .yd-chennai .yd-chennai-banner__stat:nth-child(odd) {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .yd-chennai .yd-chennai-banner__stat b {
+      font-size: 26px;
+    }
+
+    .yd-chennai .yd-chennai-banner__stat span {
+      margin-top: 6px;
+      font-size: 14px;
+    }
+
+    .yd-chennai .yd-chennai-banner__talk {
+      margin-top: 24px;
+    }
+
+    .yd-chennai .yd-chennai-banner__whatsapp {
+      width: 100%;
+      justify-content: center;
+      padding: 12px 20px;
+      font-size: 16px;
+    }
+
+    .yd-chennai .yd-chennai-banner__trusted {
+      margin-top: 18px;
+      font-size: 14px;
+    }
+
+    .yd-chennai .yd-chennai-banner__card {
+      padding: 22px 16px;
+      border-radius: 16px;
+    }
+
+    .yd-chennai .yd-chennai-banner__card-title {
+      font-size: 24px;
+    }
+
+    .yd-chennai .yd-chennai-banner__card-text {
+      font-size: 14px;
+    }
+
+    .yd-chennai .yd-chennai-banner__chips {
+      gap: 8px;
+    }
+
+    .yd-chennai .yd-chennai-banner__chip span {
+      padding: 7px 14px;
+      font-size: 13px;
+    }
+
+    .yd-chennai .yd-chennai-banner__submit {
+      height: 50px;
+    }
+
+    .yd-chennai .yd-chennai-banner__note {
+      font-size: 12px;
+    }
+  }
+
+  /* small mobile */
+  @media (max-width: 380px) {
+    .yd-chennai .yd-chennai-banner__title {
+      font-size: 26px;
+    }
+
+    .yd-chennai .yd-chennai-banner__card-title {
+      font-size: 22px;
+    }
+
+    .yd-chennai .yd-chennai-banner__chips--half {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ======================================================= section spacing
+       One vertical rhythm for every section below the banner:
+       80px top and bottom on desktop, 40px on mobile. The old per-section
+       margin/padding values above are reset here, so change spacing only in
+       this block. Full-bleed media rows (testimonial image, image strip) sit
+       flush and take their spacing from the sections around them. */
+  .yd-chennai .trust,
+  .yd-chennai .clients,
+  .yd-chennai .cats,
+  .yd-chennai .marquee,
+  .yd-chennai .blue,
+  .yd-chennai .products,
+  .yd-chennai .faq,
+  .yd-chennai .site-footer {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+
+  /* why + process share the blue block: the block owns the outer spacing,
+       80px separates the two inside it */
+  .yd-chennai .why {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .yd-chennai .process {
+    padding-top: 80px;
+    padding-bottom: 0;
+  }
+
+  /* the floating photo/pills sit above the heading (up to 131px), so the
+       heading moves down to keep them inside the section */
+  .yd-chennai .process-head {
+    margin-top: 131px;
+  }
+
+  .yd-chennai .testi,
+  .yd-chennai .strip {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+  }
+
+  /* the testimonial card hangs 179px below the photo (215 + 867 - 903);
+       reserve that space so the next section's padding starts after it */
+  .yd-chennai .testi {
+    padding-bottom: 179px;
+  }
+
+  @media (max-width: 1100px) {
+    .yd-chennai .process-head {
+      margin-top: 0;
+    }
+
+    .yd-chennai .testi {
+      padding-bottom: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .yd-chennai .trust,
+    .yd-chennai .clients,
+    .yd-chennai .cats,
+    .yd-chennai .marquee,
+    .yd-chennai .blue,
+    .yd-chennai .products,
+    .yd-chennai .faq,
+    .yd-chennai .site-footer {
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+  }
+</style>
+{%- comment -%}
+  WhatsApp link, built once for every "Chat on Whatsapp" button.
+  Empty number falls back to the contact form, so nothing breaks before it's set.
+{%- endcomment -%}
+{%- assign yd_wa_number = section.settings.whatsapp_number
+  | remove: ' '
+  | remove: '-'
+  | remove: '('
+  | remove: ')'
+  | remove: '+'
+-%}
+{%- if yd_wa_number != blank -%}
+  {%- assign yd_wa_msg = section.settings.whatsapp_message
+    | default: 'Hi Yoode, I’d like a quote for a bulk custom order. Please share the options and pricing.'
+  -%}
+  {%- assign yd_wa_text = yd_wa_msg | url_encode -%}
+  {%- assign yd_wa_link = 'https://wa.me/' | append: yd_wa_number | append: '?text=' | append: yd_wa_text -%}
+  {%- assign yd_wa_attrs = 'target="_blank" rel="noopener"' -%}
+{%- else -%}
+  {%- assign yd_wa_link = '#quote' -%}
+  {%- assign yd_wa_attrs = '' -%}
+{%- endif -%}
+
+<div id="top" class="yd-chennai">
+  <!-- ================================================================ banner -->
+  <section class="yd-chennai-banner" id="quote">
+    <div class="yd-chennai-banner__container">
+      <div class="yd-chennai-banner__content">
+        <p class="yd-chennai-banner__badge">4.9/5 Google Rating · 150+ Corporates Served</p>
+
+        <h1 class="yd-chennai-banner__title">
+          Bulk Custom T-Shirts &amp; <br>
+          Team Apparel, <em>Delivered Fast</em>
+        </h1>
+
+        <p class="yd-chennai-banner__text">
+          From corporate kits to custom jerseys for schools, colleges &amp; sports teams. Orders from 50 to 5,000+
+          pieces. No artwork ready? No problem.
+        </p>
+
+        <ul class="yd-chennai-banner__stats">
+          <li class="yd-chennai-banner__stat"><b>4.9/5</b><span>Google Rating</span></li>
+          <li class="yd-chennai-banner__stat"><b>150+</b><span>Corporates Served</span></li>
+          <li class="yd-chennai-banner__stat"><b>1K+</b><span>Units / Day</span></li>
+          <li class="yd-chennai-banner__stat"><b>5</b><span>Experience Centres</span></li>
+        </ul>
+
+        <div class="yd-chennai-banner__talk">
+          <p class="yd-chennai-banner__talk-label">Prefer to talk now?</p>
+          <a class="yd-chennai-banner__whatsapp" href="{{ yd_wa_link }}" {{ yd_wa_attrs }}>
+            <img src="{{ 'icon-whatsapp.png' | asset_url }}" alt="" width="28" height="28">
+            <span>Chat on WhatsApp</span>
+          </a>
+          <p class="yd-chennai-banner__trusted">Trusted by teams at TCS, Infosys, UST and 150+ other organisations.</p>
+        </div>
+      </div>
+
+      <div class="yd-chennai-banner__card">
+        <p class="yd-chennai-banner__card-tag">High-Intent Lead Form</p>
+        <h2 class="yd-chennai-banner__card-title">Get a Bulk Order Quote from YOODE</h2>
+        <p class="yd-chennai-banner__card-text">
+          Custom sportswear, teamwear &amp; branded apparel for teams, clubs, businesses and events. Tell us what you
+          need and our team will contact you.
+        </p>
+
+        {%- assign yd_banner_form_id = 'yd-banner-' | append: section.id -%}
+        {%- assign yd_banner_source = section.settings.source_label
+          | default: 'Yoode Chennai Landing Page'
+          | append: ' - Banner Form'
+        -%}
+
+        {% form 'contact', id: yd_banner_form_id, class: 'yd-form yd-chennai-banner__form' %}
+          {%- if form.posted_successfully? -%}
+            <div class="yd-flag" data-status="success" hidden></div>
+          {%- else -%}
+            {%- assign yd_errors = form.errors | default_errors | strip_html | strip_newlines | strip -%}
+            {%- if yd_errors != blank -%}
+              <div class="yd-flag" data-status="error" hidden>{{ yd_errors }}</div>
+            {%- endif -%}
+          {%- endif -%}
+
+          <input type="hidden" name="contact[source]" value="{{ yd_banner_source | escape }}">
+
+          <div class="field yd-chennai-banner__field">
+            <label class="yd-chennai-banner__label" for="{{ yd_banner_form_id }}-name">Full Name *</label>
+            <input
+              id="{{ yd_banner_form_id }}-name"
+              type="text"
+              name="contact[name]"
+              placeholder="e.g. Arun Kumar"
+              autocomplete="name"
+              required
+              data-msg="Please enter your full name."
+            >
+            <span class="field-msg"></span>
+          </div>
+
+          <div class="field yd-chennai-banner__field">
+            <label class="yd-chennai-banner__label" for="{{ yd_banner_form_id }}-phone">WhatsApp Number *</label>
+            <input
+              id="{{ yd_banner_form_id }}-phone"
+              type="tel"
+              name="contact[phone]"
+              placeholder="+91 98765 43210"
+              autocomplete="tel"
+              inputmode="tel"
+              required
+              data-msg="Please enter your WhatsApp number."
+            >
+            <span class="field-msg"></span>
+          </div>
+
+          <div class="field yd-chennai-banner__field">
+            <label class="yd-chennai-banner__label" for="{{ yd_banner_form_id }}-email">
+              Email <small>(optional)</small>
+            </label>
+            {%- comment -%}
+              Optional for the visitor, but Shopify's contact form needs an email to
+              deliver the enquiry. When left empty, the script fills in the store's
+              own address (data-yd-fallback-email) just before the post.
+            {%- endcomment -%}
+            <input
+              id="{{ yd_banner_form_id }}-email"
+              type="email"
+              name="contact[email]"
+              placeholder="name@company.com"
+              autocomplete="email"
+              data-yd-validate
+              data-yd-fallback-email="{{ shop.email | escape }}"
+            >
+            <span class="field-msg"></span>
+          </div>
+
+          <fieldset
+            class="field yd-chennai-banner__field yd-chennai-banner__group"
+            data-yd-group
+            data-msg="Please select what you are looking for."
+          >
+            <legend class="yd-chennai-banner__label">What are you looking for?</legend>
+            <div class="yd-chennai-banner__chips">
+              {%- assign yd_looking_for = 'Sports Teamwear,Corporate / Office Wear,Sports Club Apparel,Event / Group T-Shirts,Custom Merchandise,Other'
+                | split: ','
+              -%}
+              {%- for option in yd_looking_for -%}
+                <label class="yd-chennai-banner__chip">
+                  <input type="radio" name="contact[Looking for]" value="{{ option | escape }}">
+                  <span>{{ option }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+            <span class="field-msg"></span>
+          </fieldset>
+
+          <fieldset
+            class="field yd-chennai-banner__field yd-chennai-banner__group"
+            data-yd-group
+            data-msg="Please select an approximate quantity."
+          >
+            <legend class="yd-chennai-banner__label">Approximate Quantity</legend>
+            <div class="yd-chennai-banner__chips">
+              {%- assign yd_quantity = '10–25,26–50,51–100,101–250,250+' | split: ',' -%}
+              {%- for option in yd_quantity -%}
+                <label class="yd-chennai-banner__chip">
+                  <input type="radio" name="contact[Quantity]" value="{{ option | escape }}">
+                  <span>{{ option }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+            <span class="field-msg"></span>
+          </fieldset>
+
+          <fieldset
+            class="field yd-chennai-banner__field yd-chennai-banner__group"
+            data-yd-group
+            data-msg="Please select when you need the order."
+          >
+            <legend class="yd-chennai-banner__label">When do you need the order?</legend>
+            <div class="yd-chennai-banner__chips yd-chennai-banner__chips--half">
+              {%- assign yd_timeline = 'Within 7 days,1–2 weeks,2–4 weeks,Just enquiring' | split: ',' -%}
+              {%- for option in yd_timeline -%}
+                <label class="yd-chennai-banner__chip">
+                  <input type="radio" name="contact[Timeline]" value="{{ option | escape }}">
+                  <span>{{ option }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+            <span class="field-msg"></span>
+          </fieldset>
+
+          <button class="btn yoode-primary-btn yd-chennai-banner__submit" type="submit">
+            <span class="yd-spin" aria-hidden="true"></span>
+            <span>Get Quote &rarr;</span>
+          </button>
+
+          <p class="yd-chennai-banner__note">
+            By submitting, you agree to be contacted via call / WhatsApp about your enquiry.
+          </p>
+        {% endform %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= trust -->
+  <section class="trust">
+    <div class="stage yoode-chennai-container">
+      <div class="trust-copy">
+        <p class="eyebrow">Trust Points</p>
+        <h2>
+          We are trusted<br>
+          by brands
+        </h2>
+        <p>
+          From growing teams to large organisations, businesses across Chennai trust Yoode for reliable custom apparel,
+          consistent quality and on-time delivery.
+        </p>
+        <div class="stats">
+          <div><b>4.9</b><span>Google Rating</span></div>
+          <div><b>150+</b><span>Corporates Served</span></div>
+          <div><b>1K+</b><span>Units/Day</span></div>
+          <div><b>5</b><span>Experience Centres</span></div>
+        </div>
+      </div>
+      <div class="trust-media">
+        <figure class="tm-big"><img src="{{ 'trust-a.webp' | asset_url }}" alt="Yoode experience centre"></figure>
+        <figure class="tm-small"><img src="{{ 'trust-b.webp' | asset_url }}" alt="Models in custom polos"></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================== clients -->
+  <section class="clients" aria-label="Brands that work with Yoode">
+    <div class="clients-track">
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/zafin.png?v=1789022025"
+        alt="Tata Consultancy Services"
+      >
+      <img src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/infosys.png?v=1789022025" alt="Infosys">
+      <img src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/h_R-block.png?v=1789022025" alt="Infospica">
+      <img src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/ust.png?v=1789021606" alt="UST">
+      {% comment %}
+        <img src="{{ 'client-1.png' | asset_url }}" alt="" aria-hidden="true">
+        <img src="{{ 'client-2.png' | asset_url }}" alt="" aria-hidden="true">
+        <img src="{{ 'client-3.png' | asset_url }}" alt="" aria-hidden="true">
+      {% endcomment %}
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/zafin.png?v=1789022025"
+        alt="Tata Consultancy Services"
+        aria-hidden="true"
+      >
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/infosys.png?v=1789022025"
+        alt="Infosys"
+        aria-hidden="true"
+      >
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/h_R-block.png?v=1789022025"
+        alt="Infospica"
+        aria-hidden="true"
+      >
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/ust.png?v=1789021606"
+        alt="UST"
+        aria-hidden="true"
+      >
+
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/zafin.png?v=1789022025"
+        alt="Tata Consultancy Services"
+        aria-hidden="true"
+      >
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/infosys.png?v=1789022025"
+        alt="Infosys"
+        aria-hidden="true"
+      >
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/h_R-block.png?v=1789022025"
+        alt="Infospica"
+        aria-hidden="true"
+      >
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/ust.png?v=1789021606"
+        alt="UST"
+        aria-hidden="true"
+      >
+
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/zafin.png?v=1789022025"
+        alt="Tata Consultancy Services"
+        aria-hidden="true"
+      >
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/infosys.png?v=1789022025"
+        alt="Infosys"
+        aria-hidden="true"
+      >
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/h_R-block.png?v=1789022025"
+        alt="Infospica"
+        aria-hidden="true"
+      >
+      <img
+        src="https://cdn.shopify.com/s/files/1/0843/6314/9601/files/ust.png?v=1789021606"
+        alt="UST"
+        aria-hidden="true"
+      >
+    </div>
+  </section>
+
+  <!-- ============================================================ categories -->
+  <section class="cats">
+    <div class="yoode-chennai-container">
+      <p class="eyebrow">Built for Group Orders</p>
+      <h2>
+        Whatever Your Team Needs,<br>
+        We'll Help You Get It Done
+      </h2>
+      <p class="cats-intro">
+        From company merchandise to tournament jerseys and event apparel, Yoode helps teams and organisations go from an
+        idea to a finished bulk order.
+      </p>
+    </div>
+
+    <div class="cat-grid yoode-chennai-container">
+      <article class="cat">
+        <figure><img src="{{ 'cat-1.webp' | asset_url }}" alt="Corporate polos"></figure>
+        <h3>Corporate &amp; HR</h3>
+        <p class="lead">Equip Your Team. Define Your Brand.</p>
+        <p>
+          Create branded apparel and merchandise for onboarding kits, company events, conferences, corporate gifting and
+          more.
+        </p>
+        {%- assign yd_cat = section.settings.cat_1_link | default: '#quote' -%}
+        <a class="link-u" href="{{ yd_cat }}">Explore</a>
+      </article>
+
+      <article class="cat cat--mid">
+        <figure><img src="{{ 'cat-2.webp' | asset_url }}" alt="Sportswear"></figure>
+        <h3>
+          Sports Teams &amp;<br>
+          Schools
+        </h3>
+        <p class="lead">Kit Your Team. Own the Field.</p>
+        <p>
+          Custom jerseys, teamwear and sports-day apparel designed around your team and delivered for your deadline.
+        </p>
+        {%- assign yd_cat = section.settings.cat_2_link | default: '#quote' -%}
+        <a class="link-u" href="{{ yd_cat }}">Explore</a>
+      </article>
+
+      <article class="cat">
+        <figure><img src="{{ 'cat-3.webp' | asset_url }}" alt="Event uniforms"></figure>
+        <h3>Events &amp; Institutions</h3>
+        <p class="lead">One Event. One Look.</p>
+        <p>
+          Create a unified identity for college fests, community events, group activities and large-scale gatherings.
+        </p>
+        {%- assign yd_cat = section.settings.cat_3_link | default: '#quote' -%}
+        <a class="link-u" href="{{ yd_cat }}">Explore</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- =============================================================== marquee -->
+  <section class="marquee">
+    <div class="marquee-track" aria-hidden="true">
+      <span>LOW MOQ</span><img src="{{ 'icon-star.png' | asset_url }}" alt=""> <span>DESIGN SUPPORT</span
+      ><img src="{{ 'icon-star.png' | asset_url }}" alt=""> <span>LOW MOQ</span
+      ><img src="{{ 'icon-star.png' | asset_url }}" alt=""> <span>DESIGN SUPPORT</span
+      ><img src="{{ 'icon-star.png' | asset_url }}" alt="">
+    </div>
+
+    <div class="marquee-track marquee-track--rev" aria-hidden="true">
+      <span>RUSH ORDERS</span><img src="{{ 'icon-star.png' | asset_url }}" alt=""> <span>QUALITY CHECKS</span
+      ><img src="{{ 'icon-star.png' | asset_url }}" alt=""> <span>RUSH ORDERS</span
+      ><img src="{{ 'icon-star.png' | asset_url }}" alt=""> <span>QUALITY CHECKS</span
+      ><img src="{{ 'icon-star.png' | asset_url }}" alt="">
+    </div>
+
+    <a class="scroll-dot" href="#why" aria-label="Scroll to the next section">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path d="M12 4v15M5.5 13l6.5 6.5L18.5 13"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ================================================================== blue -->
+  <div class="blue" id="why">
+    <section class="why yoode-chennai-container">
+      <div class="why-img"><img src="{{ 'why.webp' | asset_url }}" alt="Bulk apparel in production"></div>
+
+      <div class="why-body">
+        <p class="eyebrow eyebrow--light">Why Yoode</p>
+        <h2>Made for Bulk. Built Around Your Requirements.</h2>
+        <p>
+          Whether you're ordering for a small team or thousands of people, we make the bulk-order process simple,
+          flexible and reliable.
+        </p>
+
+        <div class="feature">
+          <img src="{{ 'feat-1.png' | asset_url }}" alt="">
+          <h3>Low MOQ. Built to Scale.</h3>
+          <p>From smaller team orders to 5,000+ pieces, we can support orders at different scales.</p>
+        </div>
+
+        <div class="feature">
+          <img src="{{ 'feat-2.png' | asset_url }}" alt="">
+          <h3>Design Support Included</h3>
+          <p>No artwork? No problem. Share your requirement and our design team can create concepts for you.</p>
+        </div>
+
+        <div class="feature">
+          <img src="{{ 'feat-3.png' | asset_url }}" alt="">
+          <h3>Better Pricing at Scale</h3>
+          <p>As your order quantity increases, your bulk pricing gets better.</p>
+        </div>
+
+        <div class="feature">
+          <img src="{{ 'feat-4.png' | asset_url }}" alt="">
+          <h3>Rush Orders Available</h3>
+          <p>
+            Have a tournament, event or deadline coming up? Tell us your date upfront and we'll explore rush-order
+            options.
+          </p>
+        </div>
+
+        <div class="feature">
+          <img src="{{ 'feat-5.png' | asset_url }}" alt="">
+          <h3>In-House Production</h3>
+          <p>In-house manufacturing helps us maintain consistency and deliver faster turnaround.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="process yoode-chennai-container">
+      <div class="process-head">
+        <span class="pill pill-1">Design</span>
+        <span class="pill pill-2">Approve</span>
+        <span class="pill pill-3">Produce</span>
+        <span class="pill pill-4">Deliver</span>
+
+        <figure class="float float-1"><img src="{{ 'float-1.webp' | asset_url }}" alt=""></figure>
+        <figure class="float float-2"><img src="{{ 'float-2.webp' | asset_url }}" alt=""></figure>
+
+        <h2>
+          Share Your Requirement.<br>
+          We'll Handle Everything<br>
+          From Design to Delivery
+        </h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <b>01</b>
+          <h3>Tell Us the Basics</h3>
+          <p>
+            Share your quantity, timeline and any design ideas through the form, WhatsApp or a call.<br>
+            No artwork required.
+          </p>
+        </div>
+
+        <div class="step">
+          <b>02</b>
+          <h3>We Design It</h3>
+          <p>
+            Our design team creates concepts based on your requirement, even if you're starting with a blank brief.<br>
+            You'll receive the designs for review.
+          </p>
+        </div>
+
+        <div class="step">
+          <b>03</b>
+          <h3>You Approve</h3>
+          <p>
+            Review the design and give us your sign-off. Need a change? We can make same-day revisions when required.
+          </p>
+        </div>
+
+        <div class="step">
+          <b>04</b>
+          <h3>We Produce</h3>
+          <p>Once approved, your order moves into production with batch-wise quality checks to maintain consistency.</p>
+        </div>
+
+        <div class="step">
+          <b>05</b>
+          <h3>Delivered</h3>
+          <p>
+            Your order is packed and dispatched. Where required, we can sort orders by team or department so they're
+            ready to distribute.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================================================== testimonial -->
+  <section class="testi">
+    <img class="testi-bg" src="{{ 'testi-bg.webp' | asset_url }}" alt="Yoode retail experience centre">
+
+    {%- comment -%}
+      Slides come from Testimonial blocks in the theme editor. A section that
+      has none (an instance placed before the blocks existed) falls back to the
+      three below, so the slider always has something to show.
+    {%- endcomment -%}
+    {%- assign yd_slides = section.blocks.size -%}
+    {%- if yd_slides == 0 -%}
+      {%- assign yd_slides = 3 -%}
+    {%- endif -%}
+
+    <div class="testi-card" style="background-image:url('{{ 'testi-card.webp' | asset_url }}')">
+      <p class="eyebrow">Testimonials</p>
+      <h2>What Clients Say</h2>
+
+      <div class="testi-slides">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            <figure
+              class="testi-slide{% if forloop.first %} is-active{% endif %}"
+              data-yd-slide
+              {% unless forloop.first %}
+                aria-hidden="true"
+              {% endunless %}
+              {{ block.shopify_attributes }}
+            >
+              <blockquote>{{ block.settings.quote | escape | newline_to_br }}</blockquote>
+              <figcaption class="testi-who">
+                {%- if block.settings.avatar != blank -%}
+                  {{
+                    block.settings.avatar
+                    | image_url: width: 128
+                    | image_tag: alt: block.settings.name, width: 64, height: 64
+                  }}
+                {%- endif -%}
+                <div>
+                  <b>{{ block.settings.name }}</b>
+                  <span>{{ block.settings.role }}</span>
+                </div>
+              </figcaption>
+            </figure>
+          {%- endfor -%}
+        {%- else -%}
+          <figure class="testi-slide is-active" data-yd-slide>
+            <blockquote>
+              “We had no designs ready, no brief, nothing prepared. We just knew we needed jerseys for four teams. They
+              took it from there completely... everything arrived on time.”
+            </blockquote>
+            <figcaption class="testi-who">
+              <img src="{{ 'avatar.webp' | asset_url }}" alt="">
+              <div><b>Suresh Kumar</b><span>Team Representative, BitsNPixs Technologies</span></div>
+            </figcaption>
+          </figure>
+
+          <figure class="testi-slide" data-yd-slide aria-hidden="true">
+            <blockquote>
+              “We needed jerseys for our inter-college tournament with barely two weeks to go. They confirmed the
+              timeline upfront and every set was sorted team-wise when it arrived.”
+            </blockquote>
+            <figcaption class="testi-who">
+              <div><b>Sports Secretary</b><span>College Team, Chennai</span></div>
+            </figcaption>
+          </figure>
+
+          <figure class="testi-slide" data-yd-slide aria-hidden="true">
+            <blockquote>
+              “We order onboarding kits every quarter and the quality has stayed consistent across every batch. That
+              consistency is the reason we keep going back.”
+            </blockquote>
+            <figcaption class="testi-who">
+              <div><b>HR Team</b><span>Corporate Client, Chennai</span></div>
+            </figcaption>
+          </figure>
+        {%- endif -%}
+      </div>
+
+      {%- if yd_slides > 1 -%}
+        <div class="dots">
+          {%- for i in (1..yd_slides) -%}
+            <button
+              class="dot{% if forloop.first %} is-active{% endif %}"
+              type="button"
+              data-yd-dot
+              aria-label="Show testimonial {{ forloop.index }}"
+              {% if forloop.first %}
+                aria-current="true"
+              {% endif %}
+            ></button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  <!-- ============================================================== products -->
+  <section class="products">
+    <div class="yoode-chennai-container">
+      <p class="eyebrow">What Can We Make For You?</p>
+      <h2>
+        Custom Apparel &amp; Merchandise<br>
+        for Every Occasion
+      </h2>
+      <p class="products-intro">
+        Choose from a range of products for teams, businesses, schools, colleges and events. Need something different?
+        Tell us what you're looking for.
+      </p>
+    </div>
+
+    <div class="yoode-chennai-container">
+      <div class="prod-grid">
+        <article class="prod">
+          {%- assign yd_link = section.settings.prod_1_link -%}
+          {%- if yd_link != blank -%}<a class="prod-link" href="{{ yd_link }}">{%- endif -%}
+          <figure><img src="{{ 'prod-1.webp' | asset_url }}" alt="Men's polo"></figure>
+          <h3>Men's Polo</h3>
+          <p>From ₹430</p>
+          {%- if yd_link != blank -%}</a>{%- endif -%}
+        </article>
+
+        <article class="prod">
+          {%- assign yd_link = section.settings.prod_2_link -%}
+          {%- if yd_link != blank -%}<a class="prod-link" href="{{ yd_link }}">{%- endif -%}
+          <figure><img src="{{ 'prod-2.webp' | asset_url }}" alt="Women's polo"></figure>
+          <h3>Women's Polo</h3>
+          <p>From ₹430</p>
+          {%- if yd_link != blank -%}</a>{%- endif -%}
+        </article>
+
+        <article class="prod">
+          {%- assign yd_link = section.settings.prod_3_link -%}
+          {%- if yd_link != blank -%}<a class="prod-link" href="{{ yd_link }}">{%- endif -%}
+          <figure><img src="{{ 'prod-3.webp' | asset_url }}" alt="Custom jerseys"></figure>
+          <h3>Custom Jerseys</h3>
+          <p>Built for teams and tournaments</p>
+          {%- if yd_link != blank -%}</a>{%- endif -%}
+        </article>
+
+        <article class="prod">
+          {%- assign yd_link = section.settings.prod_4_link -%}
+          {%- if yd_link != blank -%}<a class="prod-link" href="{{ yd_link }}">{%- endif -%}
+          <figure><img src="{{ 'prod-4.webp' | asset_url }}" alt="Hoodies"></figure>
+          <h3>Hoodies</h3>
+          <p>Custom apparel for teams and organisations</p>
+          {%- if yd_link != blank -%}</a>{%- endif -%}
+        </article>
+
+        <article class="prod">
+          {%- assign yd_link = section.settings.prod_5_link -%}
+          {%- if yd_link != blank -%}<a class="prod-link" href="{{ yd_link }}">{%- endif -%}
+          <figure><img src="{{ 'prod-5.webp' | asset_url }}" alt="Corporate gift boxes"></figure>
+          <h3>Corporate Gift Boxes</h3>
+          <p>Branded gifting for your team and clients</p>
+          {%- if yd_link != blank -%}</a>{%- endif -%}
+        </article>
+      </div>
+    </div>
+
+    {%- assign yd_more = section.settings.products_link | default: routes.all_products_collection_url -%}
+    <a class="btn yoode-primary-btn" href="{{ yd_more }}">Explore More Products</a>
+  </section>
+
+  <!-- =================================================================== faq -->
+  <section class="faq">
+    <div class="faq-inner yoode-chennai-container">
+      <div class="faq-img"><img src="{{ 'faq.webp' | asset_url }}" alt="Screen printing in progress"></div>
+
+      <div class="faq-body">
+        <p class="eyebrow">faq</p>
+        <h2>
+          Everything You<br>
+          Need to Know<br>
+          Before You Order
+        </h2>
+
+        <details class="acc" open>
+          <summary>
+            What is the minimum order quantity?
+            <svg
+              class="ar"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              aria-hidden="true"
+            >
+              <path d="M4 12h15M13 6l6 6-6 6"/>
+            </svg>
+          </summary>
+          <p>
+            There's no high minimum. We handle everything from smaller team orders to 5,000+ pieces. Bulk pricing
+            increases with quantity.
+          </p>
+        </details>
+
+        <details class="acc">
+          <summary>
+            Do I need to provide the artwork or design?
+            <svg
+              class="ar"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              aria-hidden="true"
+            >
+              <path d="M4 12h15M13 6l6 6-6 6"/>
+            </svg>
+          </summary>
+          <p>No. Share your requirement and our in-house design team will create concepts for you to review.</p>
+        </details>
+
+        <details class="acc">
+          <summary>
+            How fast can you deliver in Chennai?
+            <svg
+              class="ar"
+              width="20"
+              height="20"
+              viewBox="0 0 24 0 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              aria-hidden="true"
+            >
+              <path d="M4 12h15M13 6l6 6-6 6"/>
+            </svg>
+          </summary>
+          <p>
+            Timelines depend on quantity and decoration method. Tell us your date upfront and we'll confirm what's
+            possible, including rush-order options.
+          </p>
+        </details>
+
+        <details class="acc">
+          <summary>
+            Can I see a sample before placing a bulk order?
+            <svg
+              class="ar"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              aria-hidden="true"
+            >
+              <path d="M4 12h15M13 6l6 6-6 6"/>
+            </svg>
+          </summary>
+          <p>Yes. Samples can be arranged before your bulk order moves into production.</p>
+        </details>
+
+        <details class="acc">
+          <summary>
+            What payment options are available<br>
+            for institutions?
+            <svg
+              class="ar"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              aria-hidden="true"
+            >
+              <path d="M4 12h15M13 6l6 6-6 6"/>
+            </svg>
+          </summary>
+          <p>
+            We support standard institutional purchase processes, including purchase orders and GST invoicing. Talk to
+            our team for the details.
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= strip -->
+  <div class="strip">
+    <img src="{{ 'strip-1.webp' | asset_url }}" alt="">
+    <img src="{{ 'strip-2.webp' | asset_url }}" alt="">
+    <img src="{{ 'strip-3.webp' | asset_url }}" alt="">
+    <img src="{{ 'strip-4.webp' | asset_url }}" alt="">
+    <img src="{{ 'strip-5.webp' | asset_url }}" alt="">
+
+    <a class="ig" href="#" aria-label="Yoode on Instagram">
+      <svg
+        width="34"
+        height="34"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#101114"
+        stroke-width="1.7"
+        aria-hidden="true"
+      >
+        <rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.4"/>
+        <circle cx="12" cy="12" r="4.4"/>
+        <circle cx="17.6" cy="6.4" r="1.15" fill="#101114" stroke="none"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- ================================================================ footer -->
+  <footer class="site-footer">
+    <div class="yoode-chennai-container">
+      <h2>
+        Planning a Tournament, Team Kit<br>
+        or Company Event?
+      </h2>
+      <p class="sub">
+        Tell us what you need, how many pieces you need and when you need them.<br>
+        <b>We'll take it from there.</b>
+      </p>
+    </div>
+
+    <div class="footer-cta">
+      <a class="btn yoode-primary-btn" href="#quote">Get a Bulk Quote</a>
+      <a class="btn btn--ghost on-blue yoode-primary-btn" href="{{ yd_wa_link }}" {{ yd_wa_attrs }}>
+        <img src="{{ 'icon-whatsapp.png' | asset_url }}" alt="">
+        <span>Chat on Whatsapp</span>
+      </a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var SECTION_ID = {{ section.id | json }};
+    var DRAFT_KEY = 'yd-contact-draft';
+
+    var TXT = {
+      okTitle: 'Request sent',
+      ok: {{ section.settings.success_message | json }} ||
+        'Thanks! We have your details and our team will get back to you shortly.',
+      failTitle: 'Could not send',
+      fail: {{ section.settings.error_message | json }} ||
+        'Something went wrong. Please try again, or reach us on WhatsApp.',
+      invalidTitle: 'Check your details'
+    };
+
+    var ICON = {
+      ok:
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+      err:
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.2"/><path d="M12 16.4h.01"/></svg>'
+    };
+
+    var CLOSE_ICON =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+    /* --------------------------------------------------------------- toasts */
+    function host() {
+      var el = document.getElementById('yd-toasts');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'yd-toasts';
+        el.setAttribute('role', 'status');
+        el.setAttribute('aria-live', 'polite');
+        document.body.appendChild(el);
+      }
+      return el;
+    }
+
+    function toast(kind, title, message) {
+      var el = document.createElement('div');
+      el.className = 'yd-toast yd-toast--' + kind;
+      el.innerHTML =
+        '<i>' + ICON[kind] + '</i>' +
+        '<div><b></b><p></p></div>' +
+        '<button type="button" aria-label="Dismiss">' + CLOSE_ICON + '</button>';
+      el.querySelector('b').textContent = title;
+      el.querySelector('p').textContent = message;
+      host().appendChild(el);
+
+      requestAnimationFrame(function () { el.classList.add('is-in'); });
+
+      var timer = setTimeout(close, 5200);
+      function close() {
+        clearTimeout(timer);
+        el.classList.add('is-out');
+        setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 320);
+      }
+      el.querySelector('button').addEventListener('click', close);
+    }
+
+    /* ---------------------------------------------------------- url hygiene */
+    /* Shopify sends a rejected submission back with every field in the query
+       string, so the failure is re-evaluated on each reload and the same
+       error is rendered again. Once the result has been shown, drop those
+       parameters: a refresh then loads a clean page with no verdict at all. */
+    function cleanUrl() {
+      try {
+        if (!window.history || !history.replaceState) return;
+        var query = window.location.search;
+        if (query.length < 2) return;
+
+        var kept = query.slice(1).split('&').filter(function (pair) {
+          var key = pair.split('=')[0] || '';
+          try { key = decodeURIComponent(key); } catch (e) {}
+          return !(
+            key === 'contact_posted' ||
+            key === 'form_type' ||
+            key === 'utf8' ||
+            key === 'g-recaptcha-response' ||
+            key.indexOf('contact[') === 0
+          );
+        });
+
+        if (kept.length === query.slice(1).split('&').length) return;
+
+        history.replaceState(
+          null,
+          '',
+          window.location.pathname + (kept.length ? '?' + kept.join('&') : '') + window.location.hash
+        );
+      } catch (e) {}
+    }
+
+    /* ------------------------------------------------------------------ init */
+    /* The banner lead form posts to Shopify's contact form. Each yd-form on
+       the page is validated on its own;
+       the result of a post is shown once, for the form that was submitted. */
+    var LAST_KEY = 'yd-contact-last';
+
+    function draftKey(form) { return DRAFT_KEY + ':' + form.id; }
+
+    function saveDraft(form) {
+      try {
+        var draft = {};
+        Array.prototype.forEach.call(form.querySelectorAll('input, textarea'), function (el) {
+          if (!el.name || el.type === 'hidden') return;
+          if (el.type === 'radio') { if (el.checked) draft[el.name] = el.value; }
+          else draft[el.name] = el.value;
+        });
+        sessionStorage.setItem(draftKey(form), JSON.stringify(draft));
+        sessionStorage.setItem(LAST_KEY, form.id);
+      } catch (e) {}
+    }
+
+    function clearDraft(form) {
+      try {
+        sessionStorage.removeItem(draftKey(form));
+        sessionStorage.removeItem(LAST_KEY);
+      } catch (e) {}
+    }
+
+    function restoreDraft(form) {
+      try {
+        var raw = sessionStorage.getItem(draftKey(form));
+        if (!raw) return;
+        var draft = JSON.parse(raw);
+        Array.prototype.forEach.call(form.querySelectorAll('input, textarea'), function (el) {
+          if (!el.name || el.type === 'hidden' || !(el.name in draft)) return;
+          if (el.type === 'radio') el.checked = el.value === draft[el.name];
+          else if (el.getAttribute('data-yd-fallback-email') && draft[el.name] === el.getAttribute('data-yd-fallback-email')) el.value = '';
+          else el.value = draft[el.name];
+        });
+      } catch (e) {}
+    }
+
+    function bind(form) {
+      if (form.getAttribute('data-yd-bound') === '1') return;
+      form.setAttribute('data-yd-bound', '1');
+
+      /* --------------------------------------------------------- validation */
+      var EMAIL = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+      var fields = Array.prototype.slice.call(form.querySelectorAll('[required], [data-yd-validate], [data-yd-group]'));
+      var submitBtn = form.querySelector('[type="submit"]');
+      var attempted = false;
+
+      function wrap(el) { return el.closest('.field'); }
+
+      function setMsg(el, msg) {
+        var box = wrap(el);
+        if (!box) return;
+        var slot = box.querySelector('.field-msg');
+        if (slot) slot.textContent = msg || '';
+        box.classList.toggle('is-invalid', !!msg);
+        el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      }
+
+      function isGroup(el) { return el.hasAttribute('data-yd-group'); }
+
+      function check(el) {
+        /* Chip group (radio buttons): one option must be picked. */
+        if (isGroup(el)) {
+          var picked = el.querySelector('input[type="radio"]:checked');
+          setMsg(el, picked ? '' : el.getAttribute('data-msg') || 'Please select an option.');
+          return !!picked;
+        }
+
+        var value = (el.value || '').trim();
+        var msg = '';
+        if (!value) {
+          if (el.required) msg = el.getAttribute('data-msg') || 'This field is required.';
+        } else if (el.type === 'email' && !EMAIL.test(value)) {
+          msg = 'Enter a valid email address.';
+        } else if (el.type === 'tel' && value.replace(/[^0-9]/g, '').length < 7) {
+          msg = 'Enter a valid phone number.';
+        }
+        setMsg(el, msg);
+        return !msg;
+      }
+
+      function invalidFields() {
+        var bad = [];
+        fields.forEach(function (el) { if (!check(el)) bad.push(el); });
+        return bad;
+      }
+
+      function reportInvalid(bad) {
+        toast(
+          'err',
+          TXT.invalidTitle,
+          bad.length === 1
+            ? 'One field still needs your attention.'
+            : bad.length + ' fields still need your attention.'
+        );
+        var focusEl = isGroup(bad[0]) ? bad[0].querySelector('input[type="radio"]') : bad[0];
+        if (focusEl) focusEl.focus({ preventScroll: true });
+        bad[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+
+      fields.forEach(function (el) {
+        if (isGroup(el)) {
+          /* Picking an option clears the group's error straight away. */
+          el.addEventListener('change', function () {
+            if (el.classList.contains('is-invalid')) check(el);
+          });
+          return;
+        }
+        el.addEventListener('blur', function () {
+          if (attempted || (el.value || '').trim()) check(el);
+        });
+        el.addEventListener('input', function () {
+          var box = wrap(el);
+          if (box && box.classList.contains('is-invalid')) check(el);
+        });
+      });
+
+      /* ------------------------------------------------------------ submit */
+      /* The submission itself is a normal form post. Shopify's spam protection
+         adds its token to that post and only then does Shopify deliver the
+         email - a background fetch has no token, so it gets answered with the
+         challenge page and nothing is ever sent. So this script only gates the
+         submission: it blocks it while a field is empty, and otherwise steps
+         aside and lets the browser (and Shopify's own script) do the post. */
+      form.noValidate = true;
+
+      var allowSubmit = false;
+      var nativeSubmit = HTMLFormElement.prototype.submit;
+
+      /* Blocks the delayed form.submit() that Shopify's spam-protection script
+         fires a few seconds after a click - that call raises no submit event,
+         so preventDefault cannot reach it. */
+      try {
+        form.submit = function () { if (allowSubmit) nativeSubmit.call(form); };
+      } catch (e) {}
+
+      function busy(state) {
+        if (!submitBtn) return;
+        submitBtn.disabled = state;
+        if (state) submitBtn.setAttribute('aria-busy', 'true');
+        else submitBtn.removeAttribute('aria-busy');
+      }
+
+      /* Stop an invalid click before it can become a submit event, so no other
+         listener on the form ever starts a submission of its own. */
+      if (submitBtn) {
+        submitBtn.addEventListener('click', function (event) {
+          if (allowSubmit) return;
+          attempted = true;
+          var bad = invalidFields();
+          if (bad.length) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            reportInvalid(bad);
+          }
+        }, true);
+      }
+
+      function onSubmit(event) {
+        if (allowSubmit) return;
+
+        attempted = true;
+
+        var bad = invalidFields();
+        if (bad.length) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          reportInvalid(bad);
+          return;
+        }
+
+        /* Optional email left empty: Shopify still needs one to deliver the
+           enquiry, so fall back to the store's own address. */
+        var email = form.querySelector('[data-yd-fallback-email]');
+        if (email && !(email.value || '').trim()) {
+          email.value = email.getAttribute('data-yd-fallback-email') || '';
+        }
+
+        /* Valid: let the post through untouched. */
+        allowSubmit = true;
+        saveDraft(form);
+        setTimeout(function () { busy(true); }, 0);
+      }
+
+      /* Capture on document runs before any listener bound to the form. */
+      document.addEventListener('submit', function (event) {
+        if (event.target === form) onSubmit(event);
+      }, true);
+      form.addEventListener('submit', onSubmit, true);
+    }
+
+    function init() {
+      var root = document.getElementById('shopify-section-' + SECTION_ID) || document;
+      var forms = Array.prototype.slice.call(root.querySelectorAll('form.yd-form'));
+      if (!forms.length) return;
+      forms.forEach(bind);
+
+      if (root.getAttribute('data-yd-result') === '1') return;
+      root.setAttribute('data-yd-result', '1');
+
+      /* ------------------------------------------- result of that page post */
+      /* Shopify renders the result flag in every contact form on the page, so
+         show it only for the form this visitor actually submitted. */
+      var last = null;
+      try { last = sessionStorage.getItem(LAST_KEY); } catch (e) {}
+      var target = (last && document.getElementById(last)) || forms[0];
+      if (forms.indexOf(target) === -1) target = forms[0];
+
+      var flag = target.querySelector('.yd-flag');
+      if (flag && flag.getAttribute('data-status') === 'success') {
+        clearDraft(target);
+        toast('ok', TXT.okTitle, TXT.ok);
+      } else if (flag) {
+        restoreDraft(target);
+        clearDraft(target);
+        toast('err', TXT.failTitle, (flag.textContent || '').trim() || TXT.fail);
+        target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } else {
+        forms.forEach(clearDraft);
+      }
+
+      cleanUrl();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+
+    /* Theme editor swaps the section out and back in; re-bind to the new form. */
+    document.addEventListener('shopify:section:load', init);
+  })();
+
+  /* ========================================================== testimonials */
+  (function () {
+    var SECTION_ID = {{ section.id | json }};
+    var DELAY = 10000;
+
+    function init() {
+      var root = document.getElementById('shopify-section-' + SECTION_ID) || document;
+      var card = root.querySelector('.testi-card');
+      if (!card || card.getAttribute('data-yd-slider') === '1') return;
+
+      var slides = Array.prototype.slice.call(card.querySelectorAll('[data-yd-slide]'));
+      var dots = Array.prototype.slice.call(card.querySelectorAll('[data-yd-dot]'));
+      if (slides.length < 2) return;
+      card.setAttribute('data-yd-slider', '1');
+
+      var index = 0;
+      var timer = null;
+      var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function show(next) {
+        index = (next + slides.length) % slides.length;
+
+        slides.forEach(function (el, i) {
+          var on = i === index;
+          el.classList.toggle('is-active', on);
+          el.setAttribute('aria-hidden', on ? 'false' : 'true');
+        });
+
+        dots.forEach(function (el, i) {
+          var on = i === index;
+          el.classList.toggle('is-active', on);
+          if (on) el.setAttribute('aria-current', 'true');
+          else el.removeAttribute('aria-current');
+        });
+      }
+
+      function stop() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      function start() {
+        stop();
+        /* No auto-advance for visitors who asked for less motion, and none
+           while the tab is in the background. */
+        if (still || document.hidden) return;
+        timer = setInterval(function () { show(index + 1); }, DELAY);
+      }
+
+      dots.forEach(function (el, i) {
+        el.addEventListener('click', function () {
+          show(i);
+          start(); /* a click restarts the countdown from now */
+        });
+      });
+
+      card.addEventListener('mouseenter', stop);
+      card.addEventListener('mouseleave', start);
+      card.addEventListener('focusin', stop);
+      card.addEventListener('focusout', start);
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) stop();
+        else start();
+      });
+
+      show(0);
+      start();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+
+    document.addEventListener('shopify:section:load', init);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "YD Yoode Chennai",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contact form"
+    },
+    {
+      "type": "text",
+      "id": "source_label",
+      "label": "Source label (hidden field)",
+      "info": "Sent with every enquiry so you can tell where the lead came from.",
+      "default": "Yoode Chennai Landing Page"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success notification message",
+      "default": "Thanks! We have your details and our team will get back to you shortly."
+    },
+    {
+      "type": "text",
+      "id": "error_message",
+      "label": "Failure notification message",
+      "default": "Something went wrong. Please try again, or reach us on WhatsApp."
+    },
+    {
+      "type": "header",
+      "content": "WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "WhatsApp number",
+      "info": "With country code, digits only - e.g. 919876543210. Leave empty to scroll to the contact form instead."
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_message",
+      "label": "Pre-filled WhatsApp message",
+      "info": "Text that appears in the chat box when someone taps the WhatsApp button.",
+      "default": "Hi Yoode, I’d like a quote for a bulk custom order. Please share the options and pricing."
+    },
+    {
+      "type": "header",
+      "content": "Category cards"
+    },
+    {
+      "type": "paragraph",
+      "content": "Where each Explore link goes - a collection, a page or any link. Empty scrolls to the contact form."
+    },
+    {
+      "type": "url",
+      "id": "cat_1_link",
+      "label": "Corporate & HR"
+    },
+    {
+      "type": "url",
+      "id": "cat_2_link",
+      "label": "Sports Teams & Schools"
+    },
+    {
+      "type": "url",
+      "id": "cat_3_link",
+      "label": "Events & Institutions"
+    },
+    {
+      "type": "header",
+      "content": "Product cards"
+    },
+    {
+      "type": "paragraph",
+      "content": "Pick where each card goes - a collection, a page, a product or any link. Leave one empty and that card stays unlinked."
+    },
+    {
+      "type": "url",
+      "id": "prod_1_link",
+      "label": "Men's Polo"
+    },
+    {
+      "type": "url",
+      "id": "prod_2_link",
+      "label": "Women's Polo"
+    },
+    {
+      "type": "url",
+      "id": "prod_3_link",
+      "label": "Custom Jerseys"
+    },
+    {
+      "type": "url",
+      "id": "prod_4_link",
+      "label": "Hoodies"
+    },
+    {
+      "type": "url",
+      "id": "prod_5_link",
+      "label": "Corporate Gift Boxes"
+    },
+    {
+      "type": "url",
+      "id": "products_link",
+      "label": "Explore More Products button",
+      "info": "Falls back to all products when empty."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "Share what the client said about working with you."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Client name"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Role and organisation",
+          "default": "Role, Company"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Photo",
+          "info": "Optional. Square images look best."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Yoode Chennai",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "We had no designs ready, no brief, nothing prepared. We just knew we needed jerseys for four teams. They took it from there completely... everything arrived on time.",
+            "name": "Suresh Kumar",
+            "role": "Team Representative, BitsNPixs Technologies"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "We needed jerseys for our inter-college tournament with barely two weeks to go. They confirmed the timeline upfront and every set was sorted team-wise when it arrived.",
+            "name": "Sports Secretary",
+            "role": "College Team, Chennai"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "We order onboarding kits every quarter and the quality has stayed consistent across every batch. That consistency is the reason we keep going back.",
+            "name": "HR Team",
+            "role": "Corporate Client, Chennai"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

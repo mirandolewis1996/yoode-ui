@@ -1,0 +1,738 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Yoode Price Calculator — Scoped Stylesheet
+   All selectors are namespaced under .yoode-calc so nothing bleeds into
+   or is overridden by the host page (e.g. Shopify themes).
+   @keyframes are prefixed with "yc-" for the same reason.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Poppins:wght@600;700;800&display=swap');
+
+/* ─── CSS VARIABLES + BASE RESET (light theme) ─── */
+.yoode-calc {
+    --bg: #f5f6fb;
+    --surface: #ffffff;
+    --surface2: #f0f1f9;
+    --surface3: #e8eaf5;
+    --border: #dde0f0;
+    --border2: #c8cce8;
+    --text: #12141f;
+    --text2: #3a3d55;
+    --muted: #7b7fa0;
+    --yblue: #2937cc;
+    --yblue-lt: #eceffe;
+    --yblue-mid: rgba(41, 55, 204, 0.12);
+    --yorange: #f65e21;
+    --yor-lt: #fff1ec;
+    --yor-mid: rgba(246, 94, 33, 0.12);
+    --shadow-sm: 0 1px 4px rgba(41, 55, 204, 0.06), 0 2px 16px rgba(41, 55, 204, 0.04);
+    --shadow-md: 0 4px 24px rgba(41, 55, 204, 0.10), 0 1px 4px rgba(41, 55, 204, 0.06);
+    --shadow-lg: 0 8px 40px rgba(41, 55, 204, 0.13);
+    --ring: rgba(41, 55, 204, 0.18);
+    --ring-or: rgba(246, 94, 33, 0.20);
+    --radius: 16px;
+    --tog-bg: #e4e7f8;
+
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+    transition: background .4s ease, color .4s ease;
+}
+
+/* ─── DARK THEME ─── */
+.yoode-calc.dark {
+    --bg: #0d0f1e;
+    --surface: #141829;
+    --surface2: #1d2240;
+    --surface3: #262c52;
+    --border: #2f3568;
+    --border2: #424d8c;
+    --text: #eef0ff;
+    --text2: #bcc2ec;
+    --muted: #828abf;
+    --yblue: #7080ff;
+    --yblue-lt: rgba(112, 128, 255, 0.14);
+    --yblue-mid: rgba(112, 128, 255, 0.26);
+    --yorange: #ff8c55;
+    --yor-lt: rgba(255, 140, 85, 0.13);
+    --yor-mid: rgba(255, 140, 85, 0.24);
+    --shadow-sm: 0 1px 6px rgba(0, 0, 0, 0.55), 0 2px 12px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 4px 28px rgba(0, 0, 0, 0.6), 0 1px 6px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 44px rgba(0, 0, 0, 0.7);
+    --ring: rgba(112, 128, 255, 0.32);
+    --ring-or: rgba(255, 140, 85, 0.3);
+    --tog-bg: #1d2240;
+}
+
+/* ─── SCOPED BOX-SIZING RESET ─── */
+.yoode-calc *,
+.yoode-calc *::before,
+.yoode-calc *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ─── SCOPED SCROLLBAR ─── */
+.yoode-calc ::-webkit-scrollbar { width: 6px; }
+.yoode-calc ::-webkit-scrollbar-track { background: var(--bg); }
+.yoode-calc ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.yoode-calc .addon-rows-wrap::-webkit-scrollbar { height: 4px; }
+.yoode-calc .addon-rows-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ─── KEYFRAMES (prefixed yc- to avoid host-page conflicts) ─── */
+@keyframes yc-fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes yc-pulseDot {
+    0%, 100% { transform: scale(1);   opacity: 1; }
+    50%       { transform: scale(1.7); opacity: .5; }
+}
+@keyframes yc-slideRight {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
+@keyframes yc-popIn {
+    0%   { opacity: 0; transform: scale(.88); }
+    70%  { transform: scale(1.04); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* ─── PAGE HEADING ─── */
+
+.yoode-calc .page-heading {
+    margin-bottom: 28px;
+}
+.yoode-calc .page-heading-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.15;
+    letter-spacing: -.5px;
+    transition: color .4s;
+}
+.yoode-calc .page-heading-title span {
+    color: var(--yblue);
+}
+.yoode-calc .page-heading-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 5px;
+    font-weight: 500;
+    letter-spacing: .3px;
+}
+
+/* ─── HEADER ─── */
+.yoode-calc .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: var(--shadow-sm);
+    transition: background .4s, border-color .4s, box-shadow .4s;
+}
+.yoode-calc .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--yblue) 0%, var(--yorange) 100%);
+}
+.yoode-calc .logo-wrap { display: flex; flex-direction: column; gap: 1px; }
+.yoode-calc .header-logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -.5px;
+    line-height: 1;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.yoode-calc .logo-img { height: 24px; width: auto; display: block; object-fit: contain; transition: filter .4s; }
+.yoode-calc.dark .logo-img { filter: brightness(0) invert(1); }
+.yoode-calc .logo-dot-anim {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--yorange);
+    margin-left: 3px;
+    vertical-align: middle;
+    animation: yc-pulseDot 2.2s ease-in-out infinite;
+}
+.yoode-calc .header-sub {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* ─── TYPE BADGE ─── */
+.yoode-calc .type-badge {
+    padding: 4px 14px;
+    border-radius: 20px;
+    background: var(--yblue-lt);
+    border: 1.5px solid var(--ring);
+    color: var(--yblue);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background .4s, color .4s, border-color .4s;
+}
+
+/* ─── THEME TOGGLE ─── */
+.yoode-calc .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 50px;
+    padding: 6px 14px 6px 7px;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color .25s, box-shadow .25s, background .4s, transform .15s;
+}
+.yoode-calc .theme-toggle:hover { border-color: var(--yblue); box-shadow: 0 0 0 3px var(--ring); }
+.yoode-calc .theme-toggle:active { transform: scale(.96); }
+.yoode-calc .tog-track {
+    width: 36px; height: 20px;
+    border-radius: 10px;
+    background: var(--tog-bg);
+    position: relative;
+    flex-shrink: 0;
+    transition: background .4s;
+}
+.yoode-calc.dark .tog-track { background: #262c52; }
+.yoode-calc .tog-thumb {
+    position: absolute;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), background .3s, box-shadow .3s;
+}
+.yoode-calc:not(.dark) .tog-thumb { transform: translateX(16px); background: var(--yorange); box-shadow: 0 0 8px var(--ring-or); }
+.yoode-calc.dark      .tog-thumb { transform: translateX(0);   background: #8c9aff;        box-shadow: 0 0 10px rgba(140,154,255,.6); }
+.yoode-calc .tog-icon  { font-size: 14px; line-height: 1; }
+.yoode-calc .tog-label { font-size: 14px; font-weight: 600; color: var(--muted); white-space: nowrap; transition: color .4s; }
+
+/* ─── STEP TRAIL ─── */
+.yoode-calc .step-trail { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.yoode-calc .step-node {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    border: 2px solid var(--border);
+    color: var(--muted);
+    background: var(--surface);
+    transition: all .3s;
+}
+.yoode-calc .step-node.active { border-color: var(--yblue); color: var(--yblue); box-shadow: 0 0 0 4px var(--ring); }
+.yoode-calc .step-node.done   { background: var(--yblue); border-color: var(--yblue); color: #fff; font-size: 0; box-shadow: none; }
+.yoode-calc .step-node.done::after { content: '✓'; font-size: 13px; }
+.yoode-calc .step-line {
+    width: 28px; height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    position: relative; overflow: hidden;
+}
+.yoode-calc .step-line.filled::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--yblue);
+    border-radius: 2px;
+    animation: yc-slideRight .4s ease forwards;
+    transform-origin: left;
+}
+
+/* ─── LAYOUT ─── */
+.yoode-calc .container { max-width: 1400px; margin: 0 auto; padding: 36px 48px 80px; }
+
+/* ─── CARDS ─── */
+.yoode-calc .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-sm);
+    animation: yc-fadeUp .35s ease both;
+    transition: box-shadow .3s, border-color .3s, background .4s;
+    position: relative;
+    overflow: hidden;
+}
+.yoode-calc .card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: transparent;
+    border-radius: 3px 0 0 3px;
+    transition: background .3s;
+}
+.yoode-calc .card.active::before { background: var(--yblue); }
+.yoode-calc .card:hover { box-shadow: var(--shadow-md); }
+.yoode-calc .card-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 18px; font-weight: 700;
+    color: var(--text);
+    margin-bottom: 22px;
+    transition: color .4s;
+}
+.yoode-calc .card-title .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--yblue); color: #fff;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    font-size: 14px; font-weight: 800;
+    flex-shrink: 0;
+}
+
+/* ─── SELECT ─── */
+.yoode-calc .custom-select {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 12px 40px 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none; cursor: pointer;
+    width: 100%; max-width: 560px;
+    transition: border-color .2s, box-shadow .2s, background .4s;
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237b7fa0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+}
+.yoode-calc .custom-select:focus { border-color: var(--yblue); box-shadow: 0 0 0 3px var(--ring); }
+
+/* ─── QUANTITY ─── */
+.yoode-calc .qty-wrap { display: flex; align-items: stretch; gap: 16px; flex-wrap: wrap; }
+.yoode-calc .qty-field { display: flex; flex-direction: column; gap: 8px; }
+.yoode-calc .qty-field-label { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.yoode-calc .qty-input-large {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 14px 20px;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 28px; font-weight: 800;
+    outline: none; width: 180px;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+    -moz-appearance: textfield; appearance: textfield;
+}
+.yoode-calc .qty-input-large::-webkit-outer-spin-button,
+.yoode-calc .qty-input-large::-webkit-inner-spin-button { -webkit-appearance: none; }
+.yoode-calc .qty-input-large:focus { border-color: var(--yblue); box-shadow: 0 0 0 3px var(--ring); background: var(--yblue-lt); }
+
+.yoode-calc .qty-info-box {
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    padding: 16px 22px;
+    background: var(--yblue-lt);
+    border: 1px solid var(--ring);
+    border-radius: 12px; min-width: 160px;
+    transition: background .4s;
+}
+.yoode-calc.dark .qty-info-box { background: var(--yblue-mid); }
+.yoode-calc .qty-info-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--yblue); }
+.yoode-calc .qty-info-val   { font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; color: var(--yblue); line-height: 1; }
+.yoode-calc .qty-info-sub   { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+.yoode-calc .mrp-box {
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    padding: 16px 22px;
+    background: var(--yor-lt);
+    border: 1px solid var(--ring-or);
+    border-radius: 12px; min-width: 140px;
+    transition: background .4s;
+}
+.yoode-calc.dark .mrp-box { background: var(--yor-mid); }
+.yoode-calc .mrp-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--yorange); }
+.yoode-calc .mrp-val   { font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; color: var(--yorange); line-height: 1; }
+
+/* ─── ADD-ONS ─── */
+.yoode-calc .addons-section { display: flex; flex-direction: column; gap: 14px; }
+.yoode-calc .addon-location {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    transition: background .4s, border-color .4s;
+    animation: yc-fadeUp .3s ease both;
+}
+.yoode-calc .addon-loc-header {
+    padding: 12px 20px;
+    font-size: 13px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--yblue);
+    display: flex; align-items: center; gap: 10px;
+    background: var(--yblue-lt);
+    border-bottom: 1px solid var(--ring);
+    transition: background .4s;
+}
+.yoode-calc.dark .addon-loc-header { background: var(--yblue-mid); }
+.yoode-calc .addon-loc-header::before { content: ''; width: 3px; height: 14px; background: var(--yblue); border-radius: 2px; flex-shrink: 0; }
+.yoode-calc .addon-rows-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.yoode-calc .addon-rows { padding: 4px 16px 16px; min-width: 820px; }
+.yoode-calc .addon-row {
+    display: grid;
+    grid-template-columns: 220px 90px 130px 100px 76px 76px 152px 115px;
+    gap: 8px; align-items: center;
+    padding: 12px 8px;
+    border-bottom: 1px solid var(--border);
+    transition: background .2s;
+    border-radius: 8px;
+}
+.yoode-calc .addon-row:last-child { border-bottom: none; }
+.yoode-calc .addon-row:hover     { background: var(--surface3); }
+.yoode-calc .addon-type { font-size: 14px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; min-width: 0; }
+.yoode-calc .addon-type span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.yoode-calc .col-label  { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text2); margin-bottom: 4px; white-space: nowrap; }
+.yoode-calc .field-group { display: flex; flex-direction: column; min-width: 0; }
+.yoode-calc .mobile-label { display: none; }
+.yoode-calc .info-val    { font-size: 14px; font-weight: 600; color: var(--text); padding: 4px 0; white-space: nowrap; }
+.yoode-calc .info-orange { font-size: 15px; font-weight: 700; color: var(--yorange); white-space: nowrap; }
+
+/* ─── ADDON TOGGLE SWITCH ─── */
+.yoode-calc .toggle-wrap { display: flex; align-items: center; cursor: pointer; flex-shrink: 0; }
+.yoode-calc .tog-sw {
+    width: 38px; height: 21px;
+    background: var(--border2);
+    border-radius: 10.5px;
+    position: relative;
+    transition: background .25s, box-shadow .25s;
+    flex-shrink: 0;
+}
+.yoode-calc .tog-sw.on { background: var(--yorange); box-shadow: 0 0 0 3px var(--ring-or); }
+.yoode-calc .tog-sw::after {
+    content: '';
+    position: absolute;
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    background: #fff;
+    top: 3px; left: 3px;
+    transition: transform .28s cubic-bezier(.34, 1.56, .64, 1);
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+.yoode-calc .tog-sw.on::after { transform: translateX(17px); }
+
+/* ─── NUMBER INPUT ─── */
+.yoode-calc .num-input {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: 9px;
+    padding: 7px 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 600;
+    outline: none; width: 100%;
+    -moz-appearance: textfield; appearance: textfield;
+    transition: border-color .2s, box-shadow .2s;
+    text-align: center;
+}
+.yoode-calc .num-input::-webkit-outer-spin-button,
+.yoode-calc .num-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.yoode-calc .num-input:focus    { border-color: var(--yblue); box-shadow: 0 0 0 3px var(--ring); }
+.yoode-calc .num-input:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ─── COMPLEXITY / FABRIC COLOUR SELECT ─── */
+.yoode-calc .complexity-select {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: 9px;
+    padding: 7px 20px 7px 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    outline: none; width: 100%; cursor: pointer;
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%237b7fa0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    transition: border-color .2s, box-shadow .2s;
+}
+.yoode-calc .complexity-select:focus    { border-color: var(--yblue); box-shadow: 0 0 0 3px var(--ring); }
+.yoode-calc .complexity-select:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ─── SUMMARY CARD ─── */
+.yoode-calc .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px 32px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-md);
+    position: relative; overflow: hidden;
+    animation: yc-fadeUp .35s ease both;
+}
+.yoode-calc .summary-card::after {
+    content: '';
+    position: absolute; top: -80px; right: -80px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--yblue-mid) 0%, transparent 70%);
+    pointer-events: none;
+}
+.yoode-calc .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+.yoode-calc .kpi-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    transition: background .4s;
+    position: relative; overflow: hidden;
+}
+.yoode-calc .kpi-box::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+.yoode-calc .kpi-box.blue-kpi::before   { background: var(--yblue); }
+.yoode-calc .kpi-box.orange-kpi::before { background: var(--yorange); }
+.yoode-calc .kpi-label { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.yoode-calc .kpi-val   { font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800; color: var(--text); line-height: 1; }
+.yoode-calc .kpi-val.blue   { color: var(--yblue); }
+.yoode-calc .kpi-val.orange { color: var(--yorange); }
+.yoode-calc .kpi-unit { font-family: 'DM Sans', sans-serif; font-size: 16px; color: var(--muted); font-weight: 400; }
+
+.yoode-calc .shipping-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 15px 18px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    transition: background .4s;
+    flex-wrap: wrap;
+}
+.yoode-calc .shipping-row label { font-size: 14px; font-weight: 500; color: var(--text2); flex: 1; min-width: 160px; }
+.yoode-calc .shipping-input {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    outline: none; width: 160px;
+    -moz-appearance: textfield; appearance: textfield;
+    transition: border-color .2s, box-shadow .2s;
+    text-align: right;
+}
+.yoode-calc .shipping-input::-webkit-outer-spin-button,
+.yoode-calc .shipping-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.yoode-calc .shipping-input:focus { border-color: var(--yblue); box-shadow: 0 0 0 3px var(--ring); }
+
+.yoode-calc .breakdown-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: auto; margin-bottom: 22px; }
+.yoode-calc .breakdown-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 400px; }
+.yoode-calc .breakdown-table th {
+    text-align: left; padding: 10px 16px;
+    font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); background: var(--surface2);
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+.yoode-calc .breakdown-table th:not(:first-child) { text-align: right; }
+.yoode-calc .breakdown-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2); font-weight: 500;
+    transition: color .4s;
+}
+.yoode-calc .breakdown-table td:not(:first-child) { text-align: right; white-space: nowrap; }
+.yoode-calc .breakdown-table tr:last-child td    { border-bottom: none; }
+.yoode-calc .breakdown-table tr:hover td         { background: var(--surface3); }
+.yoode-calc .breakdown-table .grand-row td {
+    font-weight: 700; font-size: 15px;
+    color: var(--yorange);
+    background: var(--yor-lt);
+    border-top: 2px solid var(--ring-or);
+}
+.yoode-calc.dark .breakdown-table .grand-row td { background: var(--yor-mid); }
+
+.yoode-calc .final-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.yoode-calc .final-hero {
+    border-radius: 16px; padding: 24px 26px;
+    position: relative; overflow: hidden;
+    animation: yc-popIn .4s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+.yoode-calc .final-hero.blue-hero   { background: var(--yblue);   box-shadow: 0 6px 28px var(--ring); }
+.yoode-calc .final-hero.orange-hero { background: var(--yorange); box-shadow: 0 6px 28px var(--ring-or); }
+.yoode-calc .final-hero::after {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+}
+.yoode-calc .final-hero .f-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,.65); margin-bottom: 8px; }
+.yoode-calc .final-hero .f-val   { font-family: 'Poppins', sans-serif; font-size: 40px; font-weight: 800; color: #fff; line-height: 1; }
+
+/* ─── EXPORT BUTTONS ─── */
+.yoode-calc .export-row { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+.yoode-calc .export-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 22px;
+    border: 1.5px solid var(--border2);
+    border-radius: 12px;
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: background .2s, border-color .2s, box-shadow .2s, transform .15s;
+}
+.yoode-calc .export-btn:hover  { background: var(--yblue-lt); border-color: var(--yblue); box-shadow: 0 0 0 3px var(--ring); transform: translateY(-1px); }
+.yoode-calc .export-btn:active { transform: translateY(0); }
+.yoode-calc .export-btn svg    { width: 18px; height: 18px; flex-shrink: 0; }
+.yoode-calc .export-btn.pdf-btn:hover { background: var(--yor-lt); border-color: var(--yorange); box-shadow: 0 0 0 3px var(--ring-or); }
+.yoode-calc .export-btn.wa-btn:hover  { background: #e8fdf0; border-color: #25D366; color: #128c4c; box-shadow: 0 0 0 3px rgba(37,211,102,0.22); }
+.yoode-calc .export-btn.wa-btn:hover svg { fill: #25D366; }
+
+/* ─── LOCATION PICKER ─── */
+.yoode-calc .loc-picker {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    margin-bottom: 16px; padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+.yoode-calc .loc-picker-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); margin-right: 4px; flex-shrink: 0; }
+.yoode-calc .loc-chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 20px;
+    border: 1.5px solid var(--border2);
+    background: var(--surface);
+    cursor: pointer;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--text2);
+    transition: border-color .15s, background .15s, color .15s;
+    user-select: none;
+}
+.yoode-calc .loc-chip:has(input:checked) { border-color: var(--yblue); background: var(--yblue-lt); color: var(--yblue); }
+.yoode-calc .loc-chip input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border: 1.5px solid var(--border2); border-radius: 4px;
+    background: var(--surface);
+    cursor: pointer; flex-shrink: 0;
+    transition: background .15s, border-color .15s;
+    position: relative;
+}
+.yoode-calc .loc-chip input[type="checkbox"]:checked { background: var(--yblue); border-color: var(--yblue); }
+.yoode-calc .loc-chip input[type="checkbox"]:checked::after {
+    content: ''; position: absolute;
+    top: 1px; left: 3.5px;
+    width: 4px; height: 7px;
+    border: 2px solid #fff; border-top: none; border-left: none;
+    transform: rotate(45deg);
+}
+.yoode-calc .loc-empty-hint {
+    text-align: center; padding: 28px;
+    color: var(--muted); font-size: 13px; font-weight: 500;
+    background: var(--surface2);
+    border: 1.5px dashed var(--border2);
+    border-radius: 12px;
+}
+
+/* ─── ANIMATION DELAYS ─── */
+.yoode-calc .card:nth-child(1) { animation-delay: .05s; }
+.yoode-calc .card:nth-child(2) { animation-delay: .10s; }
+.yoode-calc .card:nth-child(3) { animation-delay: .15s; }
+.yoode-calc .card:nth-child(4) { animation-delay: .20s; }
+
+.yoode-calc .addon-location:nth-child(1) { animation-delay: .05s; }
+.yoode-calc .addon-location:nth-child(2) { animation-delay: .10s; }
+.yoode-calc .addon-location:nth-child(3) { animation-delay: .15s; }
+.yoode-calc .addon-location:nth-child(4) { animation-delay: .20s; }
+
+/* ─── RESPONSIVE ─── */
+@media (min-width: 1200px) {
+    .yoode-calc .container { padding: 60px 60px 80px; }
+    .yoode-calc .addon-row { grid-template-columns: 240px 100px 140px 110px 82px 82px 162px 125px; }
+}
+@media (max-width: 1024px) {
+    .yoode-calc .container { padding: 28px 28px 70px; }
+    .yoode-calc .header    { padding: 0 24px; }
+}
+@media (max-width: 768px) {
+    .yoode-calc .header { padding: 0 16px; height: auto; min-height: 64px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; gap: 10px; }
+    .yoode-calc .step-trail { margin-left: 0; order: 3; width: 100%; justify-content: center; padding-bottom: 4px; }
+    .yoode-calc .container  { padding: 20px 16px 60px; }
+    .yoode-calc .card       { padding: 20px 18px; }
+    .yoode-calc .summary-card { padding: 20px 18px; }
+    .yoode-calc .card-title { font-size: 16px; }
+    .yoode-calc .kpi-grid   { grid-template-columns: 1fr 1fr; }
+    .yoode-calc .kpi-val    { font-size: 28px; }
+    .yoode-calc .final-grid { grid-template-columns: 1fr 1fr; }
+    .yoode-calc .final-hero .f-val { font-size: 30px; }
+    .yoode-calc .qty-wrap   { gap: 12px; }
+    .yoode-calc .qty-input-large { width: 140px; font-size: 24px; }
+    .yoode-calc .tog-label  { display: none; }
+    .yoode-calc .page-heading-title { font-size: 24px; }
+
+    .yoode-calc .addon-rows { min-width: 0; padding: 8px 8px 12px; }
+    .yoode-calc .addon-row-header .col-label { visibility: hidden; height: 0; }
+    .yoode-calc .addon-row {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 0; padding: 0;
+        border: 1px solid var(--border); border-radius: 10px;
+        margin-bottom: 12px; overflow: hidden;
+    }
+    .yoode-calc .addon-row:last-child { margin-bottom: 0; }
+    .yoode-calc .addon-type { grid-column: 1 / -1; padding: 10px 12px; background: var(--surface3); border-bottom: 1px solid var(--border); font-size: 15px; }
+    .yoode-calc .addon-row > .field-group { padding: 8px 12px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+    .yoode-calc .addon-row > .field-group:nth-child(odd)  { border-right: 1px solid var(--border); }
+    .yoode-calc .addon-row > .field-group:nth-child(even) { border-right: none; }
+    .yoode-calc .mobile-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text2); margin-bottom: 4px; }
+    .yoode-calc .addon-placeholder { display: none; }
+    .yoode-calc .addon-total-cell {
+        grid-column: 1 / -1;
+        background: var(--surface3);
+        border-bottom: none; border-right: none;
+        padding: 10px 12px;
+        display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+    }
+    .yoode-calc .addon-total-cell .mobile-label { margin-bottom: 0; font-size: 12px; }
+    .yoode-calc.dark .addon-total-cell { background: var(--surface2); }
+    .yoode-calc .breakdown-table { min-width: 0; }
+    .yoode-calc .breakdown-table td:first-child,
+    .yoode-calc .breakdown-table th:first-child { word-break: break-word; white-space: normal; }
+}
+@media (max-width: 480px) {
+    .yoode-calc .header       { padding: 8px 12px; gap: 8px; }
+    .yoode-calc .header-logo  { font-size: 18px; }
+    .yoode-calc .header-sub   { font-size: 10px; letter-spacing: 1px; }
+    .yoode-calc .container    { padding: 14px 12px 50px; }
+    .yoode-calc .card         { padding: 16px 14px; }
+    .yoode-calc .summary-card { padding: 16px 14px; }
+    .yoode-calc .kpi-grid     { grid-template-columns: 1fr; gap: 10px; }
+    .yoode-calc .final-grid   { grid-template-columns: 1fr; gap: 10px; }
+    .yoode-calc .kpi-val      { font-size: 32px; }
+    .yoode-calc .final-hero .f-val  { font-size: 34px; }
+    .yoode-calc .page-heading-title { font-size: 22px; }
+    .yoode-calc .qty-wrap     { flex-direction: column; align-items: stretch; }
+    .yoode-calc .qty-input-large    { width: 100%; }
+    .yoode-calc .qty-info-box,
+    .yoode-calc .mrp-box      { min-width: unset; width: 100%; }
+    .yoode-calc .custom-select      { max-width: 100%; }
+    .yoode-calc .shipping-input     { width: 130px; }
+    .yoode-calc .loc-picker   { gap: 6px; padding: 8px 10px; margin-bottom: 12px; }
+    .yoode-calc .loc-picker-label   { font-size: 10px; width: 100%; margin-right: 0; margin-bottom: 2px; }
+    .yoode-calc .loc-chip     { padding: 4px 10px; font-size: 10px; letter-spacing: 0.8px; gap: 5px; }
+    .yoode-calc .loc-chip input[type="checkbox"] { width: 12px; height: 12px; }
+    .yoode-calc .addon-rows   { padding: 6px 4px 10px; }
+    .yoode-calc .addon-type   { padding: 8px 10px; font-size: 14px; }
+    .yoode-calc .addon-row > .field-group { padding: 6px 10px; }
+    .yoode-calc .addon-total-cell   { padding: 8px 10px; }
+    .yoode-calc .breakdown-table th,
+    .yoode-calc .breakdown-table td { padding: 8px 10px; font-size: 13px; }
+}

@@ -1,0 +1,321 @@
+<div
+  class="yn-section yn-source yn-source--cta-banner yn-cta-banner{% if section.settings.accent_background %} yn-cta-banner--accent{% endif %} color-{{ section.settings.color_scheme }}"
+  data-yn-layout="{{ section.settings.custom_container }}" data-yn-container="{{ section.settings.container_type | default: 'container' }}" style="{% render 'yoode-new-home-container-settings', container_settings: section.settings %}--yn-source-background: {{ section.settings.source_background | default: '#e53935' }}; --yn-pt: {{ section.settings.padding_top | divided_by: 10.0 }}rem; --yn-pb: {{ section.settings.padding_bottom | divided_by: 10.0 }}rem;"
+>
+  {%- if section.settings.show_glow -%}
+    <span class="yn-cta-banner__glow yn-cta-banner__glow--top" aria-hidden="true"></span>
+    <span class="yn-cta-banner__glow yn-cta-banner__glow--bottom" aria-hidden="true"></span>
+  {%- endif -%}
+
+  <div class="yn-container">
+    <div class="yn-cta-banner__inner">
+      {% render 'yoode-new-home-heading',
+        subtitle: section.settings.subtitle,
+        title: section.settings.title,
+        description: section.settings.description,
+        align: 'center'
+      %}
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="yn-cta-banner__actions">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.label != blank -%}
+              {%- liquid
+                assign link = block.settings.link | default: '#'
+                assign is_external = false
+                if link contains '://'
+                  assign is_external = true
+                endif
+              -%}
+              <a
+                href="{{ link }}"
+                class="yn-button yn-cta-banner__button yn-cta-banner__button--{{ block.settings.style }}"
+                {% if is_external and block.settings.new_tab %}target="_blank" rel="noopener"{% endif %}
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.icon != 'none' -%}
+                  <span class="yn-cta-banner__icon">{% render 'yoode-new-home-icon', icon: block.settings.icon %}</span>
+                {%- endif -%}
+                <span>{{ block.settings.label | escape }}</span>
+                {%- if block.settings.show_arrow -%}
+                  <span class="yn-cta-banner__arrow">{% render 'yoode-new-home-icon', icon: 'arrow-up-right' %}</span>
+                {%- endif -%}
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YN CTA Banner",
+  "tag": "section",
+  "class": "section yoode-new-home-section",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section container"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_container",
+      "label": "Customize this section container",
+      "default": false,
+      "info": "Enable to adjust only this section. Leave off to keep the current responsive layout."
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container type",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid",
+          "label": "Container fluid"
+        }
+      ],
+      "default": "container",
+      "info": "Container uses the maximum width below. Container fluid fills the available width. Buttons follow this section container."
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Maximum content width",
+      "info": "Applies to Container only. Smaller screens use the available width.",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_desktop",
+      "label": "Side spacing: 1000px and above",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_tablet",
+      "label": "Side spacing: 700–999px",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_small_tablet",
+      "label": "Side spacing: 600–699px",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_gutter_mobile",
+      "label": "Side spacing: below 600px",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "info": "Sets the text color. Pick a dark scheme when the accent background is on.",
+      "default": "background-3"
+    },
+    {
+      "type": "checkbox",
+      "id": "accent_background",
+      "label": "Use accent (coral) background",
+      "info": "Overrides the scheme background with the brand accent and white text.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_glow",
+      "label": "Show soft background glow",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Contact Us"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Your brand deserves more than ordinary merchandise."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Tell us what you need we'll get back to you within 2 hours.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 152
+    },
+    {
+      "type": "color",
+      "id": "source_background",
+      "label": "Section background",
+      "default": "#e53935"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Browse the Catalogue"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "new_tab",
+          "label": "Open external links in a new tab",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            {
+              "value": "whatsapp",
+              "label": "Green (WhatsApp)"
+            },
+            {
+              "value": "dark",
+              "label": "Dark"
+            },
+            {
+              "value": "light",
+              "label": "Light"
+            }
+          ],
+          "default": "dark"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "message-circle",
+              "label": "Chat bubble"
+            },
+            {
+              "value": "file-text",
+              "label": "Document"
+            },
+            {
+              "value": "headset",
+              "label": "Headset"
+            },
+            {
+              "value": "map-pin",
+              "label": "Map pin"
+            },
+            {
+              "value": "arrow-up-right",
+              "label": "Arrow"
+            },
+            {
+              "value": "none",
+              "label": "None"
+            }
+          ],
+          "default": "file-text"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_arrow",
+          "label": "Show arrow after label",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YN CTA Banner",
+      "blocks": [
+        {
+          "type": "button",
+          "settings": {
+            "label": "Chat with us on WhatsApp",
+            "style": "whatsapp",
+            "icon": "message-circle",
+            "show_arrow": true
+          }
+        },
+        {
+          "type": "button",
+          "settings": {
+            "label": "Browse the Catalogue",
+            "link": "/collections/all",
+            "style": "dark",
+            "icon": "file-text",
+            "show_arrow": false
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

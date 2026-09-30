@@ -1,0 +1,377 @@
+{% style %}
+  {% render 'section-margin' %}
+  {% render 'section-padding' %}
+{% endstyle %}
+
+{%- liquid
+  # Laptop and tablet step down from the desktop count automatically, but never
+  # drop below the mobile count
+  assign columns_desktop = section.settings.columns_desktop
+  assign columns_mobile = section.settings.columns_mobile
+
+  assign columns_laptop = columns_desktop
+  if columns_laptop > 4
+    assign columns_laptop = 4
+  endif
+  if columns_laptop < columns_mobile
+    assign columns_laptop = columns_mobile
+  endif
+
+  assign columns_tablet = columns_desktop
+  if columns_tablet > 3
+    assign columns_tablet = 3
+  endif
+  if columns_tablet < columns_mobile
+    assign columns_tablet = columns_mobile
+  endif
+-%}
+
+<!-- Most Loved Products Section -->
+<section class="yoode-loved-products section-{{ section.id }}-padding section-padding">
+  <div class="yoode-container">
+    {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+      <header class="yoode-products-header">
+        {% if section.settings.heading != blank %}
+          <h2 class="yoode-products-title">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="yoode-products-subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </header>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div
+        class="yoode-products-grid"
+        style="
+          --yoode-prod-cols-desktop: {{ columns_desktop }};
+          --yoode-prod-cols-laptop: {{ columns_laptop }};
+          --yoode-prod-cols-tablet: {{ columns_tablet }};
+          --yoode-prod-cols-mobile: {{ columns_mobile }};
+        "
+      >
+        {% for block in section.blocks %}
+          {% liquid
+            assign product = block.settings.product
+            if product != blank
+              assign product_image = product.featured_image
+              assign product_name = product.title
+              assign product_url = product.url
+              assign product_price = product.price | money
+            else
+              assign product_image = block.settings.image
+              assign product_name = block.settings.product_name
+              assign product_url = block.settings.button_link
+              assign product_price = block.settings.price_text
+            endif
+          %}
+          <article class="yoode-product-card" {{ block.shopify_attributes }}>
+            <div class="yoode-product-media">
+              {% if product_image %}
+                <a href="{{ product_url }}" style="height: 100%;">
+                {{ product_image | image_url: width: 500 | image_tag: alt: product_name, class: "yoode-product-img" }}
+                 </a>
+              {% endif %}
+            </div>
+            <div class="yoode-product-content">
+              {% if product_name != blank %}
+                <h3 class="yoode-product-name">{{ product_name }}</h3>
+              {% endif %}
+              {% if product_price != blank %}
+                <p class="yoode-product-price">{{ product_price }}</p>
+              {% endif %}
+              {% if block.settings.button_text != blank %}
+                <a href="{{ product_url }}" class="yoode-product-btn">
+                  {{ block.settings.button_text }}
+                </a>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "New Yoode Products",
+  "class": "yoode-loved-products-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Our most loved products",
+      "label": "Heading Text"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "default": "The products customers come back for — customised exactly the way you need.",
+      "label": "Subtitle Text"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 5,
+      "label": "Products Per Row (Desktop)",
+      "info": "Applies above 1200px. Laptop and tablet step down automatically."
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2,
+      "label": "Products Per Row (Mobile)",
+      "info": "Applies at 768px and below."
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "no-indent",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-padding.header.content"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product",
+          "info": "If selected, its image, title, price and link are used automatically. Leave empty to enter details manually below."
+        },
+        {
+          "type": "header",
+          "content": "Manual Fields no product is selected"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.all.image.label"
+        },
+        {
+          "type": "text",
+          "id": "product_name",
+          "default": "Product Name",
+          "label": "Product Name"
+        },
+        {
+          "type": "text",
+          "id": "price_text",
+          "default": "Starting from ₹ —",
+          "label": "Price Text"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "default": "Customise this",
+          "label": "Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link",
+          "info": "Used only for manual products. Selected products link to their product page."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Yoode Products",
+      "settings": {
+        "heading": "Our most loved products",
+        "subtitle": "The products customers come back for — customised exactly the way you need."
+      },
+      "blocks": [
+        {
+          "type": "product",
+          "settings": {
+            "product_name": "Corporate Polos",
+            "price_text": "Starting from ₹ —",
+            "button_text": "Customise this"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "product_name": "Sports Wear",
+            "price_text": "Starting from ₹ —",
+            "button_text": "Customise this"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "product_name": "Gift Boxes",
+            "price_text": "Starting from ₹ —",
+            "button_text": "Customise this"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "product_name": "Caps",
+            "price_text": "Starting from ₹ —",
+            "button_text": "Customise this"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "product_name": "Mugs & Bottles",
+            "price_text": "Starting from ₹ —",
+            "button_text": "Customise this"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

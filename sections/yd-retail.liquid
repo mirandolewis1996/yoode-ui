@@ -1,0 +1,855 @@
+{{'calculator.css' | asset_url | stylesheet_tag}}
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+<div id="app" class="yoode-calc section-padding" :class="{dark: isDark}">
+  <div class="container">
+    <!-- PAGE TITLE -->
+    <div class="page-heading">
+      <h1 class="page-heading-title"><span>Retail</span> Price Estimator</h1>
+      <p class="page-heading-sub">Select a product, set quantity, and configure add-ons</p>
+    </div>
+
+    <!-- STEP 1 — Product Style -->
+    <div class="card" :class="{active: step===1}">
+      <div class="card-title"><span class="num">1</span>Product Style</div>
+      <select class="custom-select" v-model="selectedProduct" @change="onProductChange">
+        <option value="">— Select a Product —</option>
+        <option v-for="p in products" :key="p" :value="p">${p}</option>
+      </select>
+    </div>
+
+    <!-- STEP 2 — Quantity -->
+    <div class="card" :class="{active: step===2}" v-if="selectedProduct">
+      <div class="card-title"><span class="num">2</span>Quantity</div>
+      <div class="qty-wrap">
+        <div class="qty-field">
+          <div class="qty-field-label">Number of Pieces</div>
+          <input
+            type="number"
+            class="qty-input-large"
+            min="1"
+            v-model.number="quantity"
+            placeholder="0"
+          >
+        </div>
+        <div class="qty-info-box" v-if="pricePerItem > 0">
+          <div class="qty-info-label">Price / Piece</div>
+          <div class="qty-info-val">₹${fmt(pricePerItem)}</div>
+          <div class="qty-info-sub">Retail price</div>
+        </div>
+        <div class="mrp-box" v-if="mrpPerItem > 0">
+          <div class="mrp-label">MRP</div>
+          <div class="mrp-val">₹${fmt(mrpPerItem)}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 — Add-ons -->
+    <div
+      class="card"
+      :class="{active: step===3}"
+      v-if="quantity > 0 && selectedProduct && addonLocations.length > 0"
+    >
+      <div class="card-title"><span class="num">3</span>Decoration &amp; Add-ons</div>
+
+      <div class="loc-picker">
+        <span class="loc-picker-label">Locations:</span>
+        <label class="loc-chip" v-for="loc in addonLocations" :key="loc.name">
+          <input
+            type="checkbox"
+            :checked="enabledLocations[loc.name]"
+            @change="toggleLocation(loc.name)"
+          >
+          ${loc.name}
+        </label>
+      </div>
+
+      <div class="loc-empty-hint" v-if="addonLocations.every(l => !enabledLocations[l.name])">
+        Select a location above to configure decorations
+      </div>
+
+      <div class="addons-section">
+        <div
+          class="addon-location"
+          v-for="loc in addonLocations"
+          :key="loc.name"
+          v-show="enabledLocations[loc.name]"
+        >
+          <div class="addon-loc-header">${loc.name}</div>
+          <div class="addon-rows-wrap">
+            <div class="addon-rows">
+              <div
+                class="addon-row addon-row-header"
+                style="padding:4px 6px 2px; border-bottom: 1px solid var(--border);"
+              >
+                <div class="col-label">Add-on</div>
+                <div class="col-label">Setup</div>
+                <div class="col-label">Rate</div>
+                <div class="col-label">Fabric Colour</div>
+                <div class="col-label">W (inch)</div>
+                <div class="col-label">H (inch)</div>
+                <div class="col-label">Complexity</div>
+                <div class="col-label">Total / item</div>
+              </div>
+
+              <div v-for="addon in loc.addons" :key="addon.type" class="addon-row">
+                <div class="addon-type">
+                  <div class="toggle-wrap" @click="toggleAddon(loc.name, addon.type)">
+                    <div class="tog-sw" :class="{on: isAddonEnabled(loc.name, addon.type)}"></div>
+                  </div>
+                  <span>${addon.type}</span>
+                </div>
+
+                <div class="field-group">
+                  <span class="mobile-label">Setup</span>
+                  <div class="info-val">
+                    ${getSetupCharge(addon.type) > 0 ? '₹' + getSetupCharge(addon.type) : '—'}
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <span class="mobile-label">Rate</span>
+                  <div class="info-val">
+                    ₹${getRate(loc.name, addon.type)}
+                    <span style="font-size:12px;color:var(--muted);font-weight:500;">
+                      ${addon.type.startsWith('Embroidery') ? '/1k st' : '/sq.in'}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="field-group" v-if="addon.type === 'DTG'">
+                  <span class="mobile-label">Fabric Colour</span>
+                  <select
+                    class="complexity-select"
+                    :disabled="!isAddonEnabled(loc.name, addon.type)"
+                    v-model="getAddonState(loc.name, addon.type).fabricColour"
+                  >
+                    <option v-for="fc in fabricColourOptions" :key="fc" :value="fc">${fc}</option>
+                  </select>
+                </div>
+                <div v-else class="field-group addon-placeholder">
+                  <span class="mobile-label">Fabric Colour</span>
+                  <div class="info-val" style="color:var(--muted)">—</div>
+                </div>
+
+                <div class="field-group">
+                  <span class="mobile-label">W (inch)</span>
+                  <input
+                    type="number"
+                    class="num-input"
+                    min="0.1"
+                    step="0.1"
+                    :disabled="!isAddonEnabled(loc.name, addon.type)"
+                    v-model.number="getAddonState(loc.name, addon.type).width"
+                  >
+                </div>
+
+                <div class="field-group">
+                  <span class="mobile-label">H (inch)</span>
+                  <input
+                    type="number"
+                    class="num-input"
+                    min="0.1"
+                    step="0.1"
+                    :disabled="!isAddonEnabled(loc.name, addon.type)"
+                    v-model.number="getAddonState(loc.name, addon.type).height"
+                  >
+                </div>
+
+                <div class="field-group" v-if="addon.type.startsWith('Embroidery')">
+                  <span class="mobile-label">Complexity</span>
+                  <select
+                    class="complexity-select"
+                    :disabled="!isAddonEnabled(loc.name, addon.type)"
+                    v-model="getAddonState(loc.name, addon.type).complexity"
+                  >
+                    <option v-for="c in complexityOptions" :key="c" :value="c">${c}</option>
+                  </select>
+                </div>
+                <div v-else class="field-group addon-placeholder">
+                  <span class="mobile-label">Complexity</span>
+                  <div class="info-val" style="color:var(--muted)">—</div>
+                </div>
+
+                <div class="field-group addon-total-cell">
+                  <span class="mobile-label">Total / item</span>
+                  <div class="info-orange">
+                    ${getAddonTotal(loc.name, addon.type) > 0
+                      ? '₹' + fmt(getAddonTotal(loc.name, addon.type))
+                      : '—'
+                   }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICE SUMMARY -->
+    <div class="summary-card" v-if="quantity > 0 && pricePerItem > 0">
+      <div class="card-title" style="margin-bottom:22px;">
+        <span class="num" style="background:var(--yorange)">4</span>Price Summary
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-box blue-kpi">
+          <div class="kpi-label">Base Price / Item</div>
+          <div class="kpi-val blue">₹${fmt(pricePerItem)}</div>
+        </div>
+        <div class="kpi-box orange-kpi">
+          <div class="kpi-label">Total Quantity</div>
+          <div class="kpi-val orange">
+            ${quantity}
+            <span class="kpi-unit"> pcs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="shipping-row">
+        <label>Shipping &amp; Other Charges (₹)</label>
+        <input
+          type="number"
+          class="shipping-input"
+          v-model.number="shippingCharges"
+          min="0"
+          placeholder="0"
+        >
+      </div>
+
+      <div class="breakdown-wrap">
+        <table class="breakdown-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Per Item (₹)</th>
+              <th>Total (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Base Product Price</td>
+              <td>${fmt(pricePerItem)}</td>
+              <td>${fmt(pricePerItem * quantity)}</td>
+            </tr>
+            <tr v-for="row in addonBreakdown" :key="row.label">
+              <td>${row.label}</td>
+              <td>${fmt(row.perItem)}</td>
+              <td>${fmt(row.total)}</td>
+            </tr>
+            <tr v-if="totalSetupCharges > 0">
+              <td>Setup Charges</td>
+              <td>—</td>
+              <td>${fmt(totalSetupCharges)}</td>
+            </tr>
+            <tr v-if="shippingCharges > 0">
+              <td>Shipping &amp; Other</td>
+              <td>—</td>
+              <td>${fmt(shippingCharges)}</td>
+            </tr>
+            <tr class="grand-row">
+              <td>Grand Total</td>
+              <td>${fmt(finalPricePerItem)}</td>
+              <td>${fmt(grandTotal)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="final-grid">
+        <div class="final-hero blue-hero">
+          <div class="f-label">Final Price Per Item</div>
+          <div class="f-val">₹${fmt(finalPricePerItem)}</div>
+        </div>
+        <div class="final-hero orange-hero">
+          <div class="f-label">Grand Total</div>
+          <div class="f-val">₹${fmt(grandTotal)}</div>
+        </div>
+      </div>
+
+      <div class="export-row">
+        <button class="export-btn pdf-btn" @click="exportPDF">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="12" y1="18" x2="12" y2="12" />
+            <polyline points="9 15 12 18 15 15" />
+          </svg>
+          Export PDF
+        </button>
+
+        <button class="export-btn wa-btn" @click="shareWhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+          </svg>
+          Share via WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const { createApp, reactive, ref, computed } = Vue;
+
+  fetch("{{ 'calculator-data.json' | asset_url }}")
+    .then(function (r) {
+      return r.json();
+    })
+    .then(function (data) {
+      const PRODUCT_DATA = data.PRODUCT_DATA;
+      const RATES = data.RATES;
+      const COMPLEXITY = data.COMPLEXITY;
+      const ALL_ADDONS = data.ALL_ADDONS;
+      const LOCATIONS = data.LOCATIONS;
+      const LOGO_B64 = data.LOGO_B64 || '';
+      const CUSTOMER_TYPE = 'Retail';
+
+      createApp({
+        delimiters: ['${', '}'],
+        setup() {
+          const isDark = ref(false);
+          function toggleTheme() {
+            isDark.value = !isDark.value;
+          }
+
+          const PRICE_KEY = 'retail';
+
+          const products = PRODUCT_DATA.map((r) => r.name);
+          const selectedProduct = ref('');
+          const quantity = ref(0);
+          const shippingCharges = ref(0);
+          const addonStates = reactive({});
+          const enabledLocations = reactive(Object.fromEntries(LOCATIONS.map((l) => [l, false])));
+          const complexityOptions = Object.keys(COMPLEXITY);
+          const fabricColourOptions = ['Dark', 'White'];
+
+          const step = computed(() => {
+            if (!selectedProduct.value) return 1;
+            if (!quantity.value || quantity.value <= 0) return 2;
+            return 3;
+          });
+
+          function lookupRate(style, addon, qty, variant) {
+            variant = variant || null;
+            for (const r of RATES) {
+              const [rs, ra, rv, rmin, rmax, rate] = r;
+              if (rs !== style || ra !== addon) continue;
+              if (variant !== null && rv !== variant) continue;
+              if (variant === null && rv !== null) continue;
+              if (qty >= rmin && (rmax === null || qty <= rmax)) return rate;
+            }
+            return 0;
+          }
+
+          const pricePerItem = computed(() => {
+            if (!selectedProduct.value || !quantity.value || quantity.value <= 0) return 0;
+            const row = PRODUCT_DATA.find((r) => r.name === selectedProduct.value);
+            if (!row) return 0;
+            return row[PRICE_KEY];
+          });
+
+          const mrpPerItem = computed(() => {
+            if (!selectedProduct.value) return 0;
+            const row = PRODUCT_DATA.find((r) => r.name === selectedProduct.value);
+            return row && row.mrp ? row.mrp : 0;
+          });
+
+          const addonLocations = computed(() => {
+            if (!selectedProduct.value) return [];
+            return LOCATIONS.map((loc) => ({
+              name: loc,
+              addons: ALL_ADDONS.map((type) => ({ type })),
+            }));
+          });
+
+          function addonKey(loc, type) {
+            return `${loc}||${type}`;
+          }
+
+          function getAddonState(loc, type) {
+            const k = addonKey(loc, type);
+            if (!addonStates[k]) {
+              addonStates[k] = reactive({
+                enabled: false,
+                width: 4,
+                height: 4,
+                fabricColour: 'Dark',
+                complexity: 'Light (text/outline)',
+              });
+            }
+            return addonStates[k];
+          }
+
+          function isAddonEnabled(loc, type) {
+            return getAddonState(loc, type).enabled;
+          }
+
+          function toggleAddon(loc, type) {
+            const s = getAddonState(loc, type);
+            s.enabled = !s.enabled;
+          }
+
+          function toggleLocation(loc) {
+            enabledLocations[loc] = !enabledLocations[loc];
+            if (!enabledLocations[loc]) {
+              for (const type of ALL_ADDONS) {
+                getAddonState(loc, type).enabled = false;
+              }
+            }
+          }
+
+          function getSetupCharge(type) {
+            return lookupRate('Setup Charge', type, quantity.value, null);
+          }
+
+          function getRate(loc, type) {
+            if (type === 'DTG') {
+              const s = getAddonState(loc, type);
+              return lookupRate('Rate', type, quantity.value, s.fabricColour || 'Dark');
+            }
+            return lookupRate('Rate', type, quantity.value, null);
+          }
+
+          function getAddonTotal(loc, type) {
+            const s = getAddonState(loc, type);
+            if (!s.enabled) return 0;
+            const rate = getRate(loc, type);
+            const w = s.width || 4;
+            const h = s.height || 4;
+            const area = w * h;
+
+            if (type === 'DTG') {
+              const minRate = lookupRate('Min Rate', type, quantity.value, s.fabricColour || 'Dark');
+              return Math.max(minRate, area * rate);
+            }
+            if (type === 'DTF') {
+              const minRate = lookupRate('Min Rate', type, quantity.value, 'White');
+              return Math.max(minRate, area * rate);
+            }
+            if (type === 'Embroidery (Standard)') {
+              const cf = COMPLEXITY[s.complexity] || 0.7;
+              const stitches = area * 1000 * cf;
+              const minRate = lookupRate('Min Rate', type, quantity.value, null);
+              return Math.max(minRate, (stitches / 1000) * rate);
+            }
+            if (type === 'Embroidery (Coloreel)') {
+              const cf = COMPLEXITY[s.complexity] || 0.7;
+              const stitches = area * 1000 * cf;
+              const minRate = lookupRate('Min Rate', type, quantity.value, null);
+              return Math.max(minRate, (stitches / 1000) * rate);
+            }
+            return 0;
+          }
+
+          const addonBreakdown = computed(() => {
+            if (!selectedProduct.value) return [];
+            const rows = [];
+            for (const loc of LOCATIONS) {
+              for (const type of ALL_ADDONS) {
+                const t = getAddonTotal(loc, type);
+                if (t > 0)
+                  rows.push({
+                    label: `${loc} — ${type}`,
+                    perItem: t,
+                    total: t * quantity.value,
+                  });
+              }
+            }
+            return rows;
+          });
+
+          const totalAddonPerItem = computed(() => addonBreakdown.value.reduce((s, r) => s + r.perItem, 0));
+
+          const totalSetupCharges = computed(() => {
+            let total = 0;
+            for (const loc of LOCATIONS) {
+              for (const type of ALL_ADDONS) {
+                const s = getAddonState(loc, type);
+                if (s.enabled) total += getSetupCharge(type);
+              }
+            }
+            return total;
+          });
+
+          const grandTotal = computed(
+            () =>
+              pricePerItem.value * quantity.value +
+              totalAddonPerItem.value * quantity.value +
+              totalSetupCharges.value +
+              (shippingCharges.value || 0)
+          );
+
+          const finalPricePerItem = computed(() => (quantity.value <= 0 ? 0 : grandTotal.value / quantity.value));
+
+          function onProductChange() {
+            quantity.value = 0;
+            Object.keys(addonStates).forEach((k) => delete addonStates[k]);
+            LOCATIONS.forEach((l) => (enabledLocations[l] = false));
+          }
+
+          function fmt(val) {
+            if (!val || val === 0) return '0';
+            const n = Number(val);
+            return n % 1 === 0 ? n.toLocaleString('en-IN') : n.toFixed(2);
+          }
+
+          function getEnabledAddonDetails() {
+            var details = [];
+            for (var li = 0; li < LOCATIONS.length; li++) {
+              var loc = LOCATIONS[li];
+              for (var ai = 0; ai < ALL_ADDONS.length; ai++) {
+                var type = ALL_ADDONS[ai];
+                var s = getAddonState(loc, type);
+                if (s.enabled) {
+                  var detail = {
+                    location: loc,
+                    type: type,
+                    width: s.width,
+                    height: s.height,
+                    rate: getRate(loc, type),
+                    setup: getSetupCharge(type),
+                    total: getAddonTotal(loc, type),
+                  };
+                  if (type === 'DTG') detail.fabricColour = s.fabricColour;
+                  if (type.indexOf('Embroidery') === 0) detail.complexity = s.complexity;
+                  details.push(detail);
+                }
+              }
+            }
+            return details;
+          }
+
+          function buildEstimationHTML() {
+            var today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            var rs = '\u20B9';
+            var dash = '\u2014';
+            var c = '<\/td>';
+            var r = '<\/tr>';
+            var th = '<\/th>';
+
+            var addonRows = '';
+            for (var i = 0; i < addonBreakdown.value.length; i++) {
+              var row = addonBreakdown.value[i];
+              addonRows +=
+                '<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;">' +
+                row.label +
+                c +
+                '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' +
+                rs +
+                fmt(row.perItem) +
+                c +
+                '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' +
+                rs +
+                fmt(row.total) +
+                c +
+                r;
+            }
+            if (totalSetupCharges.value > 0) {
+              addonRows +=
+                '<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;">Setup Charges' +
+                c +
+                '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' +
+                dash +
+                c +
+                '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' +
+                rs +
+                fmt(totalSetupCharges.value) +
+                c +
+                r;
+            }
+            if (shippingCharges.value > 0) {
+              addonRows +=
+                '<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;">Shipping &amp; Other' +
+                c +
+                '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' +
+                dash +
+                c +
+                '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' +
+                rs +
+                fmt(shippingCharges.value) +
+                c +
+                r;
+            }
+
+            var addonDetails = getEnabledAddonDetails();
+            var addonSpecHTML = '';
+            if (addonDetails.length > 0) {
+              addonSpecHTML =
+                '<div style="margin-bottom:24px;">' +
+                '<h3 style="margin:0 0 12px;font-size:14px;color:#2937cc;letter-spacing:1.5px;text-transform:uppercase;">Add-on Specifications<\/h3>' +
+                '<table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+                '<thead><tr style="background:#f0f1f9;">' +
+                '<th style="padding:8px 10px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Location' +
+                th +
+                '<th style="padding:8px 10px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Add-on Type' +
+                th +
+                '<th style="padding:8px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">W (inch)' +
+                th +
+                '<th style="padding:8px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">H (inch)' +
+                th +
+                '<th style="padding:8px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Details' +
+                th +
+                '<th style="padding:8px 10px;text-align:right;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Setup' +
+                th +
+                '<th style="padding:8px 10px;text-align:right;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Cost/Item' +
+                th +
+                r +
+                '<\/thead><tbody>';
+              for (var d = 0; d < addonDetails.length; d++) {
+                var a = addonDetails[d];
+                var extra = '';
+                if (a.fabricColour) extra = a.fabricColour + ' fabric';
+                if (a.complexity) extra = a.complexity;
+                addonSpecHTML +=
+                  '<tr>' +
+                  '<td style="padding:8px 10px;border-bottom:1px solid #eee;">' +
+                  a.location +
+                  c +
+                  '<td style="padding:8px 10px;border-bottom:1px solid #eee;">' +
+                  a.type +
+                  c +
+                  '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;">' +
+                  a.width +
+                  c +
+                  '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;">' +
+                  a.height +
+                  c +
+                  '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;">' +
+                  extra +
+                  c +
+                  '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:right;">' +
+                  rs +
+                  fmt(a.setup) +
+                  c +
+                  '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:right;">' +
+                  rs +
+                  fmt(a.total) +
+                  c +
+                  r;
+              }
+              addonSpecHTML += '<\/tbody><\/table><\/div>';
+            }
+
+            return (
+              '<div style="font-family:Segoe UI,Arial,sans-serif;color:#1a1a2e;max-width:700px;margin:0 auto;padding:30px;">' +
+              '<div style="text-align:center;margin-bottom:28px;">' +
+              (LOGO_B64
+                ? '<img src="data:image/png;base64,' +
+                  LOGO_B64 +
+                  '" style="height:56px;display:block;margin:0 auto;" alt="Yoode" />'
+                : '<div style="font-family:Poppins,sans-serif;font-size:28px;font-weight:800;color:#2937cc;">Yoode<\/div>') +
+              '<p style="margin:4px 0 0;font-size:11px;letter-spacing:3px;color:#7b7fa0;text-transform:uppercase;">Price Estimation<\/p>' +
+              '<p style="margin:8px 0 0;font-size:12px;color:#999;">Date: ' +
+              today +
+              '<\/p>' +
+              '<\/div>' +
+              '<table style="width:100%;border-collapse:collapse;margin-bottom:24px;border:1px solid #dde0f0;border-radius:8px;">' +
+              '<tr style="background:#f0f1f9;">' +
+              '<td style="padding:10px 14px;font-size:12px;color:#7b7fa0;font-weight:700;width:25%;">Customer Type' +
+              c +
+              '<td style="padding:10px 14px;font-size:14px;font-weight:700;width:25%;">' +
+              CUSTOMER_TYPE +
+              c +
+              '<td style="padding:10px 14px;font-size:12px;color:#7b7fa0;font-weight:700;width:25%;">Product' +
+              c +
+              '<td style="padding:10px 14px;font-size:14px;font-weight:700;width:25%;">' +
+              selectedProduct.value +
+              c +
+              r +
+              '<tr>' +
+              '<td style="padding:10px 14px;font-size:12px;color:#7b7fa0;font-weight:700;">Quantity' +
+              c +
+              '<td style="padding:10px 14px;font-size:14px;font-weight:700;">' +
+              quantity.value +
+              ' pcs' +
+              c +
+              '<td style="padding:10px 14px;font-size:12px;color:#7b7fa0;font-weight:700;">Base Price / Item' +
+              c +
+              '<td style="padding:10px 14px;font-size:14px;font-weight:700;">' +
+              rs +
+              fmt(pricePerItem.value) +
+              c +
+              r +
+              '<\/table>' +
+              addonSpecHTML +
+              '<h3 style="margin:0 0 12px;font-size:14px;color:#2937cc;letter-spacing:1.5px;text-transform:uppercase;">Cost Breakdown<\/h3>' +
+              '<table style="width:100%;border-collapse:collapse;margin-bottom:24px;font-size:13px;">' +
+              '<thead><tr style="background:#f0f1f9;">' +
+              '<th style="padding:10px 12px;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Component' +
+              th +
+              '<th style="padding:10px 12px;text-align:right;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Per Item (' +
+              rs +
+              ')' +
+              th +
+              '<th style="padding:10px 12px;text-align:right;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7b7fa0;border-bottom:2px solid #dde0f0;">Total (' +
+              rs +
+              ')' +
+              th +
+              r +
+              '<\/thead><tbody>' +
+              '<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;">Base Product Price' +
+              c +
+              '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' +
+              rs +
+              fmt(pricePerItem.value) +
+              c +
+              '<td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;">' +
+              rs +
+              fmt(pricePerItem.value * quantity.value) +
+              c +
+              r +
+              addonRows +
+              '<tr style="background:#fff1ec;font-weight:700;font-size:14px;color:#f65e21;">' +
+              '<td style="padding:12px;border-top:2px solid #f65e21;">Grand Total' +
+              c +
+              '<td style="padding:12px;border-top:2px solid #f65e21;text-align:right;">' +
+              rs +
+              fmt(finalPricePerItem.value) +
+              c +
+              '<td style="padding:12px;border-top:2px solid #f65e21;text-align:right;">' +
+              rs +
+              fmt(grandTotal.value) +
+              c +
+              r +
+              '<\/tbody><\/table>' +
+              '<table style="width:100%;border-collapse:collapse;">' +
+              '<tr>' +
+              '<td style="width:50%;padding:16px;background:#2937cc;color:#fff;text-align:center;">' +
+              '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.7;margin-bottom:6px;">Final Price Per Item<\/div>' +
+              '<div style="font-size:28px;font-weight:800;">' +
+              rs +
+              fmt(finalPricePerItem.value) +
+              '<\/div>' +
+              c +
+              '<td style="width:50%;padding:16px;background:#f65e21;color:#fff;text-align:center;">' +
+              '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.7;margin-bottom:6px;">Grand Total<\/div>' +
+              '<div style="font-size:28px;font-weight:800;">' +
+              rs +
+              fmt(grandTotal.value) +
+              '<\/div>' +
+              c +
+              r +
+              '<\/table>' +
+              '<p style="text-align:center;margin-top:30px;font-size:11px;color:#aaa;">Generated by Yoode Price Estimator<\/p>' +
+              '<\/div>'
+            );
+          }
+
+          function exportPDF() {
+            var html = buildEstimationHTML();
+            var printFrame = document.createElement('iframe');
+            printFrame.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:none;';
+            document.body.appendChild(printFrame);
+            var doc = printFrame.contentDocument || printFrame.contentWindow.document;
+            doc.open();
+            doc.write(
+              '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Yoode Price Estimation<\/title>' +
+                '<style>@page{size:A4;margin:10mm}body{margin:0;background:#fff}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}<\/style>' +
+                '<\/head><body>' +
+                html +
+                '<\/body><\/html>'
+            );
+            doc.close();
+            printFrame.onload = function () {
+              setTimeout(function () {
+                printFrame.contentWindow.focus();
+                printFrame.contentWindow.print();
+                setTimeout(function () {
+                  document.body.removeChild(printFrame);
+                }, 1000);
+              }, 300);
+            };
+          }
+
+          function shareWhatsApp() {
+            var rs = '\u20B9';
+            var today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            var lines = [];
+            lines.push('*YOODE Price Estimate* \u2014 ' + today);
+            lines.push(
+              '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'
+            );
+            lines.push('*Product:* ' + selectedProduct.value);
+            lines.push('*Customer Type:* ' + CUSTOMER_TYPE);
+            lines.push('*Quantity:* ' + quantity.value + ' pcs');
+            lines.push('*Base Price / Item:* ' + rs + fmt(pricePerItem.value));
+            if (addonBreakdown.value.length > 0) {
+              lines.push('\n*Add-on Breakdown:*');
+              for (var i = 0; i < addonBreakdown.value.length; i++) {
+                var row = addonBreakdown.value[i];
+                lines.push(
+                  '  \u2022 ' + row.label + ': ' + rs + fmt(row.perItem) + '/item (' + rs + fmt(row.total) + ' total)'
+                );
+              }
+            }
+            if (totalSetupCharges.value > 0) lines.push('*Setup Charges:* ' + rs + fmt(totalSetupCharges.value));
+            if (shippingCharges.value > 0) lines.push('*Shipping & Other:* ' + rs + fmt(shippingCharges.value));
+            lines.push(
+              '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'
+            );
+            lines.push('*Final Price / Item:* ' + rs + fmt(finalPricePerItem.value));
+            lines.push('*Grand Total:* ' + rs + fmt(grandTotal.value));
+            lines.push('\n_Generated by Yoode Price Estimator_');
+            window.open('https://wa.me/?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+          }
+
+          return {
+            isDark,
+            toggleTheme,
+            products,
+            selectedProduct,
+            onProductChange,
+            quantity,
+            shippingCharges,
+            step,
+            pricePerItem,
+            mrpPerItem,
+            addonLocations,
+            enabledLocations,
+            toggleLocation,
+            complexityOptions,
+            fabricColourOptions,
+            isAddonEnabled,
+            toggleAddon,
+            getAddonState,
+            getSetupCharge,
+            getRate,
+            getAddonTotal,
+            addonBreakdown,
+            totalAddonPerItem,
+            totalSetupCharges,
+            grandTotal,
+            finalPricePerItem,
+            fmt,
+            exportPDF,
+            shareWhatsApp,
+          };
+        },
+      }).mount('#app');
+    })
+    .catch(function (err) {
+      console.error('Failed to load calculator data:', err);
+    });
+</script>
+{% schema %}
+{
+  "name": "YD Retail",
+  "settings": [],
+  "presets": [
+    {
+      "name": "YD Retail"
+    }
+  ]
+}
+{% endschema %}

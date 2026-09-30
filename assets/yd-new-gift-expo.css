@@ -1,0 +1,1478 @@
+/* ==========================================================================
+   yd-new-gift-expo
+   --------------------------------------------------------------------------
+   Styles for sections/yd-new-gift-expo.liquid — the QR landing page used at
+   expo stalls.
+
+   EVERY selector in this file is scoped under .yd-new-expo-outer, the section's
+   root element, and every custom property is prefixed --yn-. Nothing here can
+   leak into the rest of the theme and nothing in base.css / custom.css can
+   bleed in. That matters because the theme already defines generic tokens
+   (--color-primary, --radius-md and so on) on :root, and this design uses its
+   own scale.
+
+   If you add a rule, scope it the same way — start the selector with
+   .yd-new-expo-outer. Every rule carries the same one-class specificity bump,
+   so the cascade between rules in this file is exactly as it reads.
+
+   Two things sit inside .yd-new-expo-outer but OUTSIDE the .yd-new-expo card:
+   the card itself is the first child, and .yd-new-bar, the fixed mobile action
+   bar, is the second. The bar is kept out of the card so position:fixed is not
+   clipped by the card's overflow:hidden — which also means it cannot read the
+   --yn- tokens, so its colours are written out literally. Keep them in step
+   with the tokens if the palette changes.
+
+   Loaded by the section file itself, not by theme.liquid, so pages without
+   this section do not pay for it.
+   ========================================================================== */
+
+/* Outer frame. The original was a standalone HTML page whose <body> supplied
+   this; as a section it needs its own wrapper. */
+.yd-new-expo-outer {
+  background: var(--yn-outer-bg, #edecf2);
+  padding: 45px 12px;
+}
+
+.yd-new-expo-outer .yd-new-expo {
+  /* ---------- tokens ---------- */
+  --yn-ink: #1a1430;
+  --yn-paper: #f5f4f8;
+  --yn-surface: #ffffff;
+  --yn-line: #e4e2ec;
+  --yn-muted: #6a6480;
+  --yn-gold: #ffd23f;
+
+  --yn-display: 'Bricolage Grotesque', 'Archivo', Helvetica, sans-serif;
+  --yn-body: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  --yn-mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+
+  --yn-pad: clamp(20px, 5.5vw, 44px);
+  --yn-r: 20px;
+
+  font-family: var(--yn-body);
+  color: var(--yn-ink);
+  background: var(--yn-paper);
+  line-height: 1.5;
+  max-width: 1360px;
+  margin: 0 auto;
+  border-radius: var(--yn-r);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.yd-new-expo-outer .yd-new-expo *,
+.yd-new-expo-outer .yd-new-expo *::before,
+.yd-new-expo-outer .yd-new-expo *::after {
+  box-sizing: border-box;
+}
+
+.yd-new-expo-outer .yd-new-expo h1,
+.yd-new-expo-outer .yd-new-expo h2,
+.yd-new-expo-outer .yd-new-expo h3,
+.yd-new-expo-outer .yd-new-expo p,
+.yd-new-expo-outer .yd-new-expo ul,
+.yd-new-expo-outer .yd-new-expo li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The chip groups are fieldsets so their group label is announced with every
+   option. Browsers give fieldset a default border and padding that would show. */
+.yd-new-expo-outer .yd-new-expo fieldset {
+  margin: 0 0 20px 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.yd-new-expo-outer .yd-new-expo a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.yd-new-expo-outer .yd-new-expo :focus-visible {
+  outline: 3px solid var(--yn-ink);
+  outline-offset: 3px;
+  /* No border-radius here on purpose. The :focus-visible pseudo-class adds a
+     class-level weight, making this selector (0,3,0) — heavier than every
+     component rule at (0,2,0), so a radius set here would square the pill
+     buttons and round inputs the moment they take keyboard focus. The outline
+     already follows each element's own radius. */
+}
+
+/* Without this, anchor jumps land underneath the sticky bar. */
+.yd-new-expo-outer .yd-new-expo [id] {
+  scroll-margin-top: 16px;
+  scroll-margin-bottom: 96px;
+}
+
+.yd-new-expo-outer .yd-new-mono {
+  font-family: var(--yn-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--yn-muted);
+}
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-hero {
+  padding: clamp(30px, 7vw, 58px) var(--yn-pad) clamp(26px, 6vw, 42px);
+  background:
+    radial-gradient(115% 85% at 90% -12%, rgba(255, 210, 63, 0.34), transparent 58%),
+    radial-gradient(85% 70% at -5% 0%, rgba(140, 110, 235, 0.16), transparent 62%),
+    var(--yn-paper);
+  border-bottom: 1px solid var(--yn-line);
+
+}
+
+
+.yd-new-expo-outer .yd-new-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--yn-surface);
+  border: 1px solid var(--yn-line);
+  border-radius: 999px;
+  padding: 8px 15px;
+  margin-bottom: 22px;
+  max-width: 100%;
+}
+
+.yd-new-expo-outer .yd-new-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e4232f;
+  box-shadow: 0 0 0 0 rgba(228, 35, 47, 0.55);
+  animation: ydNewPulse 2.4s ease-out infinite;
+  flex: 0 0 auto;
+}
+
+@keyframes ydNewPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(228, 35, 47, 0.5);
+  }
+
+  70% {
+    box-shadow: 0 0 0 9px rgba(228, 35, 47, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(228, 35, 47, 0);
+  }
+}
+
+.yd-new-expo-outer .yd-new-hero h1 {
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: clamp(34px, 10vw, 70px);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.yd-new-expo-outer .yd-new-hero h1 span {
+  display: inline-block;
+  position: relative;
+  z-index: 0;
+}
+
+.yd-new-expo-outer .yd-new-hero h1 span::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: 0.04em;
+  height: 0.34em;
+  background: var(--yn-gold);
+  z-index: -1;
+  border-radius: 3px;
+}
+
+.yd-new-expo-outer .yd-new-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.yd-new-expo-outer .yd-new-stat {
+  font-family: var(--yn-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--yn-surface);
+  border: 1px solid var(--yn-line);
+  border-radius: 8px;
+  padding: 9px 13px;
+  color: #4b4463;
+}
+
+/* ==========================================================================
+   HERO — TWO COLUMNS
+   --------------------------------------------------------------------------
+   The pitch keeps the left column; the sample box card takes the right from
+   900px up. One column below that, card last, so a phone still reads heading
+   first — it is the same order in the markup, no reordering tricks.
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(26px, 5vw, 40px);
+  align-items: center;
+  /* No position, z-index, transform or opacity here on purpose: any of them
+     would make this a stacking context, and the gold highlight behind the H1
+     is a z-index:-1 pseudo-element that would then be painted out of sight
+     behind the hero background. */
+}
+
+@media (min-width: 900px) {
+  .yd-new-expo-outer .yd-new-hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 522px);
+  }
+}
+
+/* Scoped to the left column rather than the whole hero, so the card's own
+   paragraph does not inherit 19px muted intro type. */
+.yd-new-expo-outer .yd-new-hero-main p {
+  font-size: clamp(15px, 4.2vw, 19px);
+  color: var(--yn-muted);
+  max-width: 44ch;
+  margin-top: 18px;
+}
+
+/* ==========================================================================
+   SAMPLE BOX CARD
+   --------------------------------------------------------------------------
+   Same white-on-paper surface as the shortcut and store cards so it reads as
+   part of the set; the gold strip and the meter are what set it apart. Gold is
+   already the page's accent — it is the highlight behind the H1 and the text on
+   the submit button — so the bar filling in gold ties the card to both.
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-reg {
+  position: relative;
+  overflow: hidden;
+  background: var(--yn-surface);
+  border: 1.5px solid var(--yn-line);
+  border-radius: 18px;
+  padding: 24px 20px 20px;
+  box-shadow: 0 14px 34px rgba(26, 20, 48, 0.10);
+}
+
+/* The one piece of decoration. Sits above the padding, full bleed. */
+.yd-new-expo-outer .yd-new-reg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--yn-gold), #ffb648);
+}
+
+.yd-new-expo-outer .yd-new-reg-title {
+  display: block;
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: clamp(19px, 2.4vw, 22px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--yn-ink);
+}
+
+.yd-new-expo-outer .yd-new-reg-text {
+  font-size: 14px;
+  color: var(--yn-muted);
+  margin-top: 7px;
+  max-width: 38ch;
+}
+
+.yd-new-expo-outer .yd-new-reg-meter {
+  margin-top: 20px;
+}
+
+.yd-new-expo-outer .yd-new-reg-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Baseline-aligned so the big number and the words after it sit on one line
+   however the number wraps in width — 9, 63 and 100 are all different widths. */
+.yd-new-expo-outer .yd-new-reg-count {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+}
+
+.yd-new-expo-outer .yd-new-reg-count b {
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--yn-ink);
+  /* Digits are proportional in Bricolage, so the number would jog sideways as
+     it counts down without this. */
+  font-variant-numeric: tabular-nums;
+}
+
+.yd-new-expo-outer .yd-new-reg-count span {
+  font-size: 13.5px;
+  color: var(--yn-muted);
+}
+
+.yd-new-expo-outer .yd-new-reg-claimed {
+  font-family: var(--yn-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--yn-muted);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* Only 400 and 500 of IBM Plex Mono are loaded, so the browser would have to
+   synthesise a fake bold for <b> here — flattening it keeps "37 CLAIMED"
+   reading as one run of text. */
+.yd-new-expo-outer .yd-new-reg-claimed b {
+  font-weight: 500;
+}
+
+.yd-new-expo-outer .yd-new-reg-track {
+  display: block;
+  height: 8px;
+  margin-top: 11px;
+  border-radius: 999px;
+  background: var(--yn-line);
+  overflow: hidden;
+}
+
+.yd-new-expo-outer .yd-new-reg-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--yn-gold), #ffb648);
+  /* Animates off the server-rendered width, so the bar visibly moves when a
+     visitor comes back from a successful submit. */
+  transition: width 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* Beats `.yd-new-expo-outer .yd-new-expo a { color: inherit }`, which is also
+   (0,3,1) but declared further up the file — so the type selector on `a` is
+   needed here, a plain `.yd-new-reg-btn` would lose the gold. */
+.yd-new-expo-outer .yd-new-reg a.yd-new-reg-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  max-width: max-content;
+  padding: 13px 24px;
+  border-radius: 999px;
+  background: var(--yn-ink);
+  color: var(--yn-gold);
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: 15.5px;
+  line-height: 1.1;
+  text-align: center;
+  transition: background 0.16s ease, transform 0.12s ease;
+}
+
+.yd-new-expo-outer .yd-new-reg a.yd-new-reg-btn:hover {
+  background: #2a2145;
+}
+
+.yd-new-expo-outer .yd-new-reg a.yd-new-reg-btn:active {
+  transform: translateY(1px);
+}
+
+/* Nothing left on the table. The number greys out rather than turning red —
+   an empty pile is not an error. */
+.yd-new-expo-outer .yd-new-reg.is-out .yd-new-reg-count b,
+.yd-new-expo-outer .yd-new-reg.is-out .yd-new-reg-count span {
+  color: var(--yn-muted);
+}
+
+.yd-new-expo-outer .yd-new-reg.is-out a.yd-new-reg-btn {
+  background: var(--yn-line);
+  color: var(--yn-muted);
+  cursor: default;
+}
+
+.yd-new-expo-outer .yd-new-reg.is-out a.yd-new-reg-btn:hover {
+  background: var(--yn-line);
+}
+
+.yd-new-expo-outer .yd-new-reg.is-out a.yd-new-reg-btn:active {
+  transform: none;
+}
+
+/* ==========================================================================
+   DESTINATION PANELS
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-block {
+  padding: clamp(26px, 6vw, 44px) var(--yn-pad);
+  background: var(--yn-paper);
+}
+
+.yd-new-expo-outer .yd-new-block-head {
+  margin-bottom: 16px;
+}
+
+.yd-new-expo-outer .yd-new-block-head h2 {
+  font-family: var(--yn-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  font-size: clamp(23px, 6vw, 34px);
+  line-height: 1.05;
+  /* !important is required here, not stylistic. The theme forces
+     `h2 { margin-top: 0 !important }` site-wide from BOTH custom.css and
+     yd-standards.css, and yd-standards.css is the last stylesheet in <head>.
+     Without !important this 9px is silently dropped and the heading sits
+     tight against the eyebrow above it. */
+  margin-top: 9px !important;
+}
+
+.yd-new-expo-outer .yd-new-block-head p {
+  color: var(--yn-muted);
+  font-size: 15px;
+  margin-top: 8px;
+  max-width: 50ch;
+}
+
+.yd-new-expo-outer .yd-new-panels {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 760px) {
+  .yd-new-expo-outer .yd-new-panels {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.yd-new-expo-outer .yd-new-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  color: #fff;
+  padding: 22px 20px 18px;
+  min-height: 168px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(145deg, var(--yn-a), var(--yn-b));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 18px rgba(26, 20, 48, 0.12);
+}
+
+.yd-new-expo-outer .yd-new-panel:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(26, 20, 48, 0.22);
+}
+
+.yd-new-expo-outer .yd-new-ghost {
+  position: absolute;
+  right: -6px;
+  top: -14px;
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: clamp(72px, 21vw, 132px);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: rgba(255, 255, 255, 0.09);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  transition: transform 0.3s ease;
+}
+
+.yd-new-expo-outer .yd-new-panel:hover .yd-new-ghost {
+  transform: translateX(-6px);
+}
+
+.yd-new-expo-outer .yd-new-panel h3 {
+  position: relative;
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: clamp(22px, 6vw, 28px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.yd-new-expo-outer .yd-new-panel h3 i {
+  font-style: normal;
+  font-family: var(--yn-body);
+  font-weight: 700;
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.yd-new-expo-outer .yd-new-panel:hover h3 i {
+  transform: translateX(5px);
+}
+
+.yd-new-expo-outer .yd-new-panel p {
+  position: relative;
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, 0.82);
+  margin-top: 8px;
+  max-width: 34ch;
+}
+
+.yd-new-expo-outer .yd-new-spec {
+  position: relative;
+  font-family: var(--yn-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================================
+   ACTIONS + FORM
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-ask-sec {
+  padding: clamp(28px, 6.5vw, 50px) var(--yn-pad);
+  background: linear-gradient(180deg, #ffffff, #f5f4f8);
+  border-top: 1px solid var(--yn-line);
+}
+
+.yd-new-expo-outer .yd-new-ask-sec h2 {
+  font-family: var(--yn-display);
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  font-size: clamp(25px, 6.6vw, 38px);
+  line-height: 1.02;
+  /* !important is required here, not stylistic. The theme forces
+     `h2 { margin-top: 0 !important }` site-wide from BOTH custom.css and
+     yd-standards.css, and yd-standards.css is the last stylesheet in <head>.
+     Without !important this 9px is silently dropped and the heading sits
+     tight against the eyebrow above it. */
+  margin-top: 9px !important;
+}
+
+.yd-new-expo-outer .yd-new-lead {
+  color: var(--yn-muted);
+  font-size: 15.5px;
+  margin-top: 10px;
+  max-width: 48ch;
+}
+
+.yd-new-expo-outer .yd-new-asks {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr;
+  margin: 22px 0;
+}
+
+/* Four shortcuts, so 2×2 on a tablet and one row of four on a desktop. Four
+   across below 900px squeezes each card to about 120px, which is narrower than
+   the sub-line under the title — the pair would wrap to three lines. */
+@media (min-width: 600px) {
+  .yd-new-expo-outer .yd-new-asks {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .yd-new-expo-outer .yd-new-asks {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+
+.yd-new-expo-outer .yd-new-ask {
+  background: var(--yn-surface);
+  border: 1.5px solid var(--yn-line);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.yd-new-expo-outer .yd-new-ask:hover {
+  border-color: var(--yn-ink);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(26, 20, 48, 0.09);
+}
+
+.yd-new-expo-outer .yd-new-ask b {
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: 16.5px;
+  letter-spacing: -0.01em;
+}
+
+.yd-new-expo-outer .yd-new-ask small {
+  font-size: 12.5px;
+  color: var(--yn-muted);
+}
+
+.yd-new-expo-outer .yd-new-form {
+  background: var(--yn-surface);
+  border: 1.5px solid var(--yn-line);
+  border-radius: 16px;
+  padding: clamp(18px, 4.5vw, 28px);
+}
+
+.yd-new-expo-outer .yd-new-fl {
+  display: block;
+  font-family: var(--yn-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--yn-muted);
+  margin-bottom: 10px;
+}
+
+.yd-new-expo-outer .yd-new-fl em {
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.yd-new-expo-outer .yd-new-f {
+  margin-bottom: 14px;
+}
+
+.yd-new-expo-outer .yd-new-f input,
+.yd-new-expo-outer .yd-new-f textarea {
+  width: 100%;
+  font-family: var(--yn-body);
+  /* 16px minimum — anything smaller makes iOS Safari zoom the page on focus. */
+  font-size: 16px;
+  color: var(--yn-ink);
+  background: #fafafc;
+  border: 1.5px solid var(--yn-line);
+  border-radius: 11px;
+  padding: 13px 14px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.yd-new-expo-outer .yd-new-f input::placeholder,
+.yd-new-expo-outer .yd-new-f textarea::placeholder {
+  font-family: var(--yn-body);
+  font-size: 16px;
+}
+
+.yd-new-expo-outer .yd-new-f input:focus,
+.yd-new-expo-outer .yd-new-f textarea:focus {
+  outline: none;
+  border-color: var(--yn-ink);
+  background: #fff;
+}
+
+.yd-new-expo-outer .yd-new-f textarea {
+  min-height: 82px;
+  resize: vertical;
+}
+
+.yd-new-expo-outer .yd-new-two {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 560px) {
+  .yd-new-expo-outer .yd-new-two {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Honeypot — off-screen for people, still fillable by bots. */
+.yd-new-expo-outer .yd-new-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.yd-new-expo-outer .yd-new-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.yd-new-expo-outer .yd-new-chips input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.yd-new-expo-outer .yd-new-chips label {
+  font-size: 14px;
+  font-weight: 600;
+  background: #fafafc;
+  border: 1.5px solid var(--yn-line);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.yd-new-expo-outer .yd-new-chips input:checked+label {
+  background: var(--yn-ink);
+  border-color: var(--yn-ink);
+  color: #fff;
+}
+
+.yd-new-expo-outer .yd-new-chips input:focus-visible+label {
+  outline: 3px solid var(--yn-ink);
+  outline-offset: 2px;
+}
+
+/* Product-type chips carry the same colour as their panel above. */
+.yd-new-expo-outer .yd-new-multi label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.yd-new-expo-outer .yd-new-multi label::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  background: var(--yn-dot, #999);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  flex: 0 0 auto;
+}
+
+.yd-new-expo-outer .yd-new-multi input:checked+label {
+  background: var(--yn-dot, var(--yn-ink));
+  border-color: var(--yn-dot, var(--yn-ink));
+  color: #fff;
+}
+
+.yd-new-expo-outer .yd-new-multi input:checked+label::before {
+  background: #fff;
+  box-shadow: none;
+}
+
+.yd-new-expo-outer .yd-new-hint {
+  display: none;
+  font-size: 13px;
+  color: #c0392b;
+  margin-top: 8px;
+}
+
+.yd-new-expo-outer .yd-new-hint.is-on {
+  display: block;
+}
+
+.yd-new-expo-outer .yd-new-submit {
+    padding: 12px 35px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  background: var(--yn-ink);
+  color: var(--yn-gold);
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  transition: background 0.16s ease, transform 0.12s ease;
+}
+.yd-new-expo-outer .yd-new-submit-wrap{
+  display: flex;
+  justify-content: center;
+}
+
+.yd-new-expo-outer .yd-new-submit:hover {
+  background: #2a2145;
+}
+
+.yd-new-expo-outer .yd-new-submit:active {
+  transform: translateY(1px);
+}
+
+/* Held while the already-registered lookup is out — at most two seconds. Same
+   button in the same ink, only dimmed: nothing has gone wrong, it is simply not
+   ready yet. The hover and active states are suppressed so it does not answer a
+   press it is not going to act on. */
+.yd-new-expo-outer .yd-new-submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.yd-new-expo-outer .yd-new-submit:disabled:hover {
+  background: var(--yn-ink);
+}
+
+.yd-new-expo-outer .yd-new-submit:disabled:active {
+  transform: none;
+}
+
+.yd-new-expo-outer .yd-new-fine {
+  font-size: 12.5px;
+  color: var(--yn-muted);
+  text-align: center;
+  margin-top: 11px !important;
+}
+
+/* ==========================================================================
+   EXPERIENCE CENTRE
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-store {
+  padding: clamp(26px, 6vw, 44px) var(--yn-pad);
+  background: var(--yn-paper);
+  border-top: 1px solid var(--yn-line);
+}
+
+.yd-new-expo-outer .yd-new-store h2 {
+  font-family: var(--yn-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  font-size: clamp(23px, 6vw, 32px);
+  line-height: 1.05;
+  /* !important is required here, not stylistic. The theme forces
+     `h2 { margin-top: 0 !important }` site-wide from BOTH custom.css and
+     yd-standards.css, and yd-standards.css is the last stylesheet in <head>.
+     Without !important this 9px is silently dropped and the heading sits
+     tight against the eyebrow above it. */
+  margin-top: 9px !important;
+}
+
+.yd-new-expo-outer .yd-new-store-card {
+  margin-top: 16px;
+  background: var(--yn-surface);
+  border: 1.5px solid var(--yn-line);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.yd-new-expo-outer .yd-new-store-card b {
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.yd-new-expo-outer .yd-new-store-card address {
+  font-style: normal;
+  font-size: 15px;
+  color: var(--yn-muted);
+  margin-top: 6px;
+}
+
+.yd-new-expo-outer .yd-new-store-hours {
+  font-size: 14px;
+  color: var(--yn-muted);
+  margin-top: 8px;
+}
+
+.yd-new-expo-outer .yd-new-store-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.yd-new-expo-outer .yd-new-store-links a {
+  font-size: 14px;
+  font-weight: 700;
+  border: 1.5px solid var(--yn-ink);
+  border-radius: 999px;
+  padding: 10px 18px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.yd-new-expo-outer .yd-new-store-links a:hover {
+  background: var(--yn-ink);
+  color: #fff;
+}
+
+/* Narrow phones: let the buttons share the row evenly rather than having one
+   wrap awkwardly onto a line of its own. */
+@media (max-width: 400px) {
+  .yd-new-expo-outer .yd-new-store-links a {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 10px 12px;
+  }
+}
+
+/* ==========================================================================
+   WHATSAPP
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-wa {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #fff;
+  background: linear-gradient(140deg, #1e9e52, #0f6b36);
+  padding: 20px var(--yn-pad);
+  transition: filter 0.18s ease;
+}
+
+.yd-new-expo-outer .yd-new-wa:hover {
+  filter: brightness(1.09);
+}
+
+.yd-new-expo-outer .yd-new-wa svg {
+  flex: 0 0 30px;
+}
+
+.yd-new-expo-outer .yd-new-wa b {
+  font-family: var(--yn-display);
+  font-weight: 800;
+  font-size: 17px;
+  display: block;
+  letter-spacing: -0.01em;
+}
+
+.yd-new-expo-outer .yd-new-wa small {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.yd-new-expo-outer .yd-new-go {
+  margin-left: auto;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   STICKY ACTION BAR (mobile only)
+   --------------------------------------------------------------------------
+   Sits outside .yd-new-expo so the card's overflow:hidden cannot clip it,
+   which also means it cannot inherit the --yn- tokens. Colours are literal.
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid #e4e2ec;
+  font-family: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.yd-new-expo-outer .yd-new-bar a {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 14px 10px;
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.yd-new-expo-outer .yd-new-bar-wa {
+  background: #128c4b;
+  color: #fff;
+}
+
+.yd-new-expo-outer .yd-new-bar-form {
+  background: #1a1430;
+  color: #ffd23f;
+}
+
+.yd-new-expo-outer .yd-new-bar a:focus-visible {
+  outline: 3px solid #1a1430;
+  outline-offset: 2px;
+}
+
+@media (min-width: 760px) {
+  .yd-new-expo-outer .yd-new-bar {
+    display: none;
+  }
+}
+
+/* Clear the bar so it never covers the WhatsApp banner at the end of the card. */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .yd-new-expo-outer .yd-new-expo *,
+  .yd-new-expo-outer .yd-new-expo *::before,
+  .yd-new-expo-outer .yd-new-expo *::after,
+  .yd-new-expo-outer .yd-new-bar {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.yd-new-expo-outer .yd-new-panel h3,
+.yd-new-expo-outer .yd-new-wa b,
+.yd-new-expo-outer .yd-new-go {
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .yd-new-expo-outer .yd-new-chips label {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .yd-new-expo-outer .yd-new-f input::placeholder,
+  .yd-new-expo-outer .yd-new-f textarea::placeholder {
+    font-size: 12px;
+  }
+
+  .yd-new-expo-outer .yd-new-two {
+    gap: 0px;
+  }
+
+  .yd-new-expo-outer .yd-new-hero,
+  .yd-new-expo-outer .yd-new-block,
+  .yd-new-expo-outer .yd-new-form,
+  .yd-new-expo-outer .yd-new-store,
+  .yd-new-expo-outer .yd-new-expo a {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+
+/* ==========================================================================
+   EXPERIENCE CENTRE SLIDER
+   --------------------------------------------------------------------------
+   Scroll-snap rather than Swiper. The theme does load swiper-bundle.min.js
+   globally, but its stylesheet is section-owned now, so reaching for Swiper
+   would put a render-blocking file back on this page for a four-card carousel.
+   Snap points cost nothing, and with JS off the track is still a normal
+   horizontal swipe list — only the arrows and dots need scripting.
+
+   Inside .yd-new-expo, so var(--yn-*) resolves normally here.
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-store-slider {
+  position: relative;
+  margin-top: 16px;
+}
+
+.yd-new-expo-outer .yd-new-store-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  /* Room for the card border and shadow, which the scroll box would clip. */
+  padding: 4px 0 10px;
+}
+
+.yd-new-expo-outer .yd-new-store-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Drag to scroll. The grab cursor is the only hint a mouse user gets that the
+   track is draggable, so it is not decorative. */
+.yd-new-expo-outer .yd-new-store-track {
+  cursor: grab;
+}
+
+/* While dragging, snap and smooth-scroll are turned off so the track follows
+   the pointer exactly instead of fighting it, and text selection is suppressed
+   so dragging across a card does not highlight the address. */
+.yd-new-expo-outer .yd-new-store-track.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.yd-new-expo-outer .yd-new-store-track.is-dragging a {
+  pointer-events: none;
+}
+
+.yd-new-expo-outer .yd-new-store-slide {
+  /* Just under full width so the next card peeks — the swipe affordance. */
+  flex: 0 0 88%;
+  scroll-snap-align: start;
+  display: flex;
+}
+
+/* Two across from 640px up, at every width above it — desktop shows two and
+   slides to the rest. Below 640px it drops to one with the next card peeking. */
+@media (min-width: 640px) {
+  .yd-new-expo-outer .yd-new-store-slide {
+    flex: 0 0 calc((100% - 12px) / 2);
+  }
+}
+
+
+/* The base card carries margin-top for the old single-card layout; inside a
+   slide it needs to fill the slide instead. */
+.yd-new-expo-outer .yd-new-store-slide .yd-new-store-card {
+  margin-top: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pin buttons to the bottom so a short address does not leave a ragged row. */
+.yd-new-expo-outer .yd-new-store-slide .yd-new-store-links {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.yd-new-expo-outer .yd-new-store-city {
+  display: block;
+  font-family: var(--yn-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--yn-muted);
+  margin-bottom: 7px;
+}
+
+.yd-new-expo-outer .yd-new-store-nav {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.yd-new-expo-outer .yd-new-store-arrow {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--yn-line);
+  border-radius: 50%;
+  background: var(--yn-surface);
+  color: var(--yn-ink);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.yd-new-expo-outer .yd-new-store-arrow:hover:not(:disabled) {
+  background: var(--yn-ink);
+  border-color: var(--yn-ink);
+  color: #fff;
+}
+
+.yd-new-expo-outer .yd-new-store-arrow:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+/* JS sets [hidden] when the track cannot scroll — with one or two centres there
+   is nowhere to go, and permanently greyed-out arrows just look broken. */
+.yd-new-expo-outer .yd-new-store-nav[hidden],
+.yd-new-expo-outer .yd-new-store-dots[hidden] {
+  display: none;
+}
+
+/* Touch devices swipe; arrows are dead weight there. */
+@media (max-width: 639px) {
+  .yd-new-expo-outer .yd-new-store-nav {
+    display: none;
+  }
+}
+
+.yd-new-expo-outer .yd-new-store-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.yd-new-expo-outer .yd-new-store-dots:empty {
+  display: none;
+}
+
+.yd-new-expo-outer .yd-new-store-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--yn-line);
+  cursor: pointer;
+  transition: width 0.18s ease, background 0.18s ease;
+}
+
+.yd-new-expo-outer .yd-new-store-dot:hover {
+  background: var(--yn-muted);
+}
+
+.yd-new-expo-outer .yd-new-store-dot.is-active {
+  width: 22px;
+  background: var(--yn-ink);
+}
+
+@media (min-width: 640px) {
+  .yd-new-expo-outer .yd-new-store-dots {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   RESULT POPUP (success + error)
+   --------------------------------------------------------------------------
+   Replaces the old inline .yd-new-thanks / .yd-new-errors banners. Rendered by
+   Liquid only after the form posts, then dismissed by the X, the button, the
+   backdrop, Esc, or — success only — the auto-close timer.
+
+   Colours are literal rather than var(--yn-*): this sits outside .yd-new-expo,
+   which is where those tokens are declared, same as .yd-new-bar. Keep them in
+   step if the palette changes.
+   ========================================================================== */
+
+.yd-new-expo-outer .yd-new-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Beats the display:flex above on specificity, so [hidden] actually hides. */
+.yd-new-expo-outer .yd-new-modal[hidden] {
+  display: none;
+}
+
+.yd-new-expo-outer .yd-new-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 20, 48, 0.55);
+  animation: ydNewFade 0.2s ease-out;
+  cursor: pointer;
+}
+
+.yd-new-expo-outer .yd-new-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 32px 24px 24px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(26, 20, 48, 0.3);
+  animation: ydNewPop 0.26s cubic-bezier(0.2, 0.9, 0.3, 1.25);
+}
+
+.yd-new-expo-outer .yd-new-modal-x {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  color: #6a6480;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.yd-new-expo-outer .yd-new-modal-x:hover {
+  background: #f5f4f8;
+  color: #1a1430;
+}
+
+.yd-new-expo-outer .yd-new-modal-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ydNewTick 0.4s ease-out 0.08s both;
+}
+
+.yd-new-expo-outer .yd-new-modal--ok .yd-new-modal-icon {
+  background: #eaf6ee;
+  color: #1e9e52;
+}
+
+.yd-new-expo-outer .yd-new-modal--err .yd-new-modal-icon {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+/* Already registered is neither a success nor a failure — nothing broke, there
+   is simply nothing left to do. Amber rather than green or red says that. */
+.yd-new-expo-outer .yd-new-modal--dupe .yd-new-modal-icon {
+  background: #fdf3dd;
+  color: #a1730c;
+}
+
+/* This popup is raised before anything is posted, so its close controls are
+   <button> rather than the result popup's links to the clean URL. Only the
+   browser's own button chrome needs clearing — everything else is shared.
+
+   Element-plus-class, at (0,2,1), deliberately: the plain-class form would be
+   (0,3,0) and would then beat `.yd-new-modal-x:hover` and `.yd-new-modal-btn:hover`
+   further up, killing both hover states. */
+.yd-new-expo-outer button.yd-new-modal-x,
+.yd-new-expo-outer button.yd-new-modal-btn {
+  border: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.yd-new-expo-outer button.yd-new-modal-x {
+  background: transparent;
+  padding: 0;
+  /* A <button> does not inherit the page font the way the <a> version does. */
+  font-family: inherit;
+}
+
+.yd-new-expo-outer .yd-new-modal-card b {
+  display: block;
+  font-family: 'Bricolage Grotesque', 'Archivo', Helvetica, sans-serif;
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+  color: #1a1430;
+  margin-bottom: 7px;
+}
+
+.yd-new-expo-outer .yd-new-modal-card p {
+  font-family: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: #6a6480;
+  margin: 0 auto;
+  max-width: 34ch;
+}
+
+.yd-new-expo-outer .yd-new-modal-btn {
+  display: block;
+  width: 100%;
+  margin-top: 22px;
+  padding: 15px 20px;
+  border-radius: 999px;
+  background: #1a1430;
+  color: #ffd23f;
+  font-family: 'Bricolage Grotesque', 'Archivo', Helvetica, sans-serif;
+  font-weight: 800;
+  font-size: 15.5px;
+  line-height: 1;
+  transition: background 0.16s ease;
+}
+
+.yd-new-expo-outer .yd-new-modal-btn:hover {
+  background: #2a2145;
+}
+
+/* The sticky bar would otherwise sit on top of the backdrop. */
+.yd-new-expo-outer.is-modal-open .yd-new-bar {
+  display: none;
+}
+
+@keyframes ydNewFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ydNewPop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ydNewTick {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yd-new-expo-outer .yd-new-store-track {
+    scroll-behavior: auto;
+  }
+
+  .yd-new-expo-outer .yd-new-modal,
+  .yd-new-expo-outer .yd-new-modal * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+
+/* ==========================================================================
+   REVIEW FIXES
+   --------------------------------------------------------------------------
+   Appended rather than edited into the blocks above, so hand edits up there
+   stay untouched. Each one repairs a specific confirmed defect.
+   ========================================================================== */
+
+/* The sticky bar is position:fixed, so it sits on top of the end of the card.
+   The rule that reserved space for it was lost at some point — its explanatory
+   comment is still up there, orphaned, just above the reduced-motion block.
+   Without this the bar covers the WhatsApp banner on every phone. */
+
+
+/* Breakpoint band overlap. `.yd-new-two` goes two-column at min-width 560px,
+   but `gap: 0px` is set at max-width 600px — so from 560px to 600px inclusive
+   the pair renders as two columns with no gutter and the Name/Phone and
+   Email/Company inputs meet border-to-border. Below 560px the layout is a
+   single column, where margin-bottom already supplies the rhythm and gap: 0 is
+   what is wanted; this restores the gutter only inside the overlapping band. */
+@media (min-width: 560px) and (max-width: 600px) {
+  .yd-new-expo-outer .yd-new-two {
+    gap: 14px;
+  }
+}
+
+.yd-new-expo-outer .yd-store-card.para {
+  font-style: normal;
+  font-size: 14.5px;
+  color: #6a6480;
+  margin-top: 9px;
+}

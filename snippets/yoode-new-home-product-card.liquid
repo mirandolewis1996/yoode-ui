@@ -1,0 +1,313 @@
+{% comment %}
+  Product card for yoode-new-home-* sections (styles: yoode-new-home.css,
+  behaviour: <yoode-new-home-featured-collection> in yoode-new-home.js).
+
+  Renders either a real product OR a demo block (used when no collection is picked).
+
+  Accepts:
+  - product {Object} Shopify product (optional)
+  - block {Object} demo block with settings: image, fallback_image, title, vendor, link,
+    badge, tag, rating, compare_price, price, sizes (optional, used when product is blank)
+  - card_settings {Object} section.settings — reads: show_vendor, show_badges, discount_label,
+    show_rating, default_rating, rating_label, show_sizes, size_option_name, sizes_label,
+    show_wishlist, wishlist_label, show_quick_add, add_to_cart_label, sold_out_label,
+    choose_size_label
+  - title_override {String} replaces product.title when set (optional)
+  - image_override {Object} uploaded image to use instead of the product image (optional)
+  - section_id {String} section.id (used for unique element ids)
+  - sizes {String} image `sizes` attribute (optional)
+
+  Usage:
+  {% render 'yoode-new-home-product-card', product: product, card_settings: section.settings, section_id: section.id %}
+  {% render 'yoode-new-home-product-card', block: block, card_settings: section.settings, section_id: section.id %}
+{% endcomment %}
+
+{%- liquid
+  assign image_sizes = sizes | default: '(min-width: 990px) calc((100vw - 12rem) / 4), (min-width: 750px) calc((100vw - 10rem) / 2), calc(100vw - 6rem)'
+  assign size_values = null
+  assign size_count = 0
+  assign variant_id = blank
+  assign is_available = true
+  assign needs_size = false
+  assign discount_text = blank
+  assign tag_text = blank
+
+  if product != blank
+    assign card_title = title_override | default: product.title
+    assign card_vendor = product.vendor
+    assign card_url = product.url
+    assign card_image = image_override | default: product.featured_media.preview_image
+    assign rating_value = product.metafields.reviews.rating.value.rating | default: card_settings.default_rating
+    assign variant_id = product.selected_or_first_available_variant.id
+    assign is_available = product.available
+
+    if product.compare_at_price > product.price
+      assign percent = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+      assign discount_text = card_settings.discount_label | replace: '[percent]', percent
+    endif
+    if product.tags.size > 0
+      assign tag_text = product.tags.first
+    endif
+
+    # Find the size option (e.g. "Size" / "Sizes"), matched case-insensitively
+    assign size_option = null
+    if card_settings.show_sizes and product.has_only_default_variant == false
+      assign size_name = card_settings.size_option_name | strip | downcase
+      assign size_name_plural = size_name | append: 's'
+      for option in product.options_with_values
+        assign option_name = option.name | strip | downcase
+        if option_name == size_name or option_name == size_name_plural
+          assign size_option = option
+          break
+        endif
+      endfor
+    endif
+    if size_option != null
+      assign size_count = size_option.values.size
+      assign size_pos = size_option.position | minus: 1
+      if size_count > 1
+        assign needs_size = true
+      endif
+    endif
+  else
+    assign card_title = block.settings.title
+    assign card_vendor = block.settings.vendor
+    assign card_url = block.settings.link
+    assign card_image = block.settings.image
+    assign rating_value = block.settings.rating
+    assign discount_text = block.settings.badge
+    assign tag_text = block.settings.tag
+    if card_settings.show_sizes and block.settings.sizes != blank
+      assign size_values = block.settings.sizes | split: ','
+      assign size_count = size_values.size
+    endif
+  endif
+
+  assign dropdown_id = 'YnSizes-' | append: section_id | append: '-'
+  if product != blank
+    assign dropdown_id = dropdown_id | append: product.id
+  else
+    assign dropdown_id = dropdown_id | append: block.id
+  endif
+-%}
+
+<article
+  class="yn-product-card"
+  data-yn-card
+  {% if variant_id != blank %}
+    data-variant-id="{{ variant_id }}"
+  {% endif %}
+  {% if needs_size %}
+    data-needs-size
+  {% endif %}
+>
+  {%- if card_url != blank -%}
+    <a class="yn-product-card__link" href="{{ card_url | escape }}" aria-label="{{ card_title | escape }}">
+      <span class="yn-product-card__sr">{{ card_title | escape }}</span>
+    </a>
+  {%- endif -%}
+
+  <div class="yn-product-card__media">
+    <div class="yn-product-card__image">
+      {%- if card_image != blank -%}
+        {{
+          card_image
+          | image_url: width: 1000
+          | image_tag:
+            loading: 'lazy',
+            widths: '300, 400, 500, 600, 800, 1000',
+            sizes: image_sizes,
+            alt: card_title
+        }}
+      {%- elsif product == blank and block.settings.fallback_image != blank -%}
+        <img
+          src="{{ block.settings.fallback_image | asset_url }}"
+          alt="{{ card_title | escape }}"
+          loading="lazy"
+          width="800"
+          height="1000"
+        >
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'yn-product-card__placeholder' }}
+      {%- endif -%}
+    </div>
+
+    {%- if card_settings.show_badges -%}
+      {%- if discount_text != blank or tag_text != blank -%}
+        <div class="yn-product-card__badges">
+          {%- if discount_text != blank -%}
+            <span class="yn-product-card__badge yn-product-card__badge--sale">{{ discount_text | escape }}</span>
+          {%- endif -%}
+          {%- if tag_text != blank -%}
+            <span class="yn-product-card__badge yn-product-card__badge--tag">{{ tag_text | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    <div class="yn-product-card__actions">
+      {%- if size_count > 0 -%}
+        <div class="yn-product-card__sizes" data-yn-dropdown>
+          <button
+            type="button"
+            class="yn-product-card__panel yn-product-card__size-toggle"
+            aria-expanded="false"
+            aria-controls="{{ dropdown_id }}"
+            data-yn-dropdown-toggle
+          >
+            <span class="yn-product-card__size-preview" aria-hidden="true">
+              {%- if product != blank -%}
+                {%- for value in size_option.values limit: 3 -%}
+                  {%- assign preview_name = value.name | default: value -%}
+                  <span>{{ preview_name | truncate: 2, '' | escape }}</span>
+                {%- endfor -%}
+              {%- else -%}
+                {%- for value in size_values limit: 3 -%}
+                  <span>{{ value | strip | escape }}</span>
+                {%- endfor -%}
+              {%- endif -%}
+              {%- if size_count > 3 -%}
+                <span class="yn-product-card__size-more">+</span>
+              {%- endif -%}
+              <svg class="yn-product-card__size-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+            <span class="yn-product-card__size-label" data-yn-size-label>{{ card_settings.sizes_label | escape }}</span>
+          </button>
+
+          <ul class="yn-product-card__dropdown" id="{{ dropdown_id }}" role="listbox" aria-label="{{ card_settings.sizes_label | escape }}" hidden>
+            {%- if product != blank -%}
+              {%- for value in size_option.values -%}
+                {%- liquid
+                  assign value_name = value.name | default: value
+                  assign value_variant = null
+                  for variant in product.variants
+                    if variant.options[size_pos] == value_name and variant.available
+                      assign value_variant = variant
+                      break
+                    endif
+                  endfor
+                  if value_variant == null
+                    for variant in product.variants
+                      if variant.options[size_pos] == value_name
+                        assign value_variant = variant
+                        break
+                      endif
+                    endfor
+                  endif
+                -%}
+                <li>
+                  <button
+                    type="button"
+                    class="yn-product-card__option"
+                    role="option"
+                    aria-selected="false"
+                    data-yn-size="{{ value_name | escape }}"
+                    {% if value_variant != null %}
+                      data-variant-id="{{ value_variant.id }}"
+                      data-available="{{ value_variant.available }}"
+                    {% endif %}
+                    {% unless value_variant.available %}
+                      disabled
+                    {% endunless %}
+                  >
+                    {{- value_name | escape -}}
+                  </button>
+                </li>
+              {%- endfor -%}
+            {%- else -%}
+              {%- for value in size_values -%}
+                <li>
+                  <button type="button" class="yn-product-card__option" role="option" aria-selected="false" data-yn-size="{{ value | strip | escape }}">
+                    {{- value | strip | escape -}}
+                  </button>
+                </li>
+              {%- endfor -%}
+            {%- endif -%}
+          </ul>
+        </div>
+      {%- else -%}
+        <span class="yn-product-card__spacer"></span>
+      {%- endif -%}
+
+      {%- if card_settings.show_rating and rating_value != blank -%}
+        <span class="yn-product-card__panel yn-product-card__rating">
+          <svg class="yn-product-card__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span class="yn-product-card__rating-value">
+            {%- if card_settings.rating_label != blank -%}
+              <span class="yn-product-card__sr">{{ card_settings.rating_label | escape }}</span>
+            {%- endif -%}
+            {{- rating_value | escape -}}
+          </span>
+        </span>
+      {%- endif -%}
+
+      {%- if card_settings.show_wishlist -%}
+        <button
+          type="button"
+          class="yn-product-card__panel yn-product-card__icon-button yn-product-card__icon-button--wishlist"
+          aria-label="{{ card_settings.wishlist_label | escape }}"
+          aria-pressed="false"
+          data-yn-wishlist
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+        </button>
+      {%- endif -%}
+
+      {%- if card_settings.show_quick_add -%}
+        {%- if product != blank -%}
+          <button
+            type="button"
+            class="yn-product-card__panel yn-product-card__icon-button yn-product-card__icon-button--cart"
+            aria-label="{% if is_available %}{{ card_settings.add_to_cart_label | escape }}{% else %}{{ card_settings.sold_out_label | escape }}{% endif %}"
+            title="{% if is_available %}{{ card_settings.add_to_cart_label | escape }}{% else %}{{ card_settings.sold_out_label | escape }}{% endif %}"
+            data-yn-quick-add
+            data-choose-label="{{ card_settings.choose_size_label | escape }}"
+            {% unless is_available %}
+              disabled
+            {% endunless %}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </button>
+        {%- elsif card_url != blank -%}
+          <a
+            class="yn-product-card__panel yn-product-card__icon-button yn-product-card__icon-button--cart"
+            href="{{ card_url }}"
+            aria-label="{{ card_settings.add_to_cart_label | escape }}"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </a>
+        {%- else -%}
+          <span class="yn-product-card__panel yn-product-card__icon-button yn-product-card__icon-button--cart" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </span>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="yn-product-card__info">
+    <div class="yn-product-card__text">
+      {%- if card_settings.show_vendor and card_vendor != blank -%}
+        <span class="yn-product-card__vendor">{{ card_vendor | escape }}</span>
+      {%- endif -%}
+      <h3 class="yn-product-card__title">{{ card_title | escape }}</h3>
+    </div>
+    <div class="yn-product-card__prices">
+      {%- if product != blank -%}
+        {%- if product.compare_at_price > product.price -%}
+          <s class="yn-product-card__compare">{{ product.compare_at_price | money }}</s>
+        {%- endif -%}
+        <span class="yn-product-card__price">
+          {{- product.price | money -}}
+        </span>
+      {%- else -%}
+        {%- if block.settings.compare_price != blank -%}
+          <s class="yn-product-card__compare">{{ block.settings.compare_price | escape }}</s>
+        {%- endif -%}
+        {%- if block.settings.price != blank -%}
+          <span class="yn-product-card__price">{{ block.settings.price | escape }}</span>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+</article>

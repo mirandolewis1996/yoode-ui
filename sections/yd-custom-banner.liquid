@@ -1,0 +1,606 @@
+{% schema %}
+{
+  "name": "YD Custom Banner",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading_line",
+      "label": "Show Heading Line",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "default": "Premium Fabric, Precision Fit, Your Style.",
+      "label": "Sub Text"
+    },
+    {
+      "type": "image_picker",
+      "id": "review_logo",
+      "label": "Review Logo"
+    },
+    {
+      "type": "textarea",
+      "id": "review_title",
+      "label": "Review Title",
+      "default": "Google"
+    },
+    {
+      "type": "text",
+      "id": "review_rating",
+      "label": "Review Rating",
+      "default": "4.9"
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Review Count",
+      "default": "250+ Reviews"
+    },
+    {
+      "type": "image_picker",
+      "id": "image1",
+      "label": "Top Left Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image2",
+      "label": "Bottom Left Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image3",
+      "label": "Right Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image4",
+      "label": "Bottom Right Image"
+    },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_top.label"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-padding.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-padding.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-padding.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-padding.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-padding.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-padding.options__6.label"
+        }
+      ],
+      "default": "xl",
+      "label": "t:sections.all.section-padding.padding_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "Button",
+      "limit": 2,
+      "settings": [
+        { "type": "text", "id": "button_label", "default": "Click Here", "label": "Label" },
+        { "type": "url", "id": "button_link", "label": "Link" },
+        {
+          "type": "select",
+          "id": "button_style",
+          "options": [
+            { "value": "primary", "label": "Primary" },
+            { "value": "secondary", "label": "Secondary" },
+            { "value": "tertiary", "label": "Tertiary" }
+          ],
+          "default": "primary",
+          "label": "Style"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_arrow",
+          "default": true,
+          "label": "Arrow"
+        },
+        {
+          "type": "range",
+          "id": "arrow_rotate",
+          "min": 0,
+          "max": 360,
+          "step": 5,
+          "unit": "deg",
+          "label": "Arrow Rotation",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [{ "name": "YD Custom Banner" }]
+}
+{% endschema %}
+{% style %}
+  {% render 'section-padding' %}
+{% endstyle %}
+<div class="yd-custom-banner color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding section-padding">
+  <div class="yd-custom-banner__container">
+    <!-- LEFT -->
+    <div class="yd-custom-banner__left">
+      <!-- HEADING -->
+      {% if section.settings.heading != blank %}
+        <div class="custom-yd-title {% if section.settings.show_heading_line %}show-line{% endif %}">
+          {{ section.settings.heading }}
+        </div>
+      {% endif %}
+
+      <!-- SUBTEXT -->
+      {% if section.settings.subtext != blank %}
+        <p>{{ section.settings.subtext }}</p>
+      {% endif %}
+
+      <!-- REVIEWS -->
+      {% assign show_reviews = false %}
+
+      {% if section.settings.review_logo != blank
+        or section.settings.review_title != blank
+        or section.settings.review_rating != blank
+        or section.settings.review_count != blank
+      %}
+        {% assign show_reviews = true %}
+      {% endif %}
+
+      {% if show_reviews %}
+        <div class="yd-custom-banner__reviews">
+          {% if section.settings.review_logo != blank or section.settings.review_title != blank %}
+            <div class="yd-custom-banner__reviews-top">
+              {% if section.settings.review_logo != blank %}
+                <img
+                  src="{{ section.settings.review_logo | image_url }}"
+                  alt=""
+                  class="yd-custom-banner__review-logo"
+                >
+              {% endif %}
+
+              {% if section.settings.review_title != blank %}
+                <h5 class="yd-review-text">{{ section.settings.review_title }}</h5>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          {% if section.settings.review_rating != blank %}
+            <div class="yd-custom-banner__review-rating">
+              {{ section.settings.review_rating }}
+
+              <span class="review-stars"> ★★★★★ </span>
+            </div>
+          {% endif %}
+
+          {% if section.settings.review_count != blank %}
+            <span class="yd-custom-banner__review-count">
+              {{ section.settings.review_count }}
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- BUTTONS -->
+      <div class="yd-custom-banner__buttons">
+        {% for block in section.blocks %}
+          {% if block.settings.button_label != blank %}
+            <a
+              href="{{ block.settings.button_link }}"
+              class="button--{{ block.settings.button_style }} button focus-inset"
+              {{ block.shopify_attributes }}
+            >
+              <div class="button__content">
+                <span class="button__label" data-label="{{ block.settings.button_label }}">
+                  {{- block.settings.button_label -}}
+                </span>
+              </div>
+
+              {% if block.settings.button_arrow %}
+                <span
+                  class="yd-custom-banner__arrow"
+                  style="transform: rotate({{ block.settings.arrow_rotate }}deg);"
+                >
+                  {% render 'icon-arrow' %}
+                </span>
+              {% endif %}
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    {% assign has_fourth_image = false %}
+
+    {% if section.settings.image4 != blank %}
+      {% assign has_fourth_image = true %}
+    {% endif %}
+
+    <div class="yd-custom-banner__right {% if has_fourth_image %}has-four-images{% endif %}">
+      <!-- LEFT GRID -->
+      <div class="yd-custom-banner__grid-left">
+        {% if section.settings.image1 %}
+          <img src="{{ section.settings.image1 | image_url }}" alt="" width="100%" height="100%">
+        {% endif %}
+
+        {% if section.settings.image2 %}
+          <img src="{{ section.settings.image2 | image_url }}" alt="" width="100%" height="100%">
+        {% endif %}
+      </div>
+
+      <!-- RIGHT GRID -->
+      <div class="yd-custom-banner__grid-right">
+        {% if section.settings.image3 %}
+          <img src="{{ section.settings.image3 | image_url }}" alt="" width="100%" height="100%">
+        {% endif %}
+
+        {% if section.settings.image4 %}
+          <img src="{{ section.settings.image4 | image_url }}" alt="" width="100%" height="100%">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    .custom-yd-title h1{
+    margin-bottom:10px
+  }
+
+            .yd-custom-banner{
+                height:100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+              /* CONTAINER */
+            .yd-custom-banner__container {
+                max-width: 1200px;
+                margin: auto;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 40px;
+              }
+
+        .yd-custom-banner .custom-yd-title.show-line{
+          position: relative;
+
+        }
+         @media(min-width: 992px) {
+           .yd-custom-banner .custom-yd-title.show-line{
+          margin-bottom: 30px;
+
+        }
+        }
+
+        .yd-custom-banner .custom-yd-title.show-line::before{
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -4%;
+          transform: translateY(-50%);
+          width: 60px;
+          height: 2px;
+          background: #ff7a1a;
+        }
+      .yd-custom-banner__reviews{
+        margin: 20px 0;
+      }
+
+      .yd-custom-banner__reviews-top{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        margin-bottom:5px;
+      }
+
+      .yd-custom-banner__review-logo{
+        width:42px;
+        height:42px;
+        object-fit:contain;
+      }
+
+      .yd-custom-banner__reviews h5{
+        margin:0;
+      }
+
+      .yd-custom-banner__review-rating{
+        margin:0;
+        font-size:22px;
+        font-weight:700;
+      }
+
+      .yd-custom-banner__review-count{
+        display:block;
+      }
+          .yd-custom-banner .review-stars{
+          color: #f4b400;
+        }
+              .yd-custom-banner .yd-custom-banner__left p {
+                font-size: 16px;
+                margin-bottom: 20px;
+                opacity: 0.8;
+              }
+
+              /* BUTTONS */
+              .yd-custom-banner .yd-custom-banner__arrow {
+              display: inline-block;
+              transition: transform 0.3s ease;
+            }
+              .yd-custom-banner .yd-custom-banner__buttons {
+                display: flex;
+                gap: 12px;
+              }
+            .yd-custom-banner__buttons  .button{
+                    gap: 8px;
+            }
+
+
+
+              /* ARROW */
+              .yd-custom-banner .yd-custom-banner__arrow {
+                font-size: 16px;
+              }
+
+              /* RIGHT GRID */
+              .yd-custom-banner .yd-custom-banner__right {
+                display: flex;
+                gap: 12px;
+              }
+
+              .yd-custom-banner .yd-custom-banner__grid-left {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+              }
+
+              .yd-custom-banner .yd-custom-banner__grid-left img,
+              .yd-custom-banner .yd-custom-banner__grid-right img {
+                border-radius: 10px;
+                object-fit: cover;
+              }
+
+          /* COMMON */
+          .yd-custom-banner .yd-custom-banner__right {
+            display: flex;
+            gap: 12px;
+          }
+
+          .yd-custom-banner .yd-custom-banner__grid-left,
+          .yd-custom-banner .yd-custom-banner__grid-right {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+
+          .yd-custom-banner .yd-custom-banner__grid-left img,
+          .yd-custom-banner .yd-custom-banner__grid-right img {
+            object-fit: cover;
+            border-radius: 16px;
+            display: block;
+            background-color: #FFF0E0;
+          }
+          .yd-review-text{
+            font-size: 34px;
+          }
+
+          /* ========================= */
+          /* 3 IMAGE LAYOUT */
+          /* ========================= */
+
+          {% comment %} .yd-custom-banner__grid-left img:first-child {
+            height: 185px;
+          }
+
+          .yd-custom-banner__grid-left img:last-child {
+            height: 185px;
+          }
+
+          .yd-custom-banner__grid-right img {
+            height: 382px;
+          } {% endcomment %}
+
+          /* ========================= */
+          /* 4 IMAGE LAYOUT */
+          /* ========================= */
+
+          {% comment %} .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-left img:first-child {
+            height: 420px;
+          }
+
+          .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-left img:last-child {
+            height: 220px;
+          } {% endcomment %}
+
+          .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-right {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+
+          {% comment %} .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-right img:first-child {
+            height: 220px;
+          }
+
+          .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-right img:last-child {
+            height: 420px;
+          } {% endcomment %}
+              /* RESPONSIVE */
+              @media(min-width: 1250px) {
+                .yd-custom-banner__left{
+                width:50%;
+              }
+              }
+              @media(max-width: 1250px) {
+                .yd-custom-banner .custom-yd-title.show-line::before{
+                display:none;
+                }
+                    .yd-custom-banner{
+                height:97vh;
+
+            }
+                .yd-custom-banner .yd-custom-banner__container {
+                  flex-direction: column-reverse;
+                  text-align: center;
+                }
+
+                .yd-custom-banner .yd-custom-banner__buttons {
+                  justify-content: center;
+                }
+
+                .yd-custom-banner .yd-custom-banner__right {
+                  justify-content: center;
+                }
+                 .yd-custom-banner .yd-custom-banner__reviews {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+              }
+    @media(max-width: 610px) {
+
+        .yd-custom-banner .yd-custom-banner__container {
+            justify-content: start;
+            margin: 0;
+            gap: 10px;
+      }
+      .yd-custom-banner .custom-yd-title.show-line::before{
+        display:none;
+      }
+      .yd-custom-banner{
+        height:auto;
+        padding:40px
+      }
+
+
+        .yd-custom-banner .yd-custom-banner__buttons {
+            {% comment %} flex-direction: column; {% endcomment %}
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 3 IMAGE MOBILE */
+        .yd-custom-banner__right:not(.has-four-images) .yd-custom-banner__grid-left {
+            display: none;
+        }
+
+        .yd-custom-banner__right:not(.has-four-images) {
+            height: 350px;
+        }
+
+        .yd-custom-banner__right:not(.has-four-images) img {
+            height: 100%;
+            width: 100%;
+        }
+
+        /* 4 IMAGE MOBILE */
+        .yd-custom-banner__right.has-four-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-left,
+        .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-right {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .yd-custom-banner__right.has-four-images img {
+            widyth: 100%;
+        }
+
+        .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-left img:first-child {
+            height: 220px;
+        }
+
+        .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-left img:last-child {
+            height: 140px;
+        }
+
+        .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-right img:first-child {
+            height: 140px;
+        }
+
+        .yd-custom-banner__right.has-four-images .yd-custom-banner__grid-right img:last-child {
+            height: 220px;
+        }
+
+
+    }
+            }
+              @media(max-width: 510px){
+                  .yd-custom-banner .yd-custom-banner__right{
+                      height:350px;
+                  }
+                  .yd-custom-banner .yd-custom-banner__right img{
+                      height:100%;
+                  }
+              }
+</style>

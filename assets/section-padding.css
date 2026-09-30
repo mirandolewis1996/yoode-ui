@@ -1,0 +1,85 @@
+/* ==========================================================================
+   section-padding
+   --------------------------------------------------------------------------
+   The single source of truth for the OUTER top/bottom spacing of every
+   section on the site.
+
+   Usage: add `section-padding` to a section's root element, e.g.
+       <section class="hero-section section-padding">
+
+   Anything that previously controlled a section's outer top/bottom spacing
+   (the theme's `section-{{ section.id }}-padding` output, hand-written
+   padding in a section's {% style %} block, or per-page overrides) is beaten
+   by the !important declarations below. Horizontal padding and all internal
+   component spacing — buttons, cards, forms, inputs, images, icons, product
+   elements — are untouched.
+
+   This file is loaded LAST in <head> so that, where another rule is also
+   !important at the same specificity, this one still wins on source order.
+   ========================================================================== */
+
+.section-padding {
+  padding-top: 80px !important;
+  padding-bottom: 80px !important;
+}
+.section-padding-bottom {
+  padding-bottom: 80px !important;
+}
+
+.yd-context-trends .collection-section-padding {
+  padding-top: 80px !important;
+  padding-bottom: 10px !important;
+}
+
+@media (max-width: 991px) {
+  .section-padding {
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+  }
+
+  .section-padding-bottom {
+    padding-bottom: 60px !important;
+  }
+
+  .yd-context-trends .collection-section-padding {
+    padding-top: 60px !important;
+      padding-bottom: 10px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-padding {
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+
+  .section-padding-bottom {
+    padding-bottom: 40px !important;
+  }
+
+  .yd-context-trends .collection-section-padding {
+    padding-top: 40px !important;
+      padding-bottom: 10px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Outer wrapper reset.
+
+   The `section-margin` snippet writes padding-top/padding-bottom onto the
+   outer #shopify-section-<id> wrapper, driven by the margin_top / margin_bottom
+   schema settings. That padding sits OUTSIDE the element carrying
+   .section-padding, so it would stack on top of the standard rather than
+   compete with it — a section set to margin_top: "m" would render 80px + 56px.
+
+   Zeroing the wrapper for sections that use the standard keeps 80/60/40 the
+   complete outer spacing. Sections that do not use .section-padding (header,
+   footer, announcement bar, overlays) keep their margin settings intact.
+
+   Browsers without :has() simply drop this rule and fall back to the previous
+   behaviour, so nothing breaks.
+   -------------------------------------------------------------------------- */
+/* .shopify-section:has(> .section-padding) {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+} */

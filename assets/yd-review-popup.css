@@ -1,0 +1,103 @@
+.product-popup-modal__content-info {
+    .product-popup-modal__text {
+        .jdgm-review-widget {
+            .jdgm-rev-widg {
+                .jdgm-rev-widg__header {
+                    .jdgm-form-wrapper {
+                        .jdgm-cancel-rev {
+                            text-decoration: none;
+                        }
+                    }
+
+                    .jdgm-row-stars {
+                        align-items: center;
+                        flex-direction: column;
+                        gap: 25px;
+
+                        .jdgm-rev-widg__summary {
+                            width: 100%;
+
+
+
+
+                        }
+
+                        .jdgm-histogram {
+                            width: 100%;
+
+                            .jdgm-histogram__row {
+                                height: 18px;
+                            }
+                        }
+
+
+
+                        .jdgm-widget-actions-wrapper {
+                            width: 100%;
+
+                            .jdgm-write-rev-link {
+                                display: block !important;
+                                text-decoration: none;
+
+                            }
+                        }
+                    }
+                }
+
+                .jdgm-row-actions {
+                    flex-direction: row;
+                }
+
+                .jdgm-rev-widg__body {
+                    .jdgm-rev-widg__reviews {
+                        .jdgm-rev {
+                            .jdgm-rev__header {
+                                display: flex;
+                                flex-direction: column-reverse;
+
+                                .jdgm-row-rating {
+                                    display: flex;
+                                    align-items: end;
+                                    gap: 10px;
+                                }
+
+                                .jdgm-row-profile {
+                                    display: flex;
+                                    align-items: center;
+                                    margin-bottom: 6px;
+                                }
+                            }
+
+                            .jdgm-rev__content {
+                                text-align: start;
+
+                                .jdgm-rev__title {
+                                    margin-bottom: 4px;
+                                }
+
+                                .jdgm-rev__custom-form {
+                                    margin: 0px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @media (max-width:355px) {
+            .jdgm-review-widget--small {
+                .jdgm-histogram {
+                    .jdgm-histogram__row {
+                        .jdgm-histogram__bar {
+                            width: 97px;
+                        }
+                    }
+                }
+            }
+
+
+
+        }
+    }
+}

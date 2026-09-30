@@ -1,0 +1,459 @@
+{% doc %}
+  @prompt
+    larger test filled with image which is ideal for hero section. use this text (Your Design,
+    Your Way.
+    No Minimums.). amke sure hero section is in full view port hight and add some gsap text animation wich suits for this
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-hero-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-hero-image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: {{ block.settings.image_opacity }};
+  }
+
+  .ai-hero-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: {{ block.settings.overlay_color }};
+    opacity: {{ block.settings.overlay_opacity }};
+  }
+
+  .ai-hero-content-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 2;
+    text-align: {{ block.settings.text_alignment }};
+    max-width: 1200px;
+    padding: 0 20px;
+  }
+
+  .ai-hero-text-wrapper-{{ ai_gen_id }} {
+    overflow: hidden;
+  }
+
+  .ai-hero-line-{{ ai_gen_id }} {
+    display: block;
+    overflow: hidden;
+  }
+
+  .ai-hero-text-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.1;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    letter-spacing: -0.02em;
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  .ai-hero-subtext-{{ ai_gen_id }} {
+    font-family: {{ block.settings.subtext_font.family }}, {{ block.settings.subtext_font.fallback_families }};
+    font-weight: {{ block.settings.subtext_font.weight }};
+    font-size: {{ block.settings.subtext_size }}px;
+    color: {{ block.settings.text_color }};
+    margin-top: 20px;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .ai-hero-button-wrapper-{{ ai_gen_id }} {
+    margin-top: 40px;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .ai-hero-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 16px 40px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-family: {{ block.settings.button_font.family }}, {{ block.settings.button_font.fallback_families }};
+    font-weight: {{ block.settings.button_font.weight }};
+    font-size: {{ block.settings.button_text_size }}px;
+    transition: all 0.3s ease;
+  }
+
+  .ai-hero-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    transform: translateY(-2px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-hero-text-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.5);
+    }
+
+    .ai-hero-subtext-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.subtext_size }}px * 0.8);
+    }
+
+    .ai-hero-button-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.button_text_size }}px * 0.9);
+      padding: 14px 32px;
+    }
+  }
+{% endstyle %}
+
+<hero-section-{{ ai_gen_id }} class="ai-hero-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.hero_image %}
+    <img
+      src="{{ block.settings.hero_image | image_url: width: 2000 }}"
+      alt="{{ block.settings.hero_image.alt | escape }}"
+      class="ai-hero-image-{{ ai_gen_id }}"
+      loading="eager"
+      width="{{ block.settings.hero_image.width }}"
+      height="{{ block.settings.hero_image.height }}"
+    >
+  {% endif %}
+
+  <div class="ai-hero-overlay-{{ ai_gen_id }}"></div>
+
+  <div class="ai-hero-content-{{ ai_gen_id }}">
+    <div class="ai-hero-text-wrapper-{{ ai_gen_id }}">
+      {% assign lines = block.settings.heading_text | newline_to_br | split: '<br />' %}
+      {% for line in lines %}
+        <div class="ai-hero-line-{{ ai_gen_id }}">
+          <h1 class="ai-hero-text-{{ ai_gen_id }}" data-line="{{ forloop.index }}">{{ line }}</h1>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if block.settings.subtext != blank %}
+      <p class="ai-hero-subtext-{{ ai_gen_id }}">{{ block.settings.subtext }}</p>
+    {% endif %}
+
+    {% if block.settings.button_text != blank and block.settings.button_link != blank %}
+      <div class="ai-hero-button-wrapper-{{ ai_gen_id }}">
+        <a href="{{ block.settings.button_link }}" class="ai-hero-button-{{ ai_gen_id }}">
+          {{ block.settings.button_text }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</hero-section-{{ ai_gen_id }}>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<script>
+  (function() {
+    class HeroSection{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.animationDelay = 300;
+      }
+
+      connectedCallback() {
+        if (typeof gsap === 'undefined') {
+          console.warn('GSAP not loaded');
+          this.fallbackAnimation();
+          return;
+        }
+
+        setTimeout(() => {
+          this.initGSAPAnimation();
+        }, this.animationDelay);
+      }
+
+      initGSAPAnimation() {
+        const textElements = this.querySelectorAll('.ai-hero-text-{{ ai_gen_id }}');
+        const subtext = this.querySelector('.ai-hero-subtext-{{ ai_gen_id }}');
+        const buttonWrapper = this.querySelector('.ai-hero-button-wrapper-{{ ai_gen_id }}');
+
+        const timeline = gsap.timeline({
+          defaults: {
+            ease: 'power3.out'
+          }
+        });
+
+        textElements.forEach((element, index) => {
+          timeline.to(element, {
+            y: 0,
+            opacity: 1,
+            duration: 1.2,
+            delay: index * 0.15
+          }, index * 0.15);
+        });
+
+        if (subtext) {
+          timeline.to(subtext, {
+            y: 0,
+            opacity: 1,
+            duration: 0.8
+          }, '-=0.4');
+        }
+
+        if (buttonWrapper) {
+          timeline.to(buttonWrapper, {
+            y: 0,
+            opacity: 1,
+            duration: 0.8
+          }, '-=0.6');
+        }
+      }
+
+      fallbackAnimation() {
+        const textElements = this.querySelectorAll('.ai-hero-text-{{ ai_gen_id }}');
+        const subtext = this.querySelector('.ai-hero-subtext-{{ ai_gen_id }}');
+        const buttonWrapper = this.querySelector('.ai-hero-button-wrapper-{{ ai_gen_id }}');
+
+        textElements.forEach((element, index) => {
+          setTimeout(() => {
+            element.style.transition = 'all 0.8s ease';
+            element.style.transform = 'translateY(0)';
+            element.style.opacity = '1';
+          }, index * 150);
+        });
+
+        if (subtext) {
+          setTimeout(() => {
+            subtext.style.transition = 'all 0.8s ease';
+            subtext.style.transform = 'translateY(0)';
+            subtext.style.opacity = '1';
+          }, textElements.length * 150 + 200);
+        }
+
+        if (buttonWrapper) {
+          setTimeout(() => {
+            buttonWrapper.style.transition = 'all 0.8s ease';
+            buttonWrapper.style.transform = 'translateY(0)';
+            buttonWrapper.style.opacity = '1';
+          }, textElements.length * 150 + 400);
+        }
+      }
+    }
+
+    customElements.define('hero-section-{{ ai_gen_id }}', HeroSection{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Hero section",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "heading_text",
+      "label": "Heading text",
+      "default": "Your Design,\nYour Way.\nNo Minimums."
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "image_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Image opacity",
+      "default": 0.5
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Overlay opacity",
+      "default": 0.3
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "inter_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 40,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 120
+    },
+    {
+      "type": "font_picker",
+      "id": "subtext_font",
+      "label": "Subtext font",
+      "default": "inter_n4"
+    },
+    {
+      "type": "range",
+      "id": "subtext_size",
+      "min": 14,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Subtext size",
+      "default": 20
+    },
+    {
+      "type": "font_picker",
+      "id": "button_font",
+      "label": "Button font",
+      "default": "inter_n5"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Button text size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Button hover background",
+      "default": "#f2f1ef"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Button hover text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 25
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero section"
+    }
+  ]
+}
+{% endschema %}

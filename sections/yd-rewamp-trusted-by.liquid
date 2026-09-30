@@ -1,0 +1,103 @@
+{% comment %}
+  Section: yd-rewamp-trusted-by  |  First class: .yd-rewamp-trusted
+  Dark band: "Trusted By" label + brand logos (blocks). Color scheme + padding/margin.
+{% endcomment %}
+{%- assign s = section.settings -%}
+
+{% style %}
+  {% render 'section-padding' %}
+  {% render 'section-margin' %}
+{% endstyle %}
+
+<div class="yd-rewamp-trusted color-{{ s.color_scheme }} section-{{ section.id }}-padding section-padding">
+  <div class="yd-rewamp-trusted__inner">
+    <div class="yd-rewamp-trusted__label">{{ s.heading }}</div>
+
+    <div class="yd-rewamp-trusted__marquee{% unless s.animate %} is-static{% endunless %}">
+      <div class="yd-rewamp-trusted__track" style="--yd-marquee-duration: {{ s.speed }}s;">
+        {%- comment -%} Rendered twice for a seamless infinite loop {%- endcomment -%}
+        {%- for pass in (1..2) -%}
+          {%- for block in section.blocks -%}
+            <div class="yd-rewamp-trusted__cell"{% if pass == 1 %} {{ block.shopify_attributes }}{% else %} aria-hidden="true"{% endif %}>
+              {%- if block.settings.logo != blank -%}
+                <img src="{{ block.settings.logo | image_url: width: 240 }}" alt="{{ block.settings.name | escape }}" loading="lazy" class="yd-rewamp-trusted__logo">
+              {%- else -%}
+                <span class="yd-rewamp-trusted__name">{{ block.settings.name }}</span>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YD Rewamp Trusted By",
+  "tag": "section",
+  "class": "yd-rewamp-trusted-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Label", "default": "Trusted By" },
+    { "type": "checkbox", "id": "animate", "label": "Auto-scroll logos (marquee)", "default": true },
+    { "type": "range", "id": "speed", "min": 10, "max": 60, "step": 5, "unit": "s", "label": "Scroll speed (lower = faster)", "default": 25 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "background-3" },
+    { "type": "header", "content": "t:sections.all.section-padding.header.content" },
+    { "type": "select", "id": "padding_top", "options": [
+      { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+      { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+      { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+      { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+      { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+      { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" } ],
+      "default": "no-indent", "label": "t:sections.all.section-padding.padding_top.label" },
+    { "type": "select", "id": "padding_bottom", "options": [
+      { "value": "no-indent", "label": "t:sections.all.section-padding.options__1.label" },
+      { "value": "xs", "label": "t:sections.all.section-padding.options__2.label" },
+      { "value": "s", "label": "t:sections.all.section-padding.options__3.label" },
+      { "value": "m", "label": "t:sections.all.section-padding.options__4.label" },
+      { "value": "l", "label": "t:sections.all.section-padding.options__5.label" },
+      { "value": "xl", "label": "t:sections.all.section-padding.options__6.label" } ],
+      "default": "no-indent", "label": "t:sections.all.section-padding.padding_bottom.label" },
+    { "type": "header", "content": "t:sections.all.section-margin.header.content" },
+    { "type": "select", "id": "margin_top", "options": [
+      { "value": "no-indent", "label": "t:sections.all.section-margin.options__1.label" },
+      { "value": "xs", "label": "t:sections.all.section-margin.options__2.label" },
+      { "value": "s", "label": "t:sections.all.section-margin.options__3.label" },
+      { "value": "m", "label": "t:sections.all.section-margin.options__4.label" },
+      { "value": "l", "label": "t:sections.all.section-margin.options__5.label" },
+      { "value": "xl", "label": "t:sections.all.section-margin.options__6.label" } ],
+      "default": "no-indent", "label": "t:sections.all.section-margin.margin_top.label" },
+    { "type": "select", "id": "margin_bottom", "options": [
+      { "value": "no-indent", "label": "t:sections.all.section-margin.options__1.label" },
+      { "value": "xs", "label": "t:sections.all.section-margin.options__2.label" },
+      { "value": "s", "label": "t:sections.all.section-margin.options__3.label" },
+      { "value": "m", "label": "t:sections.all.section-margin.options__4.label" },
+      { "value": "l", "label": "t:sections.all.section-margin.options__5.label" },
+      { "value": "xl", "label": "t:sections.all.section-margin.options__6.label" } ],
+      "default": "no-indent", "label": "t:sections.all.section-margin.margin_bottom.label" }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Brand",
+      "settings": [
+        { "type": "image_picker", "id": "logo", "label": "Logo image" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Brand" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Rewamp Trusted By",
+      "blocks": [
+        { "type": "logo", "settings": { "name": "bitsnpixs" } },
+        { "type": "logo", "settings": { "name": "de Papillio" } },
+        { "type": "logo", "settings": { "name": "NSRL" } },
+        { "type": "logo", "settings": { "name": "YOODE" } },
+        { "type": "logo", "settings": { "name": "bitsnpixs" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

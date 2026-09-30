@@ -1,0 +1,102 @@
+{
+  "type": "footer",
+  "name": "YN Footer group",
+  "sections": {
+    "footer": {
+      "type": "yoode-new-home-footer",
+      "settings": {
+        "color_scheme": "background-3",
+        "show_wave": true,
+        "logo_width": 120,
+        "invert_logo": true,
+        "company_text": "Yoode Promotions Pvt. Ltd.\nCreating meaningful brand experiences\nthrough premium custom products.",
+        "contact_cta_text": "Send Us A Message",
+        "show_newsletter": true,
+        "newsletter_title": "Get Updates",
+        "newsletter_text": "Subscribe to receive updates on new products, exclusive offers and special announcements.",
+        "email_placeholder": "*Email",
+        "show_first_name": true,
+        "first_name_placeholder": "*First Name",
+        "newsletter_button": "SIGN UP",
+        "newsletter_tags": "newsletter",
+        "newsletter_success": "Thanks for subscribing!",
+        "copyright_text": "All Rights Reserved.",
+        "legal_links": "Privacy Policy|/policies/privacy-policy\nTerms of Service|/policies/terms-of-service",
+        "show_payment_icons": false,
+        "padding_top": 48,
+        "padding_bottom": 0
+      },
+      "blocks": {
+        "contact_phone": {
+          "type": "contact",
+          "settings": {
+            "icon": "phone",
+            "text": "+91 8069 750 293"
+          }
+        },
+        "contact_email": {
+          "type": "contact",
+          "settings": {
+            "icon": "mail",
+            "text": "info@yoode.com"
+          }
+        },
+        "social_facebook": {
+          "type": "social",
+          "settings": {
+            "platform": "facebook"
+          }
+        },
+        "social_instagram": {
+          "type": "social",
+          "settings": {
+            "platform": "instagram"
+          }
+        },
+        "social_linkedin": {
+          "type": "social",
+          "settings": {
+            "platform": "linkedin"
+          }
+        },
+        "menu_explore": {
+          "type": "menu",
+          "settings": {
+            "title": "Explore",
+            "custom_links": "Corporate|#\nSportswear|#\nTrendz|#\nAccessories|#",
+            "stack_with_previous": false
+          }
+        },
+        "menu_company": {
+          "type": "menu",
+          "settings": {
+            "title": "Company",
+            "custom_links": "About Us|#\nExperience Centers|#\nDesign Studio|#\nBulk Ordering|#",
+            "stack_with_previous": false
+          }
+        },
+        "menu_case_studies": {
+          "type": "menu",
+          "settings": {
+            "title": "Case Studies",
+            "custom_links": "Bitsnpixs|#\niDynamics|#",
+            "stack_with_previous": true
+          }
+        }
+      },
+      "block_order": [
+        "contact_phone",
+        "contact_email",
+        "social_facebook",
+        "social_instagram",
+        "social_linkedin",
+        "menu_explore",
+        "menu_company",
+        "menu_case_studies"
+      ]
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

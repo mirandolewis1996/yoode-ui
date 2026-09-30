@@ -1,0 +1,359 @@
+<section class="yd-map-section">
+  <div class="yd-map-container yoode-container {% if section.settings.title == blank and section.settings.address == blank and section.settings.phone == blank and section.settings.email == blank and section.settings.hours == blank %}yd-map-only{% endif %}">
+    {% assign has_content = false %}
+
+    {% if section.settings.title != blank
+      or section.settings.address != blank
+      or section.settings.phone != blank
+      or section.settings.email != blank
+      or section.settings.hours != blank
+    %}
+      {% assign has_content = true %}
+    {% endif %}
+
+    {% if has_content %}
+      <!-- LEFT CONTENT -->
+      <div class="yd-map-info">
+        {% if section.settings.title != blank %}
+          <h2>{{ section.settings.title }}</h2>
+        {% endif %}
+
+        {% if section.settings.address != blank %}
+          <div class="yd-map-address">
+            {{ section.settings.address | newline_to_br }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.phone != blank %}
+          <div class="yd-map-contact">
+            <div class="yd-map-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+              </svg>
+            </div>
+
+            <a href="tel:{{ section.settings.phone | remove: ' ' }}">
+              {{ section.settings.phone }}
+            </a>
+          </div>
+        {% endif %}
+
+        {% if section.settings.email != blank %}
+          <div class="yd-map-contact">
+            <div class="yd-map-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </div>
+
+            <a href="mailto:{{ section.settings.email }}">
+              {{ section.settings.email }}
+            </a>
+          </div>
+        {% endif %}
+
+        {% if section.settings.hours != blank %}
+          <div class="yd-map-contact">
+            <div class="yd-map-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
+                10-4.48 10-10S17.52 2 12 2zm0 18c-4.41
+                0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59
+                8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
+              </svg>
+            </div>
+
+            <span>{{ section.settings.hours }}</span>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <!-- MAP -->
+    <div class="yd-map">
+      {% if section.settings.map_iframe_url != blank %}
+        <iframe
+          src="{{ section.settings.map_iframe_url }}"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"
+        >
+        </iframe>
+
+      {% else %}
+        <div class="yd-map-placeholder">
+          <p>Please set the Google Maps iframe URL.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+    .yd-map-section {
+    width: 100%;
+    padding-bottom: 60px;
+  }
+
+  .yd-map-section .yd-map-container {
+
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  /* LEFT CONTENT */
+  .yd-map-section .yd-map-info {
+    background: #eef9ff;
+    border-radius: 8px;
+    padding: 52px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .yd-map-section .yd-map-info h2 {
+    margin: 0 0 5px;
+    color: #09284f;
+    font-size: 42px;
+    line-height: 1.25;
+    font-weight: 500;
+  }
+
+  .yd-map-section .yd-map-address {
+    color: #142f52;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 34px;
+  }
+
+  /* CONTACT */
+  .yd-map-section .yd-map-contact {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 15px;
+  }
+
+  .yd-map-section .yd-map-contact a,
+  .yd-map-section .yd-map-contact span {
+    color: #09284f;
+    font-size: 16px;
+    line-height: 1.4;
+    text-decoration: none;
+  }
+
+  .yd-map-section .yd-map-contact a:hover {
+    text-decoration: underline;
+  }
+
+  /* ICON */
+  .yd-map-section .yd-map-icon {
+    width: 35px;
+    min-width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #ffb511;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .yd-map-section .yd-map-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: #fff;
+  }
+
+  /* MAP */
+  .yd-map-section .yd-map {
+    width: 100%;
+    min-height: 500px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f2f2f2;
+  }
+
+  .yd-map-section .yd-map iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    border: 0;
+  }
+
+  /* ONLY MAP */
+  .yd-map-section .yd-map-container.yd-map-only {
+    display: block;
+  }
+
+  .yd-map-section .yd-map-container.yd-map-only .yd-map {
+    width: 100%;
+  }
+
+  .yd-map-section .yd-map-container.yd-map-only .yd-map iframe {
+    width: 100%;
+  }
+
+
+  /* TABLET */
+  @media screen and (max-width: 1100px) {
+
+    .yd-map-section .yd-map-container {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .yd-map-section .yd-map-info {
+      padding: 40px 30px;
+    }
+
+    .yd-map-section .yd-map-info h2 {
+      font-size: 34px;
+    }
+
+    .yd-map-section .yd-map-address {
+      font-size: 21px;
+    }
+
+  
+
+
+
+
+    .yd-map-section .yd-map,
+    .yd-map-section .yd-map iframe {
+      min-height: 450px;
+    }
+  }
+
+
+  /* MOBILE */
+  @media screen and (max-width: 767px) {
+
+    .yd-map-section {
+      padding-bottom: 40px;
+    }
+
+    .yd-map-section .yd-map-container {
+      width: calc(100% - 30px);
+      gap: 16px;
+    }
+
+    .yd-map-section .yd-map-info {
+      padding: 35px 25px;
+    }
+
+    .yd-map-section .yd-map-info h2 {
+      font-size: 30px;
+      margin-bottom: 20px;
+    }
+
+    .yd-map-section .yd-map-address {
+      font-size: 18px;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .yd-map-section .yd-map-contact {
+      gap: 16px;
+
+    }
+
+
+
+
+
+
+    .yd-map-section .yd-map,
+    .yd-map-section .yd-map iframe {
+      min-height: 400px;
+    }
+  }
+
+
+  /* SMALL MOBILE */
+  @media screen and (max-width: 480px) {
+
+    .yd-map-section .yd-map-container {
+      width: calc(100% - 20px);
+    }
+
+    .yd-map-section .yd-map-info {
+      padding: 28px 20px;
+    }
+
+    .yd-map-section .yd-map-info h2 {
+      font-size: 26px;
+    }
+
+    .yd-map-section .yd-map-address {
+      font-size: 17px;
+    }
+
+
+
+
+    .yd-map-section .yd-map,
+    .yd-map-section .yd-map iframe {
+      min-height: 350px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "New Yoode Map",
+  "tag": "section",
+  "class": "yd-map-wrapper",
+  "disabled_on": {
+    "templates": ["password"],
+    "groups": ["*"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Yoode - Experience Centre, Trivandrum"
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Address",
+      "default": "Ground Floor, CloudQ Towers,\nTechnopark Campus, Kazhakkoottam,\nKerala 695582"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone Number",
+      "default": "9025927014"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@yoode.com"
+    },
+    {
+      "type": "text",
+      "id": "hours",
+      "label": "Opening Hours",
+      "default": "Mon - Sat 10 am. to 8 pm."
+    },
+    {
+      "type": "text",
+      "id": "map_iframe_url",
+      "label": "Map Iframe URL"
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "New Yoode Map"
+    }
+  ]
+}
+{% endschema %}

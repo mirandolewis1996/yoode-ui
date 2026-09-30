@@ -1,0 +1,208 @@
+{%- comment -%}
+  YD Enquiry Popup: one global modal form.
+  Add it once to the Footer section group (theme editor → Footer → Add section).
+  Any button on any page opens it with:
+    <button type="button" data-yd-enquiry-open aria-haspopup="dialog" aria-controls="yd-enquiry-modal">…</button>
+  Optional: data-yd-enquiry-source="Hero - Jerseys" labels which button the lead came from.
+  Submits through Shopify's contact form, so each enquiry is emailed to the store's
+  sender email (Settings → Notifications). Customers don't enter an email: a hidden
+  field sends the store email, because Shopify requires one. Contact leads by phone.
+  After the page reloads, the popup reopens to show the success or error message.
+{%- endcomment -%}
+
+{%- assign yd_form_categories = section.settings.form_categories | newline_to_br | split: '<br />' -%}
+
+<dialog class="yd-enquiry-modal" id="yd-enquiry-modal" aria-labelledby="yd-enquiry-title">
+  <div class="yd-enquiry-inner">
+    <button type="button" class="yd-enquiry-close" aria-label="Close" data-yd-enquiry-close>
+      <svg
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <path d="M4 4l8 8M12 4l-8 8"/>
+      </svg>
+    </button>
+
+    {%- form 'contact', id: 'yd-enquiry-form', class: 'yd-enquiry-form' -%}
+      {%- if form.posted_successfully? -%}
+        <div role="status" data-yd-enquiry-status="success">
+          <p class="yd-enquiry-success" >
+            <strong>{{ section.settings.form_success_message_1 | default: 'Thank You for Choosing Yoode!' }}</strong>
+          </p>
+          <p>
+            {{
+              section.settings.form_success_message_2
+              | default: 'We’ve received your enquiry. Our team will contact you soon to discuss your custom jersey requirements and the next steps.'
+            }}
+          </p>
+        </div>
+      {%- elsif form.errors -%}
+        <div class="yd-enquiry-error" role="alert" data-yd-enquiry-status="error">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      {% comment %} <div>
+        <img />
+        <p class="yd-enquiry-success" role="status">
+          <strong>{{ section.settings.form_success_message_1 | default: 'Thank You for Choosing Yoode!' }}</strong>
+        </p>
+        <p>
+          {{
+            section.settings.form_success_message_2
+            | default: 'We’ve received your enquiry. Our team will contact you soon to discuss your custom jersey requirements and the next steps.'
+          }}
+        </p>
+      </div> {% endcomment %}
+      <div class="yd-enquiry-fields" data-yd-enquiry-fields>
+        <h2 class="yd-enquiry-title" id="yd-enquiry-title">{{ section.settings.form_title }}</h2>
+        <input
+          type="hidden"
+          name="contact[Source]"
+          value="{{ section.settings.form_source | escape }}"
+          data-yd-enquiry-source
+        >
+        <input type="hidden" name="contact[Page]" value="{{ request.path | escape }}" data-yd-enquiry-page>
+        {%- comment -%} Shopify won't send a contact form without an email, so the store's own address is used. {%- endcomment -%}
+        <input type="hidden" name="contact[email]" value="{{ shop.email | escape }}">
+
+        <div class="yd-enquiry-field">
+          <label class="yd-enquiry-label" for="yd-enquiry-name">Name <span class="yd-enq-required">*</span></label>
+          <input
+            class="yd-enquiry-input"
+            type="text"
+            id="yd-enquiry-name"
+            name="contact[name]"
+            value="{{ form.name | escape }}"
+            autocomplete="name"
+            maxlength="80"
+            placeholder="Name"
+            required
+          >
+        </div>
+
+        <div class="yd-enquiry-field">
+          <label class="yd-enquiry-label" for="yd-enquiry-phone"
+            >Phone number <span class="yd-enq-required">*</span></label
+          >
+          <input
+            class="yd-enquiry-input"
+            type="tel"
+            id="yd-enquiry-phone"
+            name="contact[phone]"
+            value="{{ form.phone | escape }}"
+            placeholder="Phone Number"
+            autocomplete="tel"
+            inputmode="tel"
+            pattern="[+]?[0-9 \-]{10,15}"
+            title="Enter a 10-digit phone number, with or without +91"
+            required
+          >
+        </div>
+
+        <div class="yd-enquiry-field">
+          <label class="yd-enquiry-label" for="yd-enquiry-category"
+            >Sport / jersey category <span class="yd-enq-required">*</span></label
+          >
+          <select class="yd-enquiry-input" id="yd-enquiry-category" name="contact[Category]" required>
+            <option value="" disabled selected>Select a category</option>
+            {%- for yd_option in yd_form_categories -%}
+              {%- assign yd_option_clean = yd_option | strip -%}
+              {%- if yd_option_clean != blank -%}
+                <option value="{{ yd_option_clean | escape }}">{{ yd_option_clean | escape }}</option>
+              {%- endif -%}
+            {%- endfor -%}
+          </select>
+        </div>
+
+        <div class="yd-enquiry-field">
+          <label class="yd-enquiry-label" for="yd-enquiry-requirements"
+            >Requirements <span class="yd-enq-required">*</span></label
+          >
+          <textarea
+            class="yd-enquiry-input yd-enquiry-textarea"
+            id="yd-enquiry-requirements"
+            name="contact[Requirements]"
+            rows="3"
+            maxlength="1000"
+            placeholder="Quantity, sizes, colours, logos, delivery date"
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="yd-seo-btn yd-seo-btn-primary">
+          {{ section.settings.form_submit_label | default: 'Send enquiry' }}
+        </button>
+
+        {%- if section.settings.form_terms_condition != blank -%}
+          <p class="yd-enquiry-terms">{{ section.settings.form_terms_condition }}</p>
+        {%- endif -%}
+      </div>
+    {%- endform -%}
+  </div>
+</dialog>
+
+{% comment %}
+  {% javascript %}
+
+  {% endjavascript %}
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "YD Enquiry Popup",
+  "limit": 1,
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Hidden until a button with data-yd-enquiry-open is clicked. Enquiries are emailed to the store sender email set in Settings → Notifications."
+    },
+    { "type": "text", "id": "form_title", "label": "Popup heading", "default": "Get a free mockup" },
+    {
+      "type": "textarea",
+      "id": "form_categories",
+      "label": "Category options",
+      "default": "Cricket\nFootball\nBadminton\nVolleyball\nBasketball\nCycling\nEsports\nRunning\nOther",
+      "info": "One option per line."
+    },
+    { "type": "text", "id": "form_submit_label", "label": "Submit button text", "default": "Send enquiry" },
+    {
+      "type": "text",
+      "id": "form_source",
+      "label": "Default lead source",
+      "default": "Enquiry popup",
+      "info": "Shown as Source in the enquiry email. A button's data-yd-enquiry-source overrides it."
+    },
+    {
+      "type": "text",
+      "id": "form_success_message_1",
+      "label": "Success message",
+      "default": "Thank You for Choosing Yoode!",
+      "info": "Shown in the popup after the enquiry is sent."
+    },
+    {
+      "type": "text",
+      "id": "form_success_message_2",
+      "label": "Info message",
+      "default": "We’ve received your enquiry. Our team will contact you soon to discuss your custom jersey requirements and the next steps.",
+      "info": "Shown in the popup after the enquiry is sent."
+    },
+
+    {
+      "type": "inline_richtext",
+      "id": "form_terms_condition",
+      "label": "Terms text",
+      "default": "By submitting, you agree to our <a href=\"/policies/terms-of-service\">Terms & Conditions</a>.",
+      "info": "Shown below the submit button. Select text to add a link."
+    }
+  ],
+  "presets": [{ "name": "YD Enquiry Popup" }]
+}
+{% endschema %}

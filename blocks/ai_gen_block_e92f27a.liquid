@@ -1,0 +1,521 @@
+{% doc %}
+  @prompt
+    add a popup modal to get mobile number from vistor so they can avail a 20% offer, the filled number can be saved in a google sheet. this model should be displayed only once per visit. add necessary setting to confi google sheet too
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-offer-modal-{{ ai_gen_id }} {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-offer-modal-{{ ai_gen_id }}.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .ai-offer-modal-content-{{ ai_gen_id }} {
+    background-color: {{ block.settings.modal_bg_color }};
+    border-radius: {{ block.settings.modal_border_radius }}px;
+    max-width: {{ block.settings.modal_width }}px;
+    width: 90%;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+  }
+
+  .ai-offer-modal-{{ ai_gen_id }}.active .ai-offer-modal-content-{{ ai_gen_id }} {
+    transform: scale(1);
+  }
+
+  .ai-offer-modal-close-{{ ai_gen_id }} {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 10;
+    color: {{ block.settings.text_color }};
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-offer-modal-close-{{ ai_gen_id }}:hover {
+    opacity: 1;
+  }
+
+  .ai-offer-modal-body-{{ ai_gen_id }} {
+    padding: 40px 30px;
+    text-align: center;
+  }
+
+  .ai-offer-modal-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 15px;
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+  }
+
+  .ai-offer-modal-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 25px;
+    opacity: 0.8;
+  }
+
+  .ai-offer-modal-form-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .ai-offer-modal-input-{{ ai_gen_id }} {
+    padding: 14px 18px;
+    border: 1px solid {{ block.settings.input_border_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ai-offer-modal-input-{{ ai_gen_id }}:focus {
+    outline: none;
+    border-color: {{ block.settings.button_bg_color }};
+  }
+
+  .ai-offer-modal-button-{{ ai_gen_id }} {
+    padding: 14px 30px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+  }
+
+  .ai-offer-modal-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+  }
+
+  .ai-offer-modal-message-{{ ai_gen_id }} {
+    margin-top: 15px;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 4px;
+    display: none;
+  }
+
+  .ai-offer-modal-message-{{ ai_gen_id }}.success {
+    display: block;
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  .ai-offer-modal-message-{{ ai_gen_id }}.error {
+    display: block;
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+
+  .ai-offer-modal-disclaimer-{{ ai_gen_id }} {
+    margin-top: 20px;
+    font-size: 12px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.6;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-offer-modal-body-{{ ai_gen_id }} {
+      padding: 30px 20px;
+    }
+
+    .ai-offer-modal-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.8);
+    }
+
+    .ai-offer-modal-subheading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.subheading_size }}px * 0.9);
+    }
+  }
+{% endstyle %}
+
+<offer-modal-{{ ai_gen_id }} class="ai-offer-modal-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-offer-modal-content-{{ ai_gen_id }}">
+    <button class="ai-offer-modal-close-{{ ai_gen_id }}" aria-label="Close modal">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="ai-offer-modal-body-{{ ai_gen_id }}">
+      <h2 class="ai-offer-modal-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      <p class="ai-offer-modal-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</p>
+
+      <form class="ai-offer-modal-form-{{ ai_gen_id }}" id="ai-offer-form-{{ ai_gen_id }}">
+        <input
+          type="tel"
+          class="ai-offer-modal-input-{{ ai_gen_id }}"
+          placeholder="{{ block.settings.phone_placeholder }}"
+          required
+          pattern="[0-9]{10}"
+          title="Please enter a valid 10-digit mobile number"
+          id="ai-phone-input-{{ ai_gen_id }}"
+        >
+        <button type="submit" class="ai-offer-modal-button-{{ ai_gen_id }}">
+          {{ block.settings.button_text }}
+        </button>
+      </form>
+
+      <div class="ai-offer-modal-message-{{ ai_gen_id }}" id="ai-message-{{ ai_gen_id }}"></div>
+
+      {% if block.settings.show_disclaimer %}
+        <p class="ai-offer-modal-disclaimer-{{ ai_gen_id }}">{{ block.settings.disclaimer_text }}</p>
+      {% endif %}
+    </div>
+  </div>
+</offer-modal-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class OfferModal{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.cookieName = 'ai_offer_modal_shown_{{ ai_gen_id }}';
+        this.closeButton = this.querySelector('.ai-offer-modal-close-{{ ai_gen_id }}');
+        this.form = this.querySelector('#ai-offer-form-{{ ai_gen_id }}');
+        this.phoneInput = this.querySelector('#ai-phone-input-{{ ai_gen_id }}');
+        this.message = this.querySelector('#ai-message-{{ ai_gen_id }}');
+      }
+
+      connectedCallback() {
+        if (!this.hasShownModal()) {
+          this.showModal();
+        }
+
+        this.setupEventListeners();
+      }
+
+      hasShownModal() {
+        return document.cookie.split('; ').find(row => row.startsWith(this.cookieName + '='));
+      }
+
+      setModalShownCookie() {
+        const expiryDate = new Date();
+        expiryDate.setTime(expiryDate.getTime() + (24 * 60 * 60 * 1000));
+        document.cookie = this.cookieName + '=true; expires=' + expiryDate.toUTCString() + '; path=/';
+      }
+
+      showModal() {
+        const delay = {{ block.settings.display_delay }} * 1000;
+        setTimeout(() => {
+          this.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }, delay);
+      }
+
+      hideModal() {
+        this.classList.remove('active');
+        document.body.style.overflow = '';
+        this.setModalShownCookie();
+      }
+
+      setupEventListeners() {
+        this.closeButton.addEventListener('click', () => {
+          this.hideModal();
+        });
+
+        this.addEventListener('click', (e) => {
+          if (e.target === this) {
+            this.hideModal();
+          }
+        });
+
+        this.form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleSubmit();
+        });
+      }
+
+      async handleSubmit() {
+        const phoneNumber = this.phoneInput.value;
+        const googleSheetUrl = '{{ block.settings.google_sheet_url }}';
+
+        if (!googleSheetUrl) {
+          this.showMessage('Google Sheet URL not configured. Please add it in theme settings.', 'error');
+          return;
+        }
+
+        try {
+          const formData = new FormData();
+          formData.append('phone', phoneNumber);
+          formData.append('timestamp', new Date().toISOString());
+          formData.append('offer', '{{ block.settings.offer_percentage }}% off');
+
+          const response = await fetch(googleSheetUrl, {
+            method: 'POST',
+            body: formData,
+            mode: 'no-cors'
+          });
+
+          this.showMessage('{{ block.settings.success_message }}', 'success');
+          this.form.reset();
+
+          setTimeout(() => {
+            this.hideModal();
+          }, 3000);
+
+        } catch (error) {
+          this.showMessage('{{ block.settings.error_message }}', 'error');
+        }
+      }
+
+      showMessage(text, type) {
+        this.message.textContent = text;
+        this.message.className = 'ai-offer-modal-message-{{ ai_gen_id }} ' + type;
+      }
+    }
+
+    customElements.define('offer-modal-{{ ai_gen_id }}', OfferModal{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Offer popup modal",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get 20% Off!"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Enter your mobile number to unlock your exclusive discount"
+    },
+    {
+      "type": "range",
+      "id": "offer_percentage",
+      "label": "Offer percentage",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "default": 20
+    },
+    {
+      "type": "text",
+      "id": "phone_placeholder",
+      "label": "Phone input placeholder",
+      "default": "Enter your mobile number"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Claim offer"
+    },
+    {
+      "type": "header",
+      "content": "Messages"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you! Your offer code will be sent shortly."
+    },
+    {
+      "type": "text",
+      "id": "error_message",
+      "label": "Error message",
+      "default": "Something went wrong. Please try again."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_disclaimer",
+      "label": "Show disclaimer",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer_text",
+      "label": "Disclaimer text",
+      "default": "By submitting, you agree to receive promotional messages. Standard rates may apply."
+    },
+    {
+      "type": "header",
+      "content": "Google Sheets integration"
+    },
+    {
+      "type": "paragraph",
+      "content": "To save data to Google Sheets: 1) Create a Google Sheet, 2) Go to Extensions > Apps Script, 3) Paste the web app code (see documentation), 4) Deploy as web app, 5) Copy the web app URL below."
+    },
+    {
+      "type": "url",
+      "id": "google_sheet_url",
+      "label": "Google Sheet web app URL"
+    },
+    {
+      "type": "header",
+      "content": "Display settings"
+    },
+    {
+      "type": "range",
+      "id": "display_delay",
+      "label": "Display delay",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "s",
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "modal_width",
+      "label": "Modal width",
+      "min": 300,
+      "max": 600,
+      "step": 20,
+      "unit": "px",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "modal_border_radius",
+      "label": "Modal border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "modal_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#262d33"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "inter_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Subheading size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Input style"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Border color",
+      "default": "#dee0e0"
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#262d33"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#474d52"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Offer popup modal"
+    }
+  ]
+}
+{% endschema %}

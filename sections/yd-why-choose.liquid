@@ -1,0 +1,264 @@
+{% schema %}
+{
+  "name": "YD Why Choose",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "WHY CHOOSE"
+    },
+    {
+      "type": "text",
+      "id": "highlight_text",
+      "label": "Highlight Text",
+      "default": "YOODE"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight Color",
+      "default": "#f26522"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Right Side Image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "feature_icon",
+          "label": "Feature Icon"
+        },
+        {
+          "type": "text",
+          "id": "feature_text",
+          "label": "Feature Text",
+          "default": "Premium Breathable Fabric"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YD Why Choose",
+      "blocks": [
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="yd-why-choose section-padding">
+  <div class="page-width">
+
+    <div class="yd-why-choose__wrapper">
+
+      <!-- Left Content -->
+      <div class="yd-why-choose__content">
+
+        <h2 class="yd-why-choose__heading">
+          {{ section.settings.heading }}
+          <span>{{ section.settings.highlight_text }}</span>
+        </h2>
+
+        <div class="yd-why-choose__features">
+
+          {% for block in section.blocks %}
+            <div class="yd-feature-item" {{ block.shopify_attributes }}>
+
+              <div class="yd-feature-icon">
+                {% if block.settings.feature_icon != blank %}
+                  <img
+                    src="{{ block.settings.feature_icon | image_url: width: 100 }}"
+                    alt="{{ block.settings.feature_text }}"
+                    loading="lazy"
+                  >
+                {% endif %}
+              </div>
+
+              <div class="yd-feature-text">
+                {{ block.settings.feature_text }}
+              </div>
+
+            </div>
+          {% endfor %}
+
+        </div>
+
+      </div>
+
+      <!-- Right Image -->
+      <div class="yd-why-choose__image">
+
+        {% if section.settings.main_image != blank %}
+          <img
+            src="{{ section.settings.main_image | image_url: width: 1200 }}"
+            alt="Why Choose Image"
+            loading="lazy"
+          >
+        {% endif %}
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<style>
+
+.yd-why-choose{
+  padding:80px 20px;
+  background:#f5f5f5;
+}
+
+.yd-why-choose .page-width{
+  max-width:1200px;
+  margin:0 auto;
+}
+
+.yd-why-choose__wrapper{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:60px;
+}
+
+.yd-why-choose__content{
+  width:45%;
+  margin-bottom:30px;
+}
+
+.yd-why-choose__image{
+  width:55%;
+}
+
+.yd-why-choose__heading{
+  margin-bottom:40px;
+}
+
+.yd-why-choose__heading span{
+  color:{{ section.settings.highlight_color }};
+}
+
+.yd-why-choose__features{
+  display:flex;
+  flex-direction:column;
+  gap:30px;
+}
+
+.yd-feature-item{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.yd-feature-icon{
+  width:42px;
+  min-width:42px;
+}
+
+.yd-feature-icon img{
+  width:100%;
+  display:block;
+  object-fit:contain;
+}
+
+.yd-feature-text{
+  font-size:24px;
+  font-weight:700;
+  color:#4C4C4C;
+  line-height:1.4;
+}
+
+.yd-why-choose__image img{
+  width:100%;
+  height:450px;
+  display:block;
+  border-radius:20px;
+  object-fit:contain;
+}
+
+/* Tablet */
+@media screen and (max-width: 991px){
+
+  .yd-why-choose{
+    padding:60px 20px;
+  }
+
+  .yd-why-choose__wrapper{
+    flex-direction:column;
+    gap:20px;
+  }
+
+  .yd-why-choose__content,
+  .yd-why-choose__image{
+    width:100%;
+  }
+
+  .yd-why-choose__heading{
+    font-size:38px;
+    margin-bottom:35px;
+    text-align:center;
+  }
+
+  .yd-feature-text{
+    font-size:22px;
+  }
+
+}
+
+/* Mobile */
+@media screen and (max-width: 600px){
+
+  .yd-why-choose{
+    padding:20px 15px;
+  }
+
+  .yd-why-choose__heading{
+    font-size:30px;
+  }
+
+  .yd-feature-item{
+    gap:14px;
+    align-items:flex-start;
+  }
+
+  .yd-feature-icon{
+    width:34px;
+    min-width:34px;
+  }
+
+  .yd-feature-text{
+    font-size:18px;
+  }
+
+  .yd-why-choose__features{
+    gap:22px;
+  }
+
+}
+
+</style>

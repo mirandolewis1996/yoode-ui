@@ -3018,3 +3018,15 @@ div#hero-template--27518117347617__hero_7aHCFx{
     height: 207px;
 }
 }
+
+.yd-text-clr{
+    color:white !important;
+}
+.yd-rw-creacc{
+    padding:5px 0px !important;
+}
+.yd-rw-creacc {
+    .button__content{
+        justify-content:left !important;
+    }
+}

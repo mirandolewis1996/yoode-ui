@@ -67,6 +67,10 @@
   box-shadow: none;
 }
 
+.header__account .header__account-register {
+  font-size: var(--yd-button-font-size);
+}
+
 :is(.button, .yn-button, .yd-seo-section .yd-seo-btn, .yd-enquiry-form .yd-seo-btn, .shopify-payment-button__button--unbranded):where(:disabled, [aria-disabled='true'], .disabled) {
   cursor: not-allowed;
   opacity: 0.48;

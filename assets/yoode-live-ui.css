@@ -918,7 +918,7 @@ body:is(.yd-context-store-bangalore, .yd-context-store-trivandrum, .yd-context-s
   box-shadow: var(--yl-shadow);
 }
 
-body.yd-context-store-locations :is(.steps__content-image, .steps__content-inner) {
+body.yd-context-store-locations :is(.steps__content-image) {
   overflow: hidden;
   border-radius: var(--yl-radius-lg);
 }

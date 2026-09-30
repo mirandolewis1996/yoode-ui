@@ -248,7 +248,7 @@
                 {%- else -%}
                   <a
                     href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
-                    class="button button--primary menu-drawer__account focus-inset"
+                    class=" button--primary menu-drawer__account focus-inset"
                   >
                     <div class="button__content">
                       <span class="button__label" data-label="{{ 'customer.log_in' | t }}">
@@ -261,7 +261,7 @@
                     <span class="body-normal">
                       {{- 'customer.login_page.new_customer' | t -}}
                     </span>
-                    <a class="button button--tertiary focus-inset" href="{{ routes.account_register_url }}">
+                    <a class="yd-rw-creacc button--tertiary focus-inset" href="{{ routes.account_register_url }}">
                       <div class="button__content">
                         <span
                           class="button__label body-normal"

@@ -268,7 +268,7 @@
                     {%- if block.settings.heading != blank -%}
                       {% assign heading_tag = block.settings.heading_tag %}
                       <{{ heading_tag }} class="slideshow__title-content {{ block.settings.heading_size }}">
-                        <span>{{- block.settings.heading -}}</span>
+                        <span class="yd-text-clr">{{- block.settings.heading -}}</span>
                       </{{ heading_tag }}>
                     {%- endif -%}
                     {%- if block.settings.description != blank -%}

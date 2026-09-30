@@ -40,7 +40,7 @@
   {% if yd_global %}
     yd-btn
   {% else %}
-    button button--{{ btn_style }}{% if enable_arrow %} with-arrow{% endif %}
+    button--{{ btn_style }}{% if enable_arrow %} with-arrow{% endif %}
   {% endif %}
   {% if class %}{{ class }}{% endif %}
 "
@@ -74,7 +74,7 @@
       href="{{ btn_link }}"
       aria-label="{{- btn_label | escape -}}"
     {% endif %}
-    class="button button--{{ btn_style }}{% if enable_arrow %} with-arrow{% endif %} {% if class %}{{ class }}{% endif %}"
+    class="button button--{{ btn_style }}{% if enable_arrow %} {% endif %} {% if class %}{{ class }}{% endif %}"
     {% if btn_link == blank %}
       aria-disabled="true"
     {% endif %}
